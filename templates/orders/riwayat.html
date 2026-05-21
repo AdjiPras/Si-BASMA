@@ -1,0 +1,815 @@
+{% extends 'orders/base.html' %}
+{% load static %}
+{% block title %}Riwayat Pesanan | Si-BASMA{% endblock %}
+
+{% block content %}
+<main class="app-main">
+    <div class="app-content-header">
+        <div class="container-fluid">
+            {% if messages %}
+            <div class="notif-container">
+                {% for message in messages %}
+                    <div class="alert alert-success alert-dismissible fade show shadow" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            <div class="row">
+                
+                <div class="col-sm-6">
+                    <h3 class="mb-0">Riwayat Pesanan</h3>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-end">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Riwayat Pesanan</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt-3">
+        <div class="row justify-content-center">
+            <div class="col-lg-10 col-md-11">
+
+                {% if page_obj %}
+                <div class="row">
+                    <div class="col-md-12">
+
+                        <div class="card mb-4">
+                            <div class="card-header" style="background-color: #025697; color: aliceblue;">
+                                <h3 class="card-title">Daftar Riwayat Pesanan</h3>
+                            </div>
+
+                            <div class="mb-2 text-end p-2">
+                                <button class="btn btn-warning btn-sm" id="toggleEdit">
+                                    <i class="bi bi-pencil"> </i>&nbsp;
+                                    <b>Edit</b> 
+                                </button>
+
+                                <button class="btn btn-primary btn-sm d-none" id="saveAll">
+                                    <i class="bi bi-download"> </i>&nbsp;
+                                    <b>Simpan Perubahan</b>
+                                </button>
+                            </div>
+
+                            <div class="card-body">
+                                <table class="table table-bordered table-hover">
+                                    <thead class="text-center">
+                                        <tr>
+                                            <th style="width: 50px">#</th>
+
+                                            <th style="width: 180px">
+                                                <i class="bi bi-calendar-week-fill"></i>
+                                                Tanggal
+                                            </th>
+
+                                            <th style="width: 200px">
+                                                <i class="bi bi-arrow-repeat"></i>
+                                                Siklus Menu
+                                            </th>
+
+                                            <th style="width: 150px">
+                                                <i class="bi bi-people-fill"></i>
+                                                Total Pasien
+                                            </th>
+
+                                            <th style="width: 120px">
+                                                Aksi
+                                            </th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        {% for pesanan in page_obj %}
+                                        <tr class="align-middle" data-id="{{ pesanan.id }}">
+
+                                            <td class="text-center">{{ forloop.counter }}</td>
+
+                                            <!-- TANGGAL -->
+                                            <td class="text-center">
+
+                                                <!-- VIEW MODE -->
+                                                <span class="view-mode tanggal-text">
+                                                    {{ pesanan.tanggal_pemesanan|date:"Y-m-d" }}
+                                                </span>
+
+                                                <!-- EDIT MODE -->
+                                                <div class="edit-mode d-none">
+                                                    <input
+                                                        type="date"
+                                                        class="form-control form-control-sm tanggal-input"
+                                                        value="{{ pesanan.tanggal_pemesanan|date:'Y-m-d' }}"
+                                                    >
+                                                </div>
+
+                                            </td>
+
+                                            <!-- SIKLUS -->
+                                            <td class="text-center">
+                                                <span class="view-mode siklus-text">
+                                                    Siklus {{ pesanan.siklus_menu }}
+                                                </span>
+
+                                                <select class="form-select form-select-sm edit-mode siklus-input d-none">
+                                                    <option value="Siklus I" {% if pesanan.siklus_menu == "Siklus I" %}selected{% endif %}>Siklus I</option>
+                                                    <option value="Siklus II" {% if pesanan.siklus_menu == "Siklus II" %}selected{% endif %}>Siklus II</option>
+                                                    <option value="Siklus III" {% if pesanan.siklus_menu == "Siklus III" %}selected{% endif %}>Siklus III</option>
+                                                </select>
+                                            </td>
+
+                                            <!-- TOTAL PASIEN (EDITABLE BARU) -->
+                                            <td class="text-center">
+
+                                                <span class="view-mode total-text">
+                                                    {{ pesanan.jumlah_pasien|default:0 }}
+                                                </span>
+
+                                                <input type="number"
+                                                    class="form-control form-control-sm edit-mode total-input d-none"
+                                                    value="{{ pesanan.jumlah_pasien|default:0 }}">
+                                            </td>
+
+                                            <!-- AKSI -->
+                                            <td class="text-center">
+                                                <!-- CETAK PDF -->
+                                                <button class="btn btn-sm btn-secondary btn-print"
+                                                    data-id="{{ pesanan.id }}">
+                                                    <i class="bi bi-printer"></i>
+                                                </button>
+
+                                                <!-- DELETE -->
+                                                <button class="btn btn-sm btn-danger btn-delete"
+                                                    data-id="{{ pesanan.id }}">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </td>
+
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- PAGINATION ALA ADMINLTE -->
+                            <div class="d-flex justify-content-center mt-2 mb-4">
+
+                                <ul class="pagination pagination-sm m-0 float-end">
+
+                                    {% if page_obj.has_previous %}
+                                    <li class="page-item">
+
+                                        <a class="page-link"
+                                        href="?page=1{% if q %}&q={{ q }}{% endif %}{% if kategori_aktif %}&kategori={{ kategori_aktif }}{% endif %}">
+
+                                            &laquo;
+
+                                        </a>
+
+                                    </li>
+
+                                    <li class="page-item">
+
+                                        <a class="page-link"
+                                        href="?page={{ page_obj.previous_page_number }}{% if q %}&q={{ q }}{% endif %}{% if kategori_aktif %}&kategori={{ kategori_aktif }}{% endif %}">
+
+                                            Prev
+
+                                        </a>
+
+                                    </li>
+                                    {% endif %}
+
+                                    <li class="page-item active">
+
+                                        <span class="page-link bg-primary border-primary">
+                                            {{ page_obj.number }}
+                                        </span>
+
+                                    </li>
+
+                                    {% if page_obj.has_next %}
+                                    <li class="page-item">
+
+                                        <a class="page-link"
+                                        href="?page={{ page_obj.next_page_number }}{% if q %}&q={{ q }}{% endif %}{% if kategori_aktif %}&kategori={{ kategori_aktif }}{% endif %}">
+
+                                            Next
+
+                                        </a>
+
+                                    </li>
+
+                                    <li class="page-item">
+
+                                        <a class="page-link"
+                                        href="?page={{ page_obj.paginator.num_pages }}{% if q %}&q={{ q }}{% endif %}{% if kategori_aktif %}&kategori={{ kategori_aktif }}{% endif %}">
+
+                                            &raquo;
+
+                                        </a>
+
+                                    </li>
+                                    {% endif %}
+
+                                </ul>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                {% else %}
+                <div class="card shadow-sm">
+                    <div class="card-body text-center text-muted">
+                        Belum ada riwayat
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+
+</main>
+
+<<!-- AREA CETAK -->
+<div id="print-area" class="d-none">
+
+    <style>
+
+        #print-area{
+            padding: 30px;
+            font-family: Arial, sans-serif;
+            color: #000;
+        }
+
+        /* ======================
+        HEADER
+        ====================== */
+        .print-header{
+            border-bottom: 3px solid #025697;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+
+        .print-header table{
+            width: 100%;
+        }
+
+        .print-logo{
+            width: 90px;
+        }
+
+        .instansi-title{
+            font-size: 24px;
+            font-weight: bold;
+            color: #025697;
+            margin-bottom: 5px;
+        }
+
+        .instansi-info{
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        /* ======================
+        TITLE
+        ====================== */
+        .invoice-title{
+            text-align: center;
+            margin-top: 25px;
+            margin-bottom: 30px;
+        }
+
+        .invoice-title h2{
+            margin: 0;
+            color: #025697;
+        }
+
+        /* ======================
+        INFO
+        ====================== */
+        .info-section{
+            margin-bottom: 25px;
+        }
+
+        .info-section p{
+            margin-bottom: 8px;
+        }
+
+        /* ======================
+        TABLE
+        ====================== */
+        .print-table{
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .print-table th,
+        .print-table td{
+            border: 1px solid #000;
+            padding: 10px;
+        }
+
+        .print-table th{
+            background: #025697;
+            color: rgb(26, 24, 24);
+            text-align: center;
+        }
+
+        .text-center{
+            text-align: center;
+        }
+
+        /* ======================
+        FOOTER
+        ====================== */
+        .print-footer{
+            margin-top: 60px;
+            width: 100%;
+        }
+
+        .ttd{
+            width: 250px;
+            margin-left: auto;
+            text-align: center;
+        }
+
+        .ttd-space{
+            height: 80px;
+        }
+
+        /* ======================
+        PRINT ONLY
+        ====================== */
+        @media print {
+
+            body *{
+                visibility: hidden;
+            }
+
+            #print-area,
+            #print-area *{
+                visibility: visible;
+            }
+
+            #print-area{
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                background: white;
+            }
+
+            .instansi-title{
+                font-size: 26px;
+                font-weight: bold;
+                color: #025697;
+                margin-bottom: 8px;
+            }
+
+            .instansi-info{
+                font-size: 14px;
+                line-height: 1.7;
+            }
+
+            .print-logo{
+                display: block;
+            }
+
+        }
+
+    </style>
+
+    <!-- HEADER -->
+    <div class="print-header">
+
+        <table>
+            <tr>
+
+                <!-- LOGO KIRI -->
+                <td style="width: 35%; vertical-align: middle;">
+
+                    <img src="{% static 'assets/images/si-basma-logo.png' %}"
+                        class="print-logo"
+                        style="width: 260px; height: auto;">
+
+                </td>
+
+                <!-- INSTANSI KANAN -->
+                <td style="width: 65%; vertical-align: middle; text-align: right;">
+
+                    <div class="instansi-title">
+                        INSTALASI GIZI RS BASMA
+                    </div>
+
+                    <div class="instansi-info">
+                        Jl. Kaliurang KM 10, Sleman, Yogyakarta <br>
+                        Telp: (0274) 123456 <br>
+                        Email: gizirsbasma@gmail.com
+                    </div>
+
+                </td>
+
+            </tr>
+        </table>
+
+    </div>
+
+    <!-- TITLE -->
+    <!-- <div class="invoice-title">
+        <h2>Detail Pemesanan Bahan</h2>
+    </div> -->
+
+    <!-- INFO -->
+    <div class="info-section">
+
+        <p>
+            <b>Tanggal :</b>
+            <span id="print_tanggal"></span>
+        </p>
+
+        <p>
+            <b>Siklus :</b>
+            <span id="print_siklus"></span>
+        </p>
+
+        <p>
+            <b>Total Pasien :</b>
+            <span id="print_total"></span>
+        </p>
+
+        <p>
+            <b>User :</b>
+            <span id="print_user"></span>
+        </p>
+
+    </div>
+
+    <!-- TABLE -->
+    <table class="print-table">
+
+        <thead>
+            <tr>
+                <th width="50">No</th>
+                <th>Nama Bahan</th>
+                <th width="120">Qty</th>
+                <th>Keterangan</th>
+            </tr>
+        </thead>
+
+        <tbody id="print_items">
+        </tbody>
+
+    </table>
+
+    <!-- FOOTER -->
+    <div class="print-footer">
+
+        <div class="ttd">
+
+            Yogyakarta,
+            <span id="print_tanggal_footer"></span>
+
+            <div class="ttd-space"></div>
+
+            <strong>
+                <span id="print_user_footer"></span>
+            </strong>
+
+            <br>
+            Operator Gizi
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+    let editMode = false;
+
+    const toggleEditBtn = document.getElementById('toggleEdit');
+    const saveAllBtn = document.getElementById('saveAll');
+
+    // =========================
+    // TOGGLE EDIT MODE
+    // =========================
+    toggleEditBtn.addEventListener('click', function () {
+
+        editMode = true;
+
+        // tampilkan input edit
+        document.querySelectorAll('.edit-mode').forEach(el => {
+            el.classList.remove('d-none');
+        });
+
+        // sembunyikan text view
+        document.querySelectorAll('.view-mode').forEach(el => {
+            el.classList.add('d-none');
+        });
+
+        // tombol
+        toggleEditBtn.classList.add('d-none');
+        saveAllBtn.classList.remove('d-none');
+    });
+
+
+    // =========================
+    // SAVE ALL
+    // =========================
+    saveAllBtn.addEventListener('click', function () {
+
+        let data = [];
+
+        document.querySelectorAll('tr[data-id]').forEach(row => {
+
+            const id = row.dataset.id;
+
+            const siklus = row.querySelector('.siklus-input').value;
+            const tanggal = row.querySelector('.tanggal-input').value;
+            const total = row.querySelector('.total-input').value;
+
+            data.push({
+                id: id,
+                siklus: siklus,
+                tanggal: tanggal,
+                jumlah_pasien: total
+            });
+
+            // update tampilan langsung
+            row.querySelector('.siklus-text').innerText = siklus;
+            row.querySelector('.tanggal-text').innerText = tanggal;
+            row.querySelector('.total-text').innerText = total;
+        });
+
+        console.log("DATA UPDATE:", data);
+
+        // keluar dari edit mode
+        editMode = false;
+
+        // sembunyikan input edit
+        document.querySelectorAll('.edit-mode').forEach(el => {
+            el.classList.add('d-none');
+        });
+
+        // tampilkan text view
+        document.querySelectorAll('.view-mode').forEach(el => {
+            el.classList.remove('d-none');
+        });
+
+        // tombol kembali normal
+        saveAllBtn.classList.add('d-none');
+        toggleEditBtn.classList.remove('d-none');
+
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: 'Semua perubahan berhasil disimpan.',
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: 'OK',
+            timer: 2000,
+            timerProgressBar: true
+        });
+    });
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        // =========================
+        // INIT MODAL (SAFE)
+        // =========================
+        const modalDetailEl = document.getElementById('modalDetail');
+        const modalDeleteEl = document.getElementById('modalDelete');
+        const modalPdfEl = document.getElementById('modalPdfPreview');
+
+        const modalDetail = modalDetailEl ? new bootstrap.Modal(modalDetailEl) : null;
+        const modalDelete = modalDeleteEl ? new bootstrap.Modal(modalDeleteEl) : null;
+        const modalPdf = modalPdfEl ? new bootstrap.Modal(modalPdfEl) : null;
+
+        let currentPesananId = null;
+        let canvasData = null;
+
+        // =========================
+        // CLICK HANDLER (GLOBAL SAFE)
+        // =========================
+        document.addEventListener('click', function (e) {
+
+            // =====================
+            // DELETE
+            // =====================
+            const btnDelete = e.target.closest('.btn-delete');
+            if (btnDelete && modalDelete) {
+
+                document.getElementById('formDelete').action =
+                    `/pesanan/delete/${btnDelete.dataset.id}/`;
+
+                modalDelete.show();
+            }
+        });
+
+        // =========================
+        // PDF PREVIEW (SAFE)
+        // =========================
+        const previewBtn = document.getElementById('previewPdfBtn');
+        if (previewBtn) {
+
+            previewBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                const modalBody = document.querySelector('#modalDetail .modal-body');
+                if (!modalBody) return;
+
+                html2canvas(modalBody, { scale: 2 }).then(canvas => {
+
+                    canvasData = canvas.toDataURL('image/png');
+
+                    document.getElementById('pdf_preview_container').innerHTML =
+                        `<img src="${canvasData}" class="img-fluid">`;
+
+                    if (modalPdf) modalPdf.show();
+                });
+            });
+        }
+
+        // =========================
+        // DOWNLOAD PDF (SAFE)
+        // =========================
+        const downloadBtn = document.getElementById('downloadPdfBtn');
+        if (downloadBtn) {
+
+            downloadBtn.addEventListener('click', function () {
+
+                if (!canvasData) return;
+
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF('p', 'pt', 'a4');
+
+                const imgProps = pdf.getImageProperties(canvasData);
+                const width = pdf.internal.pageSize.getWidth();
+                const height = (imgProps.height * width) / imgProps.width;
+
+                pdf.addImage(canvasData, 'PNG', 0, 0, width, height);
+
+                const tanggal = document.getElementById('detail_tanggal')?.innerText || 'pesanan';
+
+                pdf.save(`Pesanan_${tanggal}.pdf`);
+            });
+        }
+
+    });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    // =========================
+    // DELETE SWEET ALERT
+    // =========================
+    document.addEventListener('click', function (e) {
+
+        const btnDelete = e.target.closest('.btn-delete');
+
+        if (btnDelete) {
+
+            const id = btnDelete.dataset.id;
+
+            Swal.fire({
+                title: 'Hapus Data?',
+                text: "Data pesanan akan dihapus permanen.",
+                icon: 'warning',
+
+                showCancelButton: true,
+
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+
+                confirmButtonText: 'Ya, Hapus',
+                cancelButtonText: 'Batal',
+
+                reverseButtons: true,
+
+                backdrop: true,
+                allowOutsideClick: false,
+
+                customClass: {
+                    popup: 'shadow rounded-4'
+                }
+
+            }).then((result) => {
+
+                if (result.isConfirmed) {
+
+                    // redirect delete
+                    window.location.href = `/pesanan/delete/${id}/`;
+
+                }
+
+            });
+        }
+    });
+
+});
+</script>
+
+<!-- CETAK -->
+<script>
+function printPage() {
+
+    document.querySelector('main').style.display = 'none';
+
+    const printArea = document.getElementById('print-area');
+
+    printArea.classList.remove('d-none');
+
+    window.print();
+
+    printArea.classList.add('d-none');
+
+    document.querySelector('main').style.display = '';
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    document.addEventListener("click", async function (e) {
+
+        const btnPrint = e.target.closest('.btn-print');
+
+        if (!btnPrint) return;
+
+        const id = btnPrint.dataset.id;
+
+        try {
+
+            // AMBIL DATA DETAIL
+            const response = await fetch(`/riwayat/detail/${id}/`);
+
+            const data = await response.json();
+
+            console.log(data);
+
+            // HEADER
+            document.getElementById('print_tanggal').innerText =
+                data.tanggal;
+
+            document.getElementById('print_siklus').innerText =
+                data.siklus;
+
+            document.getElementById('print_total').innerText =
+                data.total;
+
+            document.getElementById('print_user').innerText =
+                data.user;
+
+            document.getElementById('print_tanggal_footer').innerText =
+                data.tanggal;
+
+            document.getElementById('print_user_footer').innerText =
+                data.user;
+
+            // TABLE ITEMS
+            let html = '';
+
+            data.items.forEach((item, index) => {
+
+                html += `
+                    <tr>
+                        <td class="text-center">${index + 1}</td>
+                        <td>${item.bahan}</td>
+                        <td class="text-center">${item.qty}</td>
+                        <td>${item.keterangan || '-'}</td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById('print_items').innerHTML = html;
+
+            // CETAK
+            printPage();
+
+        } catch (err) {
+
+            console.error(err);
+
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal',
+                text: 'Data pesanan gagal dimuat'
+            });
+        }
+
+    });
+
+});
+</script>
+
+{% endblock %}

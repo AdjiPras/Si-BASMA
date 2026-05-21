@@ -1,0 +1,890 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>{% block title %}Si-BASMA{% endblock %}</title>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+        <meta name="color-scheme" content="light dark" />
+        <meta name="theme-color" content="#007bff" media="(prefers-color-scheme: light)" />
+        <meta name="theme-color" content="#1a1a1a" media="(prefers-color-scheme: dark)" />
+        <meta name="title" content="Si-BASMA" />
+        <meta name="author" content="" />
+        <meta
+        name="description"
+        content=""
+        />
+        <meta
+        name="keywords"
+        content=""
+        />
+
+        <meta name="supported-color-schemes" content="light dark" />
+        <link rel="preload" href="{% static 'dist/css/adminlte.css' %}" as="style" />
+
+        <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@fontsource/source-sans-3@5.0.12/index.css"
+        integrity="sha256-tXJfXfp6Ewt1ilPzLDtQnJV4hclT9XuaZUKyUvmyr+Q="
+        crossorigin="anonymous"
+        media="print"
+        onload="this.media = 'all'"
+        />
+        
+        <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/styles/overlayscrollbars.min.css"
+        crossorigin="anonymous"
+        />
+
+        <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
+        crossorigin="anonymous"
+        />
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+        <link rel="stylesheet" href="{% static 'dist/css/adminlte.css' %}" />
+
+        <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.css"
+        integrity="sha256-4MX+61mt9NVvvuPjUWdUdyfZfxSB1/Rf9WtqRHgG5S0="
+        crossorigin="anonymous"
+        />
+
+        <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/css/jsvectormap.min.css"
+        integrity="sha256-+uGLJmmTKOqBr+2E6KDYs/NRsHxSkONXFHUL0fy2O/4="
+        crossorigin="anonymous"
+        />
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+        <!-- Kalender -->
+        <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css" rel="stylesheet">
+
+        <!-- ICON -->
+        <link rel="icon" href="{% static 'assets/images/icon-simrs.png' %}">
+        <link rel="shortcut icon" href="{% static 'assets/images/icon-simrs.png' %}">
+        <link rel="apple-touch-icon" href="{% static 'assets/images/icon-simrs.png' %}">
+
+        <style>
+            .small-box-icon {
+                font-size: 40px;
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                opacity: 0.3;
+            }
+
+            /* ====== CONTAINER ====== */
+            #calendar {
+                background-color: #28a745;
+                padding: 15px;
+                border-radius: 10px;
+            }
+
+            /* ====== GLOBAL TEXT ====== */
+            .fc {
+                color: white !important;
+                font-family: 'Source Sans 3', sans-serif;
+            }
+
+            /* ===== HEADER (bulan + panah) ===== */
+            .fc-header-toolbar {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 20px;
+                margin-bottom: 10px;
+            }
+
+            /* tombol panah */
+            .fc-button {
+                background: transparent !important;
+                border: none !important;
+                color: white !important;
+                font-size: 18px;
+                box-shadow: none !important;
+            }
+
+            /* hover tombol */
+            .fc-button:hover {
+                opacity: 0.7;
+            }
+
+            /* bulan */
+            .fc-toolbar-title {
+                font-size: 18px;
+                font-weight: 600;
+                color: white !important;
+            }
+
+            /* ====== HEADER BULAN ====== */
+            .fc-toolbar-title {
+                text-align: center;
+                width: 100%;
+                font-weight: 600;
+                font-size: 18px;
+            }
+
+            /* center toolbar */
+            .fc-toolbar {
+                justify-content: center !important;
+            }
+
+            /* ====== HARI (Sun, Mon, dll) ====== */
+            .fc-col-header-cell {
+                color: rgba(255,255,255,0.7) !important;
+                font-size: 13px;
+                font-weight: 500;
+            }
+
+            /* ====== TANGGAL ====== */
+            .fc-daygrid-day-number {
+                color: white !important;
+                font-size: 14px;
+                font-weight: 500;
+            }
+
+            /* ====== GRID CLEAN (PENTING BANGET) ====== */
+            .fc-theme-standard td,
+            .fc-theme-standard th,
+            .fc-scrollgrid {
+                border: none !important;
+            }
+
+            /* ====== SPACING PER KOTAK ====== */
+            .fc-daygrid-day-frame {
+                padding: 8px;
+                border-radius: 8px;
+                transition: 0.2s;
+            }
+
+            /* ====== HOVER HALUS ====== */
+            .fc-daygrid-day:hover .fc-daygrid-day-frame {
+                background: rgba(255,255,255,0.08);
+            }
+
+            /* ====== HARI LUAR BULAN ====== */
+            .fc-day-other .fc-daygrid-day-number {
+                color: rgba(255,255,255,0.3) !important;
+            }
+
+            /* ====== EVENT (BIAR MIRIP CONTOH) ====== */
+            .fc-event {
+                background: rgba(255,255,255,0.25) !important;
+                border: none !important;
+                color: white !important;
+                font-size: 11px;
+                padding: 2px 6px;
+                border-radius: 6px;
+            }
+
+            /* ====== HILANGKAN SCROLL ====== */
+            .fc-scroller {
+                overflow: hidden !important;
+            }
+
+            /* ====== AUTO HEIGHT ====== */
+            .fc-view-harness {
+                height: auto !important;
+            }
+
+
+            /* NOTIF CSS */
+            .notif-container {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                z-index: 9999;
+                width: 350px;
+            }
+
+            .notif-container .alert {
+                margin-bottom: 10px;
+            }
+
+            #modalDetailBody {
+            font-family: Arial, sans-serif;
+            color: #333;
+            padding: 20px;
+        }
+
+        .pdf-header h3 {
+            font-weight: 700;
+            color: #0d6efd;
+        }
+
+        .pdf-header p {
+            font-size: 12pt;
+            margin: 0;
+        }
+
+        #detailTable th {
+            background-color: #0d6efd;
+            color: white;
+            padding: 6px;
+            text-align: center;
+        }
+
+        #detailTable td {
+            padding: 6px;
+            border: 1px solid #333;
+        }
+
+        .pdf-footer p {
+            font-style: italic;
+        }
+
+        /* PDF */
+        @media print {
+
+        body * {
+            visibility: hidden;
+        }
+
+        #print-area,
+        #print-area * {
+            visibility: visible;
+        }
+
+        #print-area {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+        }
+
+    }
+
+        /* PDF PREVIEW */
+        </style>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    </head>
+
+    <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+        <div id="loader" style="
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        ">
+            <img src="{% static 'assets/images/icon-simrs.png' %}" 
+                alt="Loading..." 
+                id="loader-img"
+                style="width: 100px; margin-bottom: 10px;">
+
+            <p style="font-size: 14px; color: #666;">Loading...</p>
+        </div>
+        <div class="app-wrapper">
+            
+            <nav class="app-header navbar navbar-expand" style="background:linear-gradient(90deg,#0d6efd,#18a558);">
+                <div class="container-fluid">
+
+                    <!-- KIRI -->
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" data-lte-toggle="sidebar" href="#">
+                                <i class="bi bi-list" style="color: aliceblue;"></i>
+                            </a>
+                        </li>
+                    </ul>
+
+                    <!-- KANAN -->
+                    <ul class="navbar-nav ms-auto">
+
+                        <!-- USER DROPDOWN -->
+                        <li class="nav-item dropdown user-menu">
+                            <a href="#" class="nav-link d-flex align-items-center" data-bs-toggle="dropdown">
+                                <img src="{% static 'assets/images/icon-simrs.png' %}" 
+                                    class="rounded-circle me-2" 
+                                    width="30" height="30" 
+                                    alt="User">
+                                <span style="color: aliceblue;">{{ request.user.username }}</span>
+                            </a>
+
+                            <ul class="dropdown-menu dropdown-menu-end p-0" style="min-width:250px;">
+
+                                <!-- HEADER -->
+                                <li class="text-center p-3 text-white" style="background-color: #025697;">
+                                    <img src="{% static 'assets/images/icon-simrs.png' %}" 
+                                        class="rounded-circle mb-2" 
+                                        width="60" height="60">
+                                    <p class="mb-0">
+                                        {{ request.user.username }}<br>
+                                        <small>Member</small>
+                                    </p>
+                                </li>
+
+                                <!-- BODY (opsional, bisa dihapus kalau tidak perlu) -->
+                                <!-- <li class="d-flex text-center border-bottom">
+                                    <a href="#" class="flex-fill p-2" style="text-decoration: none;">Profile</a>
+                                    <a href="#" class="flex-fill p-2" style="text-decoration: none;">Settings</a>
+                                </li> -->
+
+                                <!-- FOOTER (INI YANG PENTING - SIGN OUT) -->
+                                <li class="d-flex justify-content-between p-2">
+
+                                    <a href="#" class="btn btn-outline-secondary btn-sm">
+                                        Profile
+                                    </a>
+
+                                    <!-- SIGN OUT -->
+                                    <form action="{% url 'logout' %}" method="POST">
+                                        {% csrf_token %}
+                                        <button type="button" 
+                                                class="btn btn-outline-danger btn-sm"
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#logoutModal">
+                                            Sign out
+                                        </button>
+                                    </form>
+
+                                </li>
+
+                            </ul>
+                        </li>
+
+                    </ul>
+
+                </div>
+            </nav>
+            
+            <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
+                <div class="sidebar-brand" style="background:linear-gradient(180deg,rgba(7,35,92,0.95));">
+                    <a href="{% url 'dashboard' %}" class="brand-link">
+                        <img
+                        src="{% static 'assets/images/si-basma-logo3.png' %}" style="width: 120px; height: auto;"
+                        alt="Logo"
+                        class="brand-image opacity-75 shadow"
+                        />
+                        <span class="brand-text fw-light"></span>
+                    </a>
+                </div>
+                
+                <div class="sidebar-wrapper" style="background:linear-gradient(180deg,rgba(7,35,92,0.95),rgba(11,78,162,0.92));">
+                    <nav class="mt-2">
+
+                        <ul
+                            class="nav sidebar-menu flex-column"
+                            data-lte-toggle="treeview"
+                            role="navigation"
+                            aria-label="Main navigation"
+                            data-accordion="false"
+                            id="navigation"
+                        >
+
+                            <!-- DASHBOARD -->
+                            <li class="nav-item {% if request.resolver_match.url_name == 'dashboard' %}menu-open{% endif %}">
+
+                                <a href="{% url 'dashboard' %}"
+                                class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+
+                                    <i class="nav-icon bi bi-speedometer2"></i>
+
+                                    <p>Dashboard</p>
+
+                                </a>
+
+                            </li>
+
+
+                            <!-- MASTER DATA -->
+                            <li class="nav-item {% if request.resolver_match.url_name == 'master_bahan' or request.resolver_match.url_name == 'kategori_list' or request.resolver_match.url_name == 'siklus_list' %}menu-open{% endif %}">
+
+                                <a href="#"
+                                class="nav-link {% if request.resolver_match.url_name == 'master_bahan' or request.resolver_match.url_name == 'kategori_list' or request.resolver_match.url_name == 'siklus_list' %}active{% endif %}">
+
+                                    <i class="nav-icon bi bi-database-fill-check"></i>
+
+                                    <p>
+                                        Master Data
+                                        <i class="nav-arrow bi bi-chevron-right"></i>
+                                    </p>
+
+                                </a>
+
+                                <ul class="nav nav-treeview">
+
+                                    <!-- BAHAN -->
+                                    <li class="nav-item">
+
+                                        <a href="{% url 'master_bahan' %}"
+                                        class="nav-link {% if request.resolver_match.url_name == 'master_bahan' %}active{% endif %}">
+
+                                            <i class="nav-icon bi bi-chevron-right"></i>
+
+                                            <p>Bahan</p>
+
+                                        </a>
+
+                                    </li>
+
+
+                                    <!-- KATEGORI -->
+                                    <li class="nav-item">
+
+                                        <a href="{% url 'kategori_list' %}"
+                                        class="nav-link {% if request.resolver_match.url_name == 'kategori_list' %}active{% endif %}">
+
+                                            <i class="nav-icon bi bi-chevron-right"></i>
+
+                                            <p>Kategori</p>
+
+                                        </a>
+
+                                    </li>
+
+
+                                    <!-- SIKLUS -->
+                                    <li class="nav-item">
+
+                                        <a href="{% url 'siklus_list' %}"
+                                        class="nav-link {% if request.resolver_match.url_name == 'siklus_list' %}active{% endif %}">
+
+                                            <i class="nav-icon bi bi-chevron-right"></i>
+
+                                            <p>Siklus</p>
+
+                                        </a>
+
+                                    </li>
+
+                                </ul>
+
+                            </li>
+
+
+                            <!-- PESANAN -->
+                            <li class="nav-item {% if request.resolver_match.url_name == 'create_pesanan' or request.resolver_match.url_name == 'riwayat_pesanan' %}menu-open{% endif %}">
+
+                                <a href="#"
+                                class="nav-link {% if request.resolver_match.url_name == 'create_pesanan' or request.resolver_match.url_name == 'riwayat_pesanan' %}active{% endif %}">
+
+                                    <i class="nav-icon bi bi-basket-fill"></i>
+
+                                    <p>
+                                        Pesanan
+                                        <i class="nav-arrow bi bi-chevron-right"></i>
+                                    </p>
+
+                                </a>
+
+                                <ul class="nav nav-treeview">
+
+                                    <!-- TAMBAH PESANAN -->
+                                    <li class="nav-item">
+
+                                        <a href="{% url 'create_pesanan' %}"
+                                        class="nav-link {% if request.resolver_match.url_name == 'create_pesanan' %}active{% endif %}">
+
+                                            <i class="nav-icon bi bi-chevron-right"></i>
+
+                                            <p>Tambah Pesanan</p>
+
+                                        </a>
+
+                                    </li>
+
+
+                                    <!-- RIWAYAT -->
+                                    <li class="nav-item">
+
+                                        <a href="{% url 'riwayat_pesanan' %}"
+                                        class="nav-link {% if request.resolver_match.url_name == 'riwayat_pesanan' %}active{% endif %}">
+
+                                            <i class="nav-icon bi bi-chevron-right"></i>
+
+                                            <p>Riwayat Pesanan</p>
+
+                                        </a>
+
+                                    </li>
+
+                                </ul>
+
+                            </li>
+
+                        </ul>
+
+                    </nav>
+
+                </div>
+            </aside>
+            
+            {% block content %}{% endblock %}
+       
+            <footer class="app-footer">
+                <div class="float-end d-none d-sm-inline">Heroezweb</div>
+
+                <strong>
+                &copy; 2026&nbsp;
+                <a href="" class="text-decoration-none">Si-BASMA. Sistem Pemesanan Bahan Makanan Basah</a>.
+                </strong>
+            </footer>
+        </div>
+
+        <script
+        src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/browser/overlayscrollbars.browser.es6.min.js"
+        crossorigin="anonymous"
+        ></script>
+
+        <script
+        src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        crossorigin="anonymous"
+        ></script>
+
+        <script src="{% static 'dist/js/adminlte.js' %}"></script>
+
+        <script>
+        const SELECTOR_SIDEBAR_WRAPPER = '.sidebar-wrapper';
+        const Default = {
+            scrollbarTheme: 'os-theme-light',
+            scrollbarAutoHide: 'leave',
+            scrollbarClickScroll: true,
+        };
+        document.addEventListener('DOMContentLoaded', function () {
+            const sidebarWrapper = document.querySelector(SELECTOR_SIDEBAR_WRAPPER);
+
+            // Disable OverlayScrollbars on mobile devices to prevent touch interference
+            const isMobile = window.innerWidth <= 992;
+
+            if (
+            sidebarWrapper &&
+            OverlayScrollbarsGlobal?.OverlayScrollbars !== undefined &&
+            !isMobile
+            ) {
+            OverlayScrollbarsGlobal.OverlayScrollbars(sidebarWrapper, {
+                scrollbars: {
+                theme: Default.scrollbarTheme,
+                autoHide: Default.scrollbarAutoHide,
+                clickScroll: Default.scrollbarClickScroll,
+                },
+            });
+            }
+        });
+        </script>
+
+        <!-- sortablejs -->
+        <script
+        src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"
+        crossorigin="anonymous"
+        ></script>
+
+        <!-- sortablejs -->
+        <script>
+        new Sortable(document.querySelector('.connectedSortable'), {
+            group: 'shared',
+            handle: '.card-header',
+        });
+
+        const cardHeaders = document.querySelectorAll('.connectedSortable .card-header');
+        cardHeaders.forEach((cardHeader) => {
+            cardHeader.style.cursor = 'move';
+        });
+        </script>
+
+        <script
+        src="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.min.js"
+        integrity="sha256-+vh8GkaU7C9/wbSLIcwq82tQ2wTf44aOHA8HlBMwRI8="
+        crossorigin="anonymous"
+        ></script>
+
+        <script>
+        const sales_chart_options = {
+            series: [
+            {
+                name: 'Digital Goods',
+                data: [28, 48, 40, 19, 86, 27, 90],
+            },
+            {
+                name: 'Electronics',
+                data: [65, 59, 80, 81, 56, 55, 40],
+            },
+            ],
+            chart: {
+            height: 300,
+            type: 'area',
+            toolbar: {
+                show: false,
+            },
+            },
+            legend: {
+            show: false,
+            },
+            colors: ['#0d6efd', '#20c997'],
+            dataLabels: {
+            enabled: false,
+            },
+            stroke: {
+            curve: 'smooth',
+            },
+            xaxis: {
+            type: 'datetime',
+            categories: [
+                '2023-01-01',
+                '2023-02-01',
+                '2023-03-01',
+                '2023-04-01',
+                '2023-05-01',
+                '2023-06-01',
+                '2023-07-01',
+            ],
+            },
+            tooltip: {
+            x: {
+                format: 'MMMM yyyy',
+            },
+            },
+        };
+
+        const sales_chart = new ApexCharts(
+            document.querySelector('#revenue-chart'),
+            sales_chart_options,
+        );
+        sales_chart.render();
+        </script>
+
+        <!-- jsvectormap -->
+        <script
+        src="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/js/jsvectormap.min.js"
+        integrity="sha256-/t1nN2956BT869E6H4V1dnt0X5pAQHPytli+1nTZm2Y="
+        crossorigin="anonymous"
+        ></script>
+        <script
+        src="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/maps/world.js"
+        integrity="sha256-XPpPaZlU8S/HWf7FZLAncLg2SAkP8ScUTII89x9D3lY="
+        crossorigin="anonymous"
+        ></script>
+
+        <!-- jsvectormap -->
+        <script>
+        // World map by jsVectorMap
+        new jsVectorMap({
+            selector: '#world-map',
+            map: 'world',
+        });
+
+        // Sparkline charts
+        const option_sparkline1 = {
+            series: [
+            {
+                data: [1000, 1200, 920, 927, 931, 1027, 819, 930, 1021],
+            },
+            ],
+            chart: {
+            type: 'area',
+            height: 50,
+            sparkline: {
+                enabled: true,
+            },
+            },
+            stroke: {
+            curve: 'straight',
+            },
+            fill: {
+            opacity: 0.3,
+            },
+            yaxis: {
+            min: 0,
+            },
+            colors: ['#DCE6EC'],
+        };
+
+        const sparkline1 = new ApexCharts(document.querySelector('#sparkline-1'), option_sparkline1);
+        sparkline1.render();
+
+        const option_sparkline2 = {
+            series: [
+            {
+                data: [515, 519, 520, 522, 652, 810, 370, 627, 319, 630, 921],
+            },
+            ],
+            chart: {
+            type: 'area',
+            height: 50,
+            sparkline: {
+                enabled: true,
+            },
+            },
+            stroke: {
+            curve: 'straight',
+            },
+            fill: {
+            opacity: 0.3,
+            },
+            yaxis: {
+            min: 0,
+            },
+            colors: ['#DCE6EC'],
+        };
+
+        const sparkline2 = new ApexCharts(document.querySelector('#sparkline-2'), option_sparkline2);
+        sparkline2.render();
+
+        const option_sparkline3 = {
+            series: [
+            {
+                data: [15, 19, 20, 22, 33, 27, 31, 27, 19, 30, 21],
+            },
+            ],
+            chart: {
+            type: 'area',
+            height: 50,
+            sparkline: {
+                enabled: true,
+            },
+            },
+            stroke: {
+            curve: 'straight',
+            },
+            fill: {
+            opacity: 0.3,
+            },
+            yaxis: {
+            min: 0,
+            },
+            colors: ['#DCE6EC'],
+        };
+
+        const sparkline3 = new ApexCharts(document.querySelector('#sparkline-3'), option_sparkline3);
+        sparkline3.render();
+        </script>
+
+        <script>
+            window.addEventListener("load", function () {
+                const loader = document.getElementById("loader");
+                if (loader) {
+                    loader.style.opacity = "0";
+                    loader.style.transition = "opacity 0.5s ease";
+                    setTimeout(() => loader.remove(), 500);
+                }
+            });
+        </script>
+
+
+        <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                var calendarEl = document.getElementById('calendar');
+
+                var calendar = new FullCalendar.Calendar(calendarEl, {
+                    initialView: 'dayGridMonth',
+
+                    headerToolbar: {
+                        left: 'prev',
+                        center: 'title',
+                        right: 'next'
+                    },
+
+                    buttonText: {
+                        prev: '‹',
+                        next: '›'
+                    },
+
+                    height: 'auto',
+
+                    events: [
+                        {
+                            title: 'Pesanan',
+                            start: '2026-04-07'
+                        }
+                    ]
+                });
+
+                calendar.render();
+
+                // tombol custom
+                document.getElementById('prevBtn').addEventListener('click', function () {
+                    calendar.prev();
+                });
+
+                document.getElementById('nextBtn').addEventListener('click', function () {
+                    calendar.next();
+                });
+            });
+        </script>
+
+        <!-- MODAL LOGOUT -->
+        <div class="modal fade" id="logoutModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Konfirmasi Logout</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    Yakin ingin keluar dari sistem?
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Batal
+                    </button>
+
+                    <form action="{% url 'logout' %}" method="POST">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">
+                            Ya, Logout
+                        </button>
+                    </form>
+                </div>
+
+                </div>
+            </div>
+            </div>
+            
+            <!-- GRAFIK -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+            const ctx = document.getElementById('orderChart').getContext('2d');
+
+            const orderChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: {{ chart_labels|safe }},
+                    datasets: [{
+                        label: 'Jumlah Pesanan',
+                        data: {{ chart_data|safe }},
+                        borderColor: 'blue',
+                        backgroundColor: 'rgba(0, 123, 255, 0.2)',
+                        tension: 0.3,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: true
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                precision: 0
+                            }
+                        }
+                    }
+                }
+            });
+            </script>
+        
+    </body>
+</html>

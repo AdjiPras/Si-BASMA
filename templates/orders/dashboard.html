@@ -1,0 +1,84 @@
+{% extends 'orders/base.html' %}
+{% load static %}
+{% block title %}Dashboard | Si-BASMA{% endblock %}
+
+{% block content %}
+<main class="app-main">
+    <div class="app-content-header">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-6">
+                    <h3 class="mb-0">Dashboard</h3>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-end">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="app-content">
+        <div class="container-fluid px-3">
+            <div class="row">
+
+                <div class="app-content">
+                    <div class="container-fluid">
+
+                        <!-- Statistik -->
+                        <div class="row">
+                            
+                            <!-- Total Pesanan -->
+                            <div class="col-lg-3 col-6">
+                                <div class="small-box text-bg-primary">
+                                    <div class="inner">
+                                        <h3>{{ total_pesanan }}</h3>
+                                        <p>Total Pesanan</p>
+                                    </div>
+                                    <i class="fa-solid fa-cart-shopping small-box-icon"></i>
+                                    <a href="{% url 'riwayat_pesanan' %}" class="small-box-footer link-light" style="text-decoration: none;">
+                                        More info &nbsp;<i class="fa-solid fa-arrow-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <!-- Total Bahan -->
+                            <div class="col-lg-3 col-6">
+                                <div class="small-box text-bg-warning">
+                                    <div class="inner">
+                                        <h3>44</h3>
+                                        <p>Total Bahan</p>
+                                    </div>
+                                    <i class="fa-solid fa-boxes-stacked small-box-icon"></i>
+                                    <a href="{% url 'master_bahan' %}" class="small-box-footer link-dark" style="text-decoration: none;">
+                                        More info &nbsp;<i class="fa-solid fa-arrow-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5>Pemesanan Per Hari</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <canvas id="orderChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</main>
+{% endblock %}

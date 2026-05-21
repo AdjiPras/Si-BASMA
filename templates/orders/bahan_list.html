@@ -1,0 +1,541 @@
+{% extends 'orders/base.html' %}
+{% load static %}
+
+{% block title %}Master Bahan | Si-BASMA{% endblock %}
+
+{% block content %}
+<main class="app-main">
+
+    <!-- HEADER -->
+    <div class="app-content-header">
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-sm-6">
+                    <h3 class="mb-0">
+                        Master Bahan Makanan
+                    </h3>
+                </div>
+
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-end">
+                        <li class="breadcrumb-item">
+                            <a href="#">Home</a>
+                        </li>
+
+                        <li class="breadcrumb-item active">
+                            Master Bahan
+                        </li>
+                    </ol>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="container-fluid mt-3">
+
+        <div class="row justify-content-center">
+
+            <div class="col-lg-9">
+
+                <!-- FILTER -->
+                <div class="card mb-3">
+
+                    <div class="card-body">
+
+                        <form method="get"
+                            class="row g-2 align-items-center">
+
+                            <!-- SEARCH -->
+                            <div class="col-md-4">
+
+                                <input type="text"
+                                    name="q"
+                                    class="form-control"
+                                    placeholder="Cari nama bahan..."
+                                    value="{{ q }}">
+
+                            </div>
+
+                            <!-- FILTER KATEGORI -->
+                            <div class="col-md-3">
+
+                                <select name="kategori"
+                                        class="form-select">
+
+                                    <option value="">
+                                        Semua Kategori
+                                    </option>
+
+                                    {% for kategori in kategori_choices %}
+                                    <option value="{{ kategori.id }}"
+                                        {% if kategori_aktif == kategori.id|stringformat:"s" %}
+                                            selected
+                                        {% endif %}>
+
+                                        {{ kategori.nama }}
+
+                                    </option>
+                                    {% endfor %}
+
+                                </select>
+
+                            </div>
+
+                            <!-- BUTTON FILTER -->
+                            <div class="col-md-2">
+
+                                <button class="btn btn-secondary w-100">
+
+                                    <i class="bi bi-search"></i>
+                                    Filter
+
+                                </button>
+
+                            </div>
+
+                            <!-- BUTTON TAMBAH -->
+                            <div class="col-md-3 text-end">
+
+                                <button type="button"
+                                        class="btn btn-success btn-sm"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modalTambahBahan">
+
+                                    <i class="bi bi-plus-circle"></i>
+                                    Tambah Bahan
+
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+                <!-- TABLE -->
+                <div class="card mb-4">
+
+                    <div class="card-header" style="background-color: #025697; color: aliceblue;">
+                        <h3 class="card-title">
+                            Daftar Bahan
+                        </h3>
+                    </div>
+
+                    <div class="card-body">
+
+                        <table class="table table-bordered table-hover">
+
+                            <thead class="text-center">
+                                <tr>
+                                    <th width="10">#</th>
+                                    <th>Nama Bahan</th>
+                                    <th>Kategori</th>
+                                    <th>Satuan</th>
+                                    <th width="120">Aksi</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+
+                                {% for bahan in page_obj %}
+                                <tr class="align-middle">
+
+                                    <td class="text-center">
+                                        {{ forloop.counter }}
+                                    </td>
+
+                                    <td>
+                                        {{ bahan.nama }}
+                                    </td>
+
+                                    <td class="text-center">
+                                        <span class="badge px-2 py-2"
+                                        style="
+                                            font-size: 12px;
+                                            border-radius: 8px;
+
+                                            {% if bahan.kategori.nama == 'Protein hewani' %}
+                                                background: #B22B10 !important;
+                                                color: #fff !important;
+
+                                            {% elif bahan.kategori.nama == 'Protein nabati' %}
+                                                background: #43A047 !important;
+                                                color: #fff !important;
+
+                                            {% elif bahan.kategori.nama == 'Sayuran hijau' %}
+                                                background: #274e13 !important;
+                                                color: #fff !important;
+
+                                            {% elif bahan.kategori.nama == 'Sayuran' %}
+                                                background: #00ACC1 !important;
+                                                color: #fff !important;
+
+                                            {% elif bahan.kategori.nama == 'Sayuran umbi' %}
+                                                background: #FB8C00 !important;
+                                                color: #fff !important;
+
+                                            {% elif bahan.kategori.nama == 'Sayuran buah' %}
+                                                background: #5E35B1 !important;
+                                                color: #fff !important;
+
+                                            {% elif bahan.kategori.nama == 'Kacang-kacangan' %}
+                                                background: #c90076 !important;
+                                                color: #fff !important;
+
+                                            {% elif bahan.kategori.nama == 'Karbohidrat / olahan tepung' %}
+                                                background: #546E7A !important;
+                                                color: #fff !important;
+
+                                            {% elif bahan.kategori.nama == 'Bumbu / pelengkap' %}
+                                                background: #F4511E !important;
+                                                color: #fff !important;
+
+                                            {% else %}
+                                                background: #757575 !important;
+                                                color: #fff !important;
+                                            {% endif %}
+                                        ">
+
+                                        {{ bahan.kategori.nama }}
+
+                                    </span>
+                                    </td>
+
+                                    <td class="text-center">
+                                        {{ bahan.satuan }}
+                                    </td>
+
+                                    <td class="text-center">
+
+                                        <!-- EDIT -->
+                                        <button type="button"
+                                                class="btn btn-warning btn-sm"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#modalEdit{{ bahan.id }}">
+
+                                            <i class="bi bi-pencil"></i>
+
+                                        </button>
+
+                                        <!-- DELETE -->
+                                        <form method="post"
+                                            action="{% url 'bahan_delete' bahan.id %}"
+                                            class="d-inline form-delete">
+
+                                            {% csrf_token %}
+
+                                            <button type="submit"
+                                                    class="btn btn-danger btn-sm">
+
+                                                <i class="bi bi-trash"></i>
+
+                                            </button>
+
+                                        </form>
+
+                                    </td>
+
+                                </tr>
+                                {% empty %}
+                                <tr>
+
+                                    <td colspan="5"
+                                        class="text-center text-muted py-4">
+
+                                        Data bahan belum ada
+
+                                    </td>
+
+                                </tr>
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                        <!-- PAGINATION -->
+                        <div class="d-flex justify-content-center mt-4">
+
+                            <nav>
+
+                                <ul class="pagination">
+
+                                    {% if page_obj.has_previous %}
+                                    <li class="page-item">
+
+                                        <a class="page-link"
+                                        href="?page={{ page_obj.previous_page_number }}&q={{ q }}&kategori={{ kategori_aktif }}">
+
+                                            Previous
+
+                                        </a>
+
+                                    </li>
+                                    {% endif %}
+
+                                    {% for num in page_obj.paginator.page_range %}
+
+                                        {% if page_obj.number == num %}
+                                        <li class="page-item active">
+
+                                            <span class="page-link">
+                                                {{ num }}
+                                            </span>
+
+                                        </li>
+
+                                        {% else %}
+                                        <li class="page-item">
+
+                                            <a class="page-link"
+                                            href="?page={{ num }}&q={{ q }}&kategori={{ kategori_aktif }}">
+
+                                                {{ num }}
+
+                                            </a>
+
+                                        </li>
+                                        {% endif %}
+
+                                    {% endfor %}
+
+                                    {% if page_obj.has_next %}
+                                    <li class="page-item">
+
+                                        <a class="page-link"
+                                        href="?page={{ page_obj.next_page_number }}&q={{ q }}&kategori={{ kategori_aktif }}">
+
+                                            Next
+
+                                        </a>
+
+                                    </li>
+                                    {% endif %}
+
+                                </ul>
+
+                            </nav>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- MODAL TAMBAH -->
+    <div class="modal fade"
+         id="modalTambahBahan"
+         tabindex="-1">
+
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <form method="post"
+                      action="{% url 'bahan_create' %}"
+                      class="form-tambah">
+
+                    {% csrf_token %}
+
+                    <div class="modal-header">
+
+                        <h5 class="modal-title">
+                            Tambah Bahan
+                        </h5>
+
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"></button>
+
+                    </div>
+
+                    <div class="modal-body">
+
+                        <!-- NAMA -->
+                        <div class="mb-3">
+
+                            <label>Nama Bahan</label>
+
+                            <input type="text"
+                                   name="nama"
+                                   class="form-control"
+                                   required>
+
+                        </div>
+
+                        <!-- KATEGORI -->
+                        <div class="mb-3">
+
+                            <label>Kategori</label>
+
+                            <select name="kategori"
+                                    class="form-select"
+                                    required>
+
+                                {% for kategori in kategori_choices %}
+                                <option value="{{ kategori.id }}">
+                                    {{ kategori.nama }}
+                                </option>
+                                {% endfor %}
+
+                            </select>
+
+                        </div>
+
+                        <!-- SATUAN -->
+                        <div class="mb-3">
+
+                            <label>Satuan</label>
+
+                            <input type="text"
+                                   name="satuan"
+                                   class="form-control"
+                                   required>
+
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer">
+
+                        <button type="button"
+                                class="btn btn-secondary btn-sm"
+                                data-bs-dismiss="modal">
+
+                            Batal
+
+                        </button>
+
+                        <button type="submit"
+                                class="btn btn-primary btn-sm">
+
+                            Simpan
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL EDIT -->
+    {% for bahan in bahan_list %}
+    <div class="modal fade"
+         id="modalEdit{{ bahan.id }}"
+         tabindex="-1">
+
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <form method="post"
+                      action="{% url 'bahan_edit' bahan.id %}"
+                      class="form-edit">
+
+                    {% csrf_token %}
+
+                    <div class="modal-header">
+
+                        <h5 class="modal-title">
+                            Edit Bahan
+                        </h5>
+
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"></button>
+
+                    </div>
+
+                    <div class="modal-body">
+
+                        <!-- NAMA -->
+                        <div class="mb-3">
+
+                            <label>Nama Bahan</label>
+
+                            <input type="text"
+                                   name="nama"
+                                   class="form-control"
+                                   value="{{ bahan.nama }}"
+                                   required>
+
+                        </div>
+
+                        <!-- KATEGORI -->
+                        <div class="mb-3">
+
+                            <label>Kategori</label>
+
+                            <select name="kategori"
+                                    class="form-select"
+                                    required>
+
+                                {% for kategori in kategori_choices %}
+                                <option value="{{ kategori.id }}"
+                                    {% if bahan.kategori.id == kategori.id %}
+                                        selected
+                                    {% endif %}>
+
+                                    {{ kategori.nama }}
+
+                                </option>
+                                {% endfor %}
+
+                            </select>
+
+                        </div>
+
+                        <!-- SATUAN -->
+                        <div class="mb-3">
+
+                            <label>Satuan</label>
+
+                            <input type="text"
+                                   name="satuan"
+                                   class="form-control"
+                                   value="{{ bahan.satuan }}"
+                                   required>
+
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer">
+
+                        <button type="button"
+                                class="btn btn-secondary"
+                                data-bs-dismiss="modal">
+
+                            Batal
+
+                        </button>
+
+                        <button type="submit"
+                                class="btn btn-warning">
+
+                            Update
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+</main>
+{% endblock %}

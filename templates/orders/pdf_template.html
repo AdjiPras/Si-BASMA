@@ -1,0 +1,379 @@
+{% extends 'orders/base.html' %}
+{% load static %}
+{% block title %}Invoice Pesanan{% endblock %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="id">
+    <head>
+        <meta charset="UTF-8">
+        <title>Invoice Pesanan</title>
+
+        <style>
+
+        body{
+            font-family: Arial, sans-serif;
+            font-size: 13px;
+            color:#000;
+            padding:30px;
+        }
+
+        /* ======================
+        HEADER
+        ====================== */
+        .header{
+            width:100%;
+            border-bottom:3px solid #025697;
+            padding-bottom:15px;
+            margin-bottom:25px;
+        }
+
+        .header table{
+            width:100%;
+        }
+
+        .logo{
+            width:90px;
+        }
+
+        .instansi{
+            text-align:left;
+        }
+
+        .instansi h2{
+            margin:0;
+            color:#025697;
+            font-size:24px;
+        }
+
+        .instansi p{
+            margin:2px 0;
+            font-size:13px;
+        }
+
+        /* ======================
+        JUDUL
+        ====================== */
+        .invoice-title{
+            text-align:center;
+            font-size:22px;
+            font-weight:bold;
+            margin-bottom:30px;
+            color:#025697;
+        }
+
+        /* ======================
+        INFO PESANAN
+        ====================== */
+        .info-box{
+            width:100%;
+            margin-bottom:25px;
+        }
+
+        .info-box table{
+            width:100%;
+        }
+
+        .info-box td{
+            vertical-align:top;
+            padding:5px;
+        }
+
+        .info-title{
+            font-weight:bold;
+            margin-bottom:8px;
+            color:#025697;
+            font-size:15px;
+        }
+
+        /* ======================
+        TABLE
+        ====================== */
+        .table-items{
+            width:100%;
+            border-collapse:collapse;
+            margin-top:20px;
+        }
+
+        .table-items th,
+        .table-items td{
+            border:1px solid #ccc;
+            padding:10px;
+        }
+
+        .table-items th{
+            background:#025697;
+            color:#fff;
+            text-align:center;
+        }
+
+        .text-center{
+            text-align:center;
+        }
+
+        .text-right{
+            text-align:right;
+        }
+
+        /* ======================
+        SUMMARY
+        ====================== */
+        .summary{
+            width:300px;
+            margin-left:auto;
+            margin-top:20px;
+        }
+
+        .summary table{
+            width:100%;
+            border-collapse:collapse;
+        }
+
+        .summary td{
+            padding:8px;
+            border:1px solid #ccc;
+        }
+
+        .total{
+            font-size:15px;
+            font-weight:bold;
+            background:#f2f2f2;
+        }
+
+        /* ======================
+        FOOTER
+        ====================== */
+        .footer{
+            margin-top:60px;
+            width:100%;
+        }
+
+        .ttd{
+            width:250px;
+            margin-left:auto;
+            text-align:center;
+        }
+
+        .ttd-space{
+            height:80px;
+        }
+
+        /* ======================
+        BUTTON PRINT
+        ====================== */
+        .print-btn{
+            margin-bottom:20px;
+            text-align:right;
+        }
+
+        .print-btn button{
+            background:#025697;
+            color:#fff;
+            border:none;
+            padding:10px 18px;
+            border-radius:6px;
+            cursor:pointer;
+        }
+
+        .print-btn button:hover{
+            background:#01487d;
+        }
+
+        @media print{
+            .print-btn{
+                display:none;
+            }
+
+            body{
+                padding:10px;
+            }
+        }
+
+        </style>
+    </head>
+
+    <body>
+
+        <!-- BUTTON PRINT -->
+        <div class="print-btn">
+            <button onclick="window.print()">
+                🖨 Cetak PDF
+            </button>
+        </div>
+
+        <!-- HEADER -->
+        <div class="header">
+
+            <table>
+                <tr>
+
+                    <!-- LOGO -->
+                    <td width="100">
+                        <img src="{% static 'img/logo.png' %}" class="logo">
+                    </td>
+
+                    <!-- INFO INSTANSI -->
+                    <td class="instansi">
+
+                        <h2>INSTALASI GIZI RS BASMA</h2>
+
+                        <p>
+                            Jl. Kaliurang KM 10, Sleman, Yogyakarta
+                        </p>
+
+                        <p>
+                            Telp: (0274) 123456
+                        </p>
+
+                        <p>
+                            Email: gizi@basma.co.id
+                        </p>
+
+                    </td>
+
+                </tr>
+            </table>
+
+        </div>
+
+        <!-- JUDUL -->
+        <div class="invoice-title">
+            INVOICE PESANAN BAHAN
+        </div>
+
+        <!-- INFO -->
+        <div class="info-box">
+
+        <table>
+
+        <tr>
+
+        <td width="50%">
+
+            <div class="info-title">Informasi Instansi</div>
+
+            RSUD Yogyakarta <br>
+            Instalasi Gizi Rumah Sakit <br>
+            Yogyakarta
+
+        </td>
+
+        <td width="50%">
+
+            <div class="info-title">Informasi Pesanan</div>
+
+            <strong>No Invoice :</strong>
+            INV-{{ pesanan.id }}
+            <br><br>
+
+            <strong>Tanggal Distribusi :</strong>
+            {{ pesanan.tanggal_pemesanan|date:"d M Y" }}
+            <br><br>
+
+            <strong>Siklus Menu :</strong>
+            {{ pesanan.siklus_menu.nama }}
+            <br><br>
+
+            <strong>Total Pasien :</strong>
+            {{ pesanan.jumlah_pasien }}
+
+        </td>
+
+        </tr>
+
+        </table>
+
+        </div>
+
+        <!-- TABLE -->
+        <table class="table-items">
+
+            <thead>
+                <tr>
+                    <th width="50">No</th>
+                    <th>Nama Bahan</th>
+                    <th width="120">Qty</th>
+                    <th>Keterangan</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+            {% for item in detail_items %}
+            <tr>
+
+                <td class="text-center">
+                    {{ forloop.counter }}
+                </td>
+
+                <td>
+                    {{ item.bahan.nama }}
+                </td>
+
+                <td class="text-center">
+                    {{ item.qty }}
+                </td>
+
+                <td>
+                    {{ item.keterangan|default:"-" }}
+                </td>
+
+            </tr>
+            {% empty %}
+
+            <tr>
+                <td colspan="4" class="text-center">
+                    Tidak ada item pesanan
+                </td>
+            </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+
+        <!-- SUMMARY -->
+        <div class="summary">
+
+            <table>
+                <tr>
+                    <td>Total Item</td>
+                    <td class="text-right">
+                        {{ detail_items.count }}
+                    </td>
+                </tr>
+
+                <tr class="total">
+                    <td>Total Pasien</td>
+                    <td class="text-right">
+                        {{ pesanan.jumlah_pasien }}
+                    </td>
+                </tr>
+
+            </table>
+
+        </div>
+
+        <!-- FOOTER -->
+        <div class="footer">
+            <div class="ttd">
+
+                Yogyakarta,
+                {{ pesanan.tanggal_pemesanan|date:"d M Y" }}
+
+                <div class="ttd-space"></div>
+
+                <strong>
+                    {{ request.user }}
+                </strong>
+
+                <br>
+                Operator Gizi
+
+            </div>
+        </div>
+
+    </body>
+</html>
+{% endblock %}

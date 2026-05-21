@@ -1,0 +1,385 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Login | Si-BASMA</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <!-- ICON -->
+    <link rel="icon" href="{% static 'assets/images/icon-simrs.png' %}">
+
+    <style>
+        body{
+            margin:0;
+            padding:30px 20px;
+            background:linear-gradient(135deg,#0b4ea2,#0d6efd,#18a558);
+            font-family:'Segoe UI',sans-serif;
+            min-height:100vh;
+
+            display:flex;
+            align-items:center;
+            justify-content:center;
+
+            overflow:auto;
+        }
+
+        .container-fluid{
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            width:100%;
+            min-height:100vh;
+            padding:20px 0;
+        }
+
+        .row{
+            width:100%;
+            justify-content:center;
+        }
+
+        .col-xl-10{
+             display:flex;
+            justify-content:center;
+            padding-top:30px;
+            padding-bottom:60px;
+        }
+
+        .login-wrapper{
+            width:100%;
+            max-width:1050px;
+            min-height:540px;
+
+            background:rgba(255,255,255,0.08);
+            backdrop-filter: blur(12px);
+            border-radius:32px;
+            overflow:hidden;
+
+            box-shadow:0 20px 50px rgba(0,0,0,0.35);
+            border:1px solid rgba(255,255,255,0.1);
+        }
+
+        /* ======================
+        LEFT SIDE
+        ====================== */
+        .left-side{
+            background:linear-gradient(
+                180deg,
+                rgba(7,35,92,0.95),
+                rgba(11,78,162,0.92)
+            );
+            position:relative;
+            color:white;
+             padding:35px;
+            display:flex;
+            flex-direction:column;
+            justify-content:center;
+            align-items:center;
+            text-align:center;
+            overflow:hidden;
+        }
+
+        .left-side::before{
+            content:'';
+            position:absolute;
+            top:-120px;
+            left:-120px;
+            width:320px;
+            height:320px;
+            background:rgba(24,165,88,0.18);
+            border-radius:50%;
+        }
+
+        .left-side::after{
+            content:'';
+            position:absolute;
+            bottom:-150px;
+            right:-150px;
+            width:420px;
+            height:420px;
+            background:rgba(255,255,255,0.05);
+            border-radius:50%;
+        }
+
+        .left-side img{
+            width:360px;
+            max-width:100%;
+            z-index:2;
+            filter:drop-shadow(0 10px 25px rgba(0,0,0,0.35));
+        }
+
+        .welcome-text{
+            margin-top:30px;
+            z-index:2;
+        }
+
+        .welcome-text h1{
+            font-size:52px;
+            font-weight:800;
+            margin-bottom:15px;
+        }
+
+        .welcome-text p{
+            color:#d7e4ff;
+            font-size:18px;
+            line-height:1.8;
+            max-width:520px;
+        }
+
+        /* ======================
+        RIGHT SIDE
+        ====================== */
+        .right-side{
+            padding:45px 40px;
+            color:white;
+            display:flex;
+            flex-direction:column;
+            justify-content:center;
+            background:rgba(18,25,53,0.82);
+        }
+
+        .logo-mini{
+             width:180px;
+            margin-bottom:15px;
+            filter:drop-shadow(0 6px 12px rgba(0,0,0,0.25));
+        }
+
+        .welcome-text h1{
+            font-size:42px;
+        }
+
+        .welcome-text p{
+            font-size:16px;
+            line-height:1.6;
+        }
+
+        .login-title{
+            font-size:28px;
+            font-weight:700;
+            margin-bottom:10px;
+            color:#ffffff;
+        }
+
+        .login-subtitle{
+            font-size:15px;
+            margin-bottom:28px;
+            color:#c8d5ff;
+            line-height:1.7;
+        }
+
+        .form-label{
+            color:#eef3ff;
+            margin-bottom:8px;
+            font-weight:500;
+        }
+
+        .form-control{
+            background:rgba(255,255,255,0.08);
+            border:1px solid rgba(255,255,255,0.08);
+            color:white;
+            height:48px;
+            font-size:15px;
+            border-radius:14px;
+            padding-left:16px;
+            transition:0.3s;
+            
+        }
+
+        .form-control:focus{
+            background:rgba(255,255,255,0.10);
+            color:white;
+            box-shadow:none;
+            border:1px solid #39d98a;
+        }
+
+        .form-control::placeholder{
+            color:#c7d2f1;
+        }
+
+        .btn-login{
+            background:linear-gradient(90deg,#0d6efd,#18a558);
+            border:none;
+            height:48px;
+            font-size:15px;
+            border-radius:14px;
+            font-weight:700;
+            transition:0.3s;
+            box-shadow:0 8px 20px rgba(13,110,253,0.35);
+        }
+
+        .btn-login:hover{
+            transform:translateY(-2px);
+            background:linear-gradient(90deg,#0b5ed7,#15914d);
+        }
+
+        .login-footer{
+            margin-top:28px;
+            text-align:center;
+            color:#b7c5ea;
+            font-size:14px;
+        }
+
+        .alert{
+            border-radius:12px;
+            border:none;
+        }
+
+        /* ======================
+        MOBILE
+        ====================== */
+        @media(max-width:992px){
+
+            .left-side{
+                display:none;
+            }
+
+            .col-xl-10{
+                padding:0 10px;
+            }
+
+            .right-side{
+                padding:30px 30px;
+            }
+
+            .login-wrapper{
+                min-height:auto;
+            }
+
+            .logo-mini{
+                width:180px;
+            }
+
+            .login-title{
+                font-size:28px;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="container-fluid">
+
+    <div class="row justify-content-center">
+
+        <div class="col-xl-10">
+
+            <div class="login-wrapper">
+
+                <div class="row g-0 h-100">
+
+                    <!-- LEFT -->
+                    <div class="col-lg-7 left-side">
+
+                        <img src="{% static 'assets/images/login-icon2.png' %}" alt="Login" 
+                        style="width: 380px; height: auto;">
+
+                        <div class="welcome-text">
+
+                            <h1>Welcome Back!</h1>
+
+                            <p>
+                                Sistem Informasi Pemesanan Bahan Makanan Basah
+                                membantu pengelolaan distribusi dan pemesanan
+                                bahan makanan secara cepat dan efisien.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <!-- RIGHT -->
+                    <div class="col-lg-5 right-side">
+
+                        <div class="text-center mb-3">
+
+                            <img src="{% static 'assets/images/si-basma-logo2.png' %}"
+                                class="logo-mini">
+
+                        </div>
+
+                        <div class="login-title">
+                            Login Si-BASMA
+                        </div>
+
+                        <div class="login-subtitle">
+                            Silakan login untuk mengakses dashboard sistem.
+                        </div>
+
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert alert-danger">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+
+                        <form method="post">
+
+                            {% csrf_token %}
+
+                            <div class="mb-3">
+
+                                <label class="form-label">
+                                    Username
+                                </label>
+
+                                <input type="text"
+                                    name="username"
+                                    class="form-control"
+                                    placeholder="Masukkan username"
+                                    required>
+
+                            </div>
+
+                            <div class="mb-3">
+
+                                <label class="form-label">
+                                    Password
+                                </label>
+
+                                <input type="password"
+                                    name="password"
+                                    class="form-control"
+                                    placeholder="Masukkan password"
+                                    required>
+
+                            </div>
+
+                            <button type="submit"
+                                class="btn btn-login btn-primary w-100">
+
+                                <i class="bi bi-box-arrow-in-right"></i>
+                                Login
+
+                            </button>
+
+                        </form>
+
+                        <div class="login-footer">
+                            © 2026 Si-BASMA — Sistem Pemesanan Bahan Makanan Basah
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

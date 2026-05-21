@@ -1,0 +1,512 @@
+{% extends 'orders/base.html' %}
+{% load static %}
+
+{% block title %}Master Kategori | Si-BASMA{% endblock %}
+
+{% block content %}
+<main class="app-main">
+
+    <!-- HEADER -->
+    <div class="app-content-header">
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-sm-6">
+                    <h3 class="mb-0">
+                        Master Kategori
+                    </h3>
+                </div>
+
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-end">
+                        <li class="breadcrumb-item">
+                            <a href="#">Home</a>
+                        </li>
+
+                        <li class="breadcrumb-item active">
+                            Master Kategori
+                        </li>
+                    </ol>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="container-fluid mt-3">
+
+        <div class="row justify-content-center">
+
+            <div class="col-lg-9">
+
+                <!-- FILTER -->
+                <div class="card mb-3">
+
+                    <div class="card-body">
+
+                        <form method="get"
+                            class="row g-2 align-items-center">
+
+                            <!-- SEARCH -->
+                            <div class="col-md-7">
+
+                                <input type="text"
+                                    name="q"
+                                    class="form-control"
+                                    placeholder="Cari kategori..."
+                                    value="{{ q }}">
+
+                            </div>
+
+                            <!-- BUTTON FILTER -->
+                            <div class="col-md-3">
+
+                                <button class="btn btn-secondary w-100">
+
+                                    <i class="bi bi-search"></i>
+                                    Filter
+                                </button>
+
+                            </div>
+
+                            <!-- BUTTON TAMBAH -->
+                            <div class="col-md-2 text-end">
+
+                                <button type="button"
+                                        class="btn btn-success btn-sm"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modalTambahKategori">
+
+                                    <i class="bi bi-plus-circle"></i>
+                                    Tambah Kategori
+
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+                <!-- TABLE -->
+                <div class="card mb-4">
+
+                    <div class="card-header" style="background-color: #025697; color: aliceblue;">
+                        <h3 class="card-title">
+                            Daftar Kategori
+                        </h3>
+                    </div>
+
+                    <div class="card-body">
+
+                        <table class="table table-bordered table-hover">
+
+                            <thead class="text-center">
+                                <tr>
+                                    <th width="10">#</th>
+                                    <th>Nama Kategori</th>
+                                    <th width="120">Aksi</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+
+                                {% for kategori in kategori_list %}
+                                <tr class="align-middle">
+
+                                    <td>
+                                        {{ forloop.counter }}
+                                    </td>
+
+                                    <td>
+
+                                        <span class="badge
+                                            {% cycle
+                                                'bg-primary'
+                                                'bg-success'
+                                                'bg-danger'
+                                                'bg-warning text-dark'
+                                                'bg-info text-dark'
+                                                'bg-dark'
+                                            %} text-dark" style="font-size: 14px;">
+                                            {{ kategori.nama }}
+                                        </span>
+
+                                    </td>
+
+                                    <td style="text-align: center;">
+
+                                        <!-- EDIT -->
+                                        <button type="button"
+                                                class="btn btn-warning btn-sm"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#modalEdit{{ kategori.id }}">
+
+                                            <i class="bi bi-pencil"></i>
+
+                                        </button>
+
+                                        <!-- DELETE -->
+                                        <form method="post"
+                                            action="{% url 'kategori_delete' kategori.id %}"
+                                            class="d-inline form-delete">
+
+                                            {% csrf_token %}
+
+                                            <button type="submit"
+                                                    class="btn btn-danger btn-sm">
+
+                                                <i class="bi bi-trash"></i>
+
+                                            </button>
+
+                                        </form>
+
+                                    </td>
+
+                                </tr>
+                                {% empty %}
+                                <tr>
+
+                                    <td colspan="3"
+                                        class="text-center text-muted py-4">
+
+                                        Data kategori belum ada
+
+                                    </td>
+
+                                </tr>
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                        <!-- PAGINATION -->
+                        <div class="d-flex justify-content-center mt-4">
+
+                            <ul class="pagination pagination-sm m-0 float-end">
+
+                                {% if page_obj.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page=1{% if q %}&q={{ q }}{% endif %}">
+                                        &laquo;
+                                    </a>
+                                </li>
+
+                                <li class="page-item">
+                                    <a class="page-link"
+                                    href="?page={{ page_obj.previous_page_number }}{% if q %}&q={{ q }}{% endif %}">
+                                        Prev
+                                    </a>
+                                </li>
+                                {% endif %}
+
+                                <li class="page-item active">
+                                    <span class="page-link">
+                                        {{ page_obj.number }}
+                                    </span>
+                                </li>
+
+                                {% if page_obj.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link"
+                                    href="?page={{ page_obj.next_page_number }}{% if q %}&q={{ q }}{% endif %}">
+                                        Next
+                                    </a>
+                                </li>
+
+                                <li class="page-item">
+                                    <a class="page-link"
+                                    href="?page={{ page_obj.paginator.num_pages }}{% if q %}&q={{ q }}{% endif %}">
+                                        &raquo;
+                                    </a>
+                                </li>
+                                {% endif %}
+
+                            </ul>
+
+                        </div>
+                    </div>
+
+                </div>
+            
+            </div>
+        </div>
+        
+    </div>
+
+    <!-- MODAL TAMBAH -->
+    <div class="modal fade"
+         id="modalTambahKategori"
+         tabindex="-1">
+
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <form method="post"
+                      action="{% url 'kategori_create' %}"
+                      class="form-tambah">
+
+                    {% csrf_token %}
+
+                    <div class="modal-header">
+
+                        <h5 class="modal-title">
+                            Tambah Kategori
+                        </h5>
+
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"></button>
+
+                    </div>
+
+                    <div class="modal-body">
+
+                        <div class="mb-3">
+
+                            <label>Nama Kategori</label>
+
+                            <input type="text"
+                                   name="nama"
+                                   class="form-control"
+                                   required>
+
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer">
+
+                        <button type="button"
+                                class="btn btn-secondary btn-sm"
+                                data-bs-dismiss="modal">
+
+                            Batal
+
+                        </button>
+
+                        <button type="submit"
+                                class="btn btn-primary btn-sm">
+
+                            Simpan
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL EDIT -->
+    {% for kategori in kategori_list %}
+    <div class="modal fade"
+         id="modalEdit{{ kategori.id }}"
+         tabindex="-1">
+
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <form method="post"
+                      action="{% url 'kategori_edit' kategori.id %}"
+                      class="form-edit">
+
+                    {% csrf_token %}
+
+                    <div class="modal-header">
+
+                        <h5 class="modal-title">
+                            Edit Kategori
+                        </h5>
+
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"></button>
+
+                    </div>
+
+                    <div class="modal-body">
+
+                        <div class="mb-3">
+
+                            <label>Nama Kategori</label>
+
+                            <input type="text"
+                                   name="nama"
+                                   class="form-control"
+                                   value="{{ kategori.nama }}"
+                                   required>
+
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer">
+
+                        <button type="button"
+                                class="btn btn-secondary"
+                                data-bs-dismiss="modal">
+
+                            Batal
+
+                        </button>
+
+                        <button type="submit"
+                                class="btn btn-warning">
+
+                            Update
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    <!-- SWEET ALERT -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            // =========================
+            // TAMBAH
+            // =========================
+            document.querySelectorAll(".form-tambah").forEach(form => {
+
+                form.addEventListener("submit", function (e) {
+
+                    e.preventDefault();
+
+                    Swal.fire({
+                        title: 'Simpan Data?',
+                        text: "Kategori akan ditambahkan",
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonColor: '#198754',
+                        cancelButtonColor: '#6c757d',
+                        confirmButtonText: 'Ya, Simpan',
+                        cancelButtonText: 'Batal'
+                    }).then((result) => {
+
+                        if (result.isConfirmed) {
+
+                            Swal.fire({
+                                title: 'Berhasil!',
+                                text: 'Kategori berhasil disimpan',
+                                icon: 'success',
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
+
+                            setTimeout(() => {
+                                form.submit();
+                            }, 1500);
+
+                        }
+
+                    });
+
+                });
+
+            });
+
+            // =========================
+            // EDIT
+            // =========================
+            document.querySelectorAll(".form-edit").forEach(form => {
+
+                form.addEventListener("submit", function (e) {
+
+                    e.preventDefault();
+
+                    Swal.fire({
+                        title: 'Update Data?',
+                        text: "Perubahan kategori akan disimpan",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#ffc107',
+                        cancelButtonColor: '#6c757d',
+                        confirmButtonText: 'Ya, Update',
+                        cancelButtonText: 'Batal'
+                    }).then((result) => {
+
+                        if (result.isConfirmed) {
+
+                            Swal.fire({
+                                title: 'Berhasil!',
+                                text: 'Kategori berhasil diupdate',
+                                icon: 'success',
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
+
+                            setTimeout(() => {
+                                form.submit();
+                            }, 1500);
+
+                        }
+
+                    });
+
+                });
+
+            });
+
+            // =========================
+            // DELETE
+            // =========================
+            document.querySelectorAll(".form-delete").forEach(form => {
+
+                form.addEventListener("submit", function (e) {
+
+                    e.preventDefault();
+
+                    Swal.fire({
+                        title: 'Hapus Data?',
+                        text: "Data yang dihapus tidak dapat dikembalikan",
+                        icon: 'error',
+                        showCancelButton: true,
+                        confirmButtonColor: '#dc3545',
+                        cancelButtonColor: '#6c757d',
+                        confirmButtonText: 'Ya, Hapus',
+                        cancelButtonText: 'Batal'
+                    }).then((result) => {
+
+                        if (result.isConfirmed) {
+
+                            Swal.fire({
+                                title: 'Terhapus!',
+                                text: 'Kategori berhasil dihapus',
+                                icon: 'success',
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
+
+                            setTimeout(() => {
+                                form.submit();
+                            }, 1500);
+
+                        }
+
+                    });
+
+                });
+
+            });
+
+        });
+    </script>
+
+</main>
+{% endblock %}

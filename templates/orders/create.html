@@ -1,0 +1,239 @@
+{% extends 'orders/base.html' %}
+{% load static %}
+{% block title %}Pemesanan Bahan | Si-BASMA{% endblock %}
+
+{% block content %}
+<main class="app-main">
+    <div class="app-content-header">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-6">
+                    <h3 class="mb-0">Pesanan</h3>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-end">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Pesanan</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="app-content">
+        <div class="container-fluid px-4">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="card mt-2">
+                            
+                        <!-- HEADER -->
+                        <div class="card-header" style="background-color: #025697; color: aliceblue;">
+                            <div class="card-title" style="font-weight: 600;">Form Pemesanan Bahan Makanan</div>
+                        </div>
+
+                        <div class="app-content">
+                            <div class="container-fluid mt-3 mb-4">
+                                <div class="row justify-content-center">
+                                    <div class="col-lg-12">
+                                        <div class="card mt-2">
+                                            <!-- FORM -->
+                                            <form method="post">
+                                                {% csrf_token %}
+
+                                                <!-- BODY -->
+                                                <div class="card-body">
+
+                                                    <!-- PARAMETER -->
+                                                    <div class="row mb-3">
+                                                        <div class="col-md-3">
+                                                            <label class="form-label" style="font-weight: bold;">
+                                                                <i class="bi bi-calendar-week-fill"></i>&nbsp; Tanggal Distribusi</label>
+                                                            <!-- <input type="date" name="tanggal_pemesanan"
+                                                                class="form-control" required> -->
+                                                                <input type="date"
+                                                                    class="form-control" name="tanggal_pemesanan"
+                                                                    style="position: relative; z-index: 10;"
+                                                                    onfocus="this.showPicker()"
+                                                                    required>
+                                                                
+                                                        </div>
+
+                                                        <div class="col-md-3">
+                                                            <label class="form-label" style="font-weight: bold;">
+                                                                <i class="bi bi-arrow-repeat"></i>&nbsp; Siklus Menu</label>
+                                                            <select name="siklus_menu" class="form-select">
+                                                                {% for siklus in siklus_list %}
+                                                                    <option value="{{ siklus.id }}">
+                                                                        {{ siklus.nama }}
+                                                                    </option>
+                                                                {% endfor %}
+                                                            </select>
+                                                        </div>
+
+                                                        <div class="col-md-3">
+                                                            <label class="form-label" style="font-weight: bold;">
+                                                                <i class="bi bi-person-standing"></i>&nbsp; Pasien
+                                                            </label>
+
+                                                            <input type="number" id="pasien"
+                                                                name="jumlah_pasien" class="form-control">
+
+                                                            <!-- QUICK PRESET (dipindah ke sini) -->
+                                                            <div class="mt-2 d-flex gap-1 flex-wrap">
+                                                                <small class="text-muted fw-bold">Quick Preset :</small><br>
+
+                                                                <button type="button" class="btn btn-outline-primary btn-sm preset" data-value="10">10</button>
+                                                                <button type="button" class="btn btn-outline-primary btn-sm preset" data-value="20">20</button>
+                                                                <button type="button" class="btn btn-outline-primary btn-sm preset" data-value="30">30</button>
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- <div class="col-md-2">
+                                                            <label class="form-label" style="font-weight: bold;">
+                                                                <i class="bi bi-file-earmark-person-fill"></i>&nbsp; Karyawan</label>
+                                                            <input type="number" id="karyawan"
+                                                                name="jumlah_karyawan" class="form-control">
+                                                        </div> -->
+
+                                                        <div class="col-md-2">
+                                                            <label class="form-label" style="font-weight: bold;">
+                                                                <i class="bi bi-people-fill"></i>&nbsp; Total Pasien</label>
+                                                            <input type="number" id="total_orang"
+                                                                class="form-control bg-light" readonly>
+                                                        </div>
+                                                    </div>
+
+                                                    <hr>
+
+                                                    <!-- DAFTAR BAHAN -->
+                                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                                        <h6 class="mb-0" style="font-weight: bold;">Daftar Bahan</h6>
+                                                        <button type="button" class="btn btn-sm" id="add-row"
+                                                        style="background-color: #19aa25; color: aliceblue;">
+                                                            <i class="bi bi-plus-circle"></i> Tambah Bahan
+                                                        </button>
+                                                    </div>
+
+                                                    <div class="table-responsive">
+                                                        <table class="table table-bordered table-hover align-middle">
+                                                            <thead class="table-light">
+                                                                <tr class="text-center">
+                                                                    <th>Bahan</th>
+                                                                    <th width="200">Jumlah</th>
+                                                                    <th width="200">Keterangan</th>
+                                                                    <th width="80">Aksi</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody id="bahan-table">
+                                                                <tr>
+                                                                    <td>
+                                                                        <select class="form-select" name="bahan[]">
+                                                                            {% for bahan in bahan_list %}
+                                                                            <option value="{{ bahan.id }}">{{ bahan.nama }}</option>
+                                                                            {% endfor %}
+                                                                        </select>
+                                                                    </td>
+                                                                    <td>
+                                                                        <input type="number" step="1" min="0"
+                                                                            name="qty[]" class="form-control">
+                                                                    </td>
+                                                                    <td>
+                                                                        <input type="text"
+                                                                            name="keterangan[]" 
+                                                                            class="form-control"
+                                                                            placeholder="Contoh: untuk diet pasien / tambahan">
+                                                                    </td>
+                                                                    <td class="text-center">
+                                                                        <button type="button"
+                                                                                class="btn btn-danger btn-sm remove-row">
+                                                                            <i class="bi bi-trash"></i>
+                                                                        </button>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+
+                                                </div>
+
+                                                <!-- FOOTER -->
+                                                <div class="card-footer text-end">
+                                                    <button type="submit" class="btn btn-sm" style="background-color: #025697; color: aliceblue;">
+                                                        Simpan
+                                                    </button>
+                                                </div>
+
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+<!-- SCRIPT -->
+<script>
+    document.getElementById("add-row").onclick = function () {
+        const table = document.getElementById("bahan-table");
+        const row = table.querySelector("tr").cloneNode(true);
+
+        // reset input qty
+        row.querySelectorAll("input[name='qty[]']").forEach(i => i.value = "");
+        row.querySelectorAll("input[name='keterangan[]']").forEach(i => i.value = "")
+
+        table.appendChild(row);
+    };
+
+    document.addEventListener("click", function (e) {
+        if (e.target.closest(".remove-row")) {
+            const rows = document.querySelectorAll("#bahan-table tr");
+            if (rows.length > 1) {
+                e.target.closest("tr").remove();
+            }
+        }
+    });
+
+    function hitungTotal() {
+        let pasien = parseInt(document.getElementById("pasien").value || 0);
+        document.getElementById("total_orang").value = pasien;
+    }
+
+    document.addEventListener("input", function (e) {
+        if (e.target.id === "pasien") {
+            hitungTotal();
+        }
+    });
+
+    document.querySelectorAll(".preset").forEach(btn => {
+        btn.addEventListener("click", () => {
+            document.getElementById("pasien").value = btn.dataset.value;
+            hitungTotal();
+        });
+    });
+</script>
+
+<!-- VALIDASI BAHAN -->
+<script>
+    document.querySelector("form").addEventListener("submit", function(e) {
+        let valid = false;
+
+        document.querySelectorAll("input[name='qty[]']").forEach(input => {
+            if (input.value && parseFloat(input.value) > 0) {
+                valid = true;
+            }
+        });
+
+        if (!valid) {
+            alert("Minimal isi 1 jumlah bahan!");
+            e.preventDefault();
+        }
+    });
+</script>
+
+{% endblock %}
