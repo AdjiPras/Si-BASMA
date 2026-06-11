@@ -190,7 +190,7 @@ def create_pesanan(request):
             operator=request.user,
             tanggal_pemesanan=request.POST.get("tanggal_pemesanan"),
             siklus_menu_id=request.POST.get("siklus_menu"),
-            waktu_siklus=request.POST.get("waktu_siklus"),
+            waktu_makan=request.POST.get("waktu_makan"),
             jumlah_pasien=request.POST.get("jumlah_pasien") or 0,
         )
 
@@ -244,7 +244,7 @@ def detail_pesanan_json(request, id):
     return JsonResponse({
         "tanggal": pesanan.tanggal_pemesanan.strftime("%Y-%m-%d"),
         "siklus": pesanan.siklus_menu.nama,
-        "waktu": pesanan.waktu_siklus if hasattr(pesanan, 'waktu_siklus') else "-", 
+        "waktu": pesanan.waktu_makan if hasattr(pesanan, 'waktu_makan') else "-",
         "total": pesanan.jumlah_pasien or 0, 
         "user": pesanan.operator.username,
         "items": data_items

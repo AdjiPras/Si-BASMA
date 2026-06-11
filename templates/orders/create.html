@@ -285,8 +285,6 @@
         // 1. Kosongkan tabel saat ini
         bodyTabelBahan.innerHTML = '';
 
-        let jumlahPasien = parseFloat(inputPasien.value) || 0;
-
         // Jika resep kosong, tambahkan 1 baris kosong default
         if (resepAktif.length === 0) {
             document.getElementById("add-row").click();
@@ -297,8 +295,8 @@
         resepAktif.forEach(item => {
             let tr = document.createElement('tr');
             
-            // Hitung total kebutuhan (Standar x Jumlah Pasien)
-            let totalDibutuhkan = (item.qty_standar * jumlahPasien).toFixed(2);
+            // AMBIL NILAI ASLI (Tanpa dikalikan pasien)
+            let qtyAsli = item.qty_standar; 
 
             // Kita butuh dropdown bawaan Django agar ID bahan sesuai
             let optionsHTML = `
@@ -312,10 +310,10 @@
             tr.innerHTML = `
                 <td>${optionsHTML}</td>
                 <td>
-                    <input type="number" step="any" min="0" name="qty[]" class="form-control" value="${totalDibutuhkan > 0 ? totalDibutuhkan : ''}">
+                    <input type="number" step="any" min="0" name="qty[]" class="form-control" value="${qtyAsli > 0 ? qtyAsli : ''}">
                 </td>
                 <td>
-                    <input type="text" name="keterangan[]" class="form-control" placeholder="Auto: ${item.qty_standar} ${item.satuan} / org">
+                    <input type="text" name="keterangan[]" class="form-control" placeholder="Keterangan">
                 </td>
                 <td class="text-center">
                     <button type="button" class="btn btn-danger btn-sm remove-row"><i class="bi bi-trash"></i></button>

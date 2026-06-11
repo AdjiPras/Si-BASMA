@@ -113,6 +113,8 @@ class Pesanan(models.Model):
         related_name='pesanan'
     )
 
+    waktu_makan = models.CharField(max_length=10)
+
     jumlah_pasien = models.IntegerField(default=0)
 
     def __str__(self):
