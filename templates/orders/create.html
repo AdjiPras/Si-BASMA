@@ -47,7 +47,7 @@
                                                     <div class="row mb-3">
                                                         <div class="col-md-3">
                                                             <label class="form-label" style="font-weight: bold;">
-                                                                <i class="bi bi-calendar-week-fill"></i>&nbsp; Tanggal Distribusi</label>
+                                                                <i class="bi bi-calendar-week-fill"></i>&nbsp; Tanggal Pesan</label>
                                                             <!-- <input type="date" name="tanggal_pemesanan"
                                                                 class="form-control" required> -->
                                                                 <input type="date"
@@ -61,12 +61,29 @@
                                                         <div class="col-md-3">
                                                             <label class="form-label" style="font-weight: bold;">
                                                                 <i class="bi bi-arrow-repeat"></i>&nbsp; Siklus Menu</label>
-                                                            <select name="siklus_menu" class="form-select">
+                                                            <!-- <select name="siklus_menu" class="form-select">
                                                                 {% for siklus in siklus_list %}
                                                                     <option value="{{ siklus.id }}">
                                                                         {{ siklus.nama }}
                                                                     </option>
                                                                 {% endfor %}
+                                                            </select> -->
+                                                            <select name="siklus_menu" id="siklus_menu" class="form-select" required>
+                                                                <option value="" disabled selected>Pilih Siklus...</option>
+                                                                {% for siklus in siklus_list %}
+                                                                    <option value="{{ siklus.id }}">{{ siklus.nama }}</option>
+                                                                {% endfor %}
+                                                            </select>
+                                                        </div>
+
+                                                        <div class="col-md-3">
+                                                            <label class="form-label" style="font-weight: bold;">
+                                                                <i class="bi bi-clock-fill"></i>&nbsp; Waktu Makan
+                                                            </label>
+                                                            <select name="waktu_makan" id="waktu_makan" class="form-select" required>
+                                                                <option value="PAGI">Pagi</option>
+                                                                <option value="SIANG">Siang</option>
+                                                                <option value="SORE">Sore</option>
                                                             </select>
                                                         </div>
 
@@ -95,12 +112,12 @@
                                                                 name="jumlah_karyawan" class="form-control">
                                                         </div> -->
 
-                                                        <div class="col-md-2">
+                                                        <!-- <div class="col-md-2">
                                                             <label class="form-label" style="font-weight: bold;">
                                                                 <i class="bi bi-people-fill"></i>&nbsp; Total Pasien</label>
                                                             <input type="number" id="total_orang"
                                                                 class="form-control bg-light" readonly>
-                                                        </div>
+                                                        </div> -->
                                                     </div>
 
                                                     <hr>
@@ -134,8 +151,7 @@
                                                                         </select>
                                                                     </td>
                                                                     <td>
-                                                                        <input type="number" step="1" min="0"
-                                                                            name="qty[]" class="form-control">
+                                                                        <input type="number" step="any" min="0" name="qty[]" class="form-control">
                                                                     </td>
                                                                     <td>
                                                                         <input type="text"
@@ -233,6 +249,98 @@
             alert("Minimal isi 1 jumlah bahan!");
             e.preventDefault();
         }
+    });
+</script>
+
+<!-- AUTO-FILL RESEP -->
+<script>
+    const dropdownSiklus = document.getElementById('siklus_menu');
+    const dropdownWaktu = document.getElementById('waktu_makan');
+    const inputPasien = document.getElementById('pasien');
+    const bodyTabelBahan = document.getElementById('bahan-table');
+
+    // Variabel penampung resep dari database
+    let resepAktif = [];
+
+    // Fungsi untuk menarik data dari API Django
+    function tarikDataResep() {
+        let siklusId = dropdownSiklus.value;
+        let waktuMakan = dropdownWaktu.value; // Pastikan ini nilainya 'PAGI', 'SIANG', 'SORE'
+
+        if (siklusId && waktuMakan) {
+            // Parameter harus 'waktu_makan' agar cocok dengan views.py
+            fetch(`/api/get-resep/?siklus_id=${siklusId}&waktu_makan=${waktuMakan}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        resepAktif = data.data;
+                        renderTabelBahan();
+                    }
+                });
+        }
+    }
+
+    // Fungsi untuk menggambar ulang tabel sesuai resep
+    function renderTabelBahan() {
+        // 1. Kosongkan tabel saat ini
+        bodyTabelBahan.innerHTML = '';
+
+        let jumlahPasien = parseFloat(inputPasien.value) || 0;
+
+        // Jika resep kosong, tambahkan 1 baris kosong default
+        if (resepAktif.length === 0) {
+            document.getElementById("add-row").click();
+            return;
+        }
+
+        // 2. Buat baris baru untuk setiap bahan di dalam resep
+        resepAktif.forEach(item => {
+            let tr = document.createElement('tr');
+            
+            // Hitung total kebutuhan (Standar x Jumlah Pasien)
+            let totalDibutuhkan = (item.qty_standar * jumlahPasien).toFixed(2);
+
+            // Kita butuh dropdown bawaan Django agar ID bahan sesuai
+            let optionsHTML = `
+                <select class="form-select" name="bahan[]">
+                    {% for bahan in bahan_list %}
+                        <option value="{{ bahan.id }}">{{ bahan.nama }}</option>
+                    {% endfor %}
+                </select>
+            `;
+
+            tr.innerHTML = `
+                <td>${optionsHTML}</td>
+                <td>
+                    <input type="number" step="any" min="0" name="qty[]" class="form-control" value="${totalDibutuhkan > 0 ? totalDibutuhkan : ''}">
+                </td>
+                <td>
+                    <input type="text" name="keterangan[]" class="form-control" placeholder="Auto: ${item.qty_standar} ${item.satuan} / org">
+                </td>
+                <td class="text-center">
+                    <button type="button" class="btn btn-danger btn-sm remove-row"><i class="bi bi-trash"></i></button>
+                </td>
+            `;
+
+            // Kunci pilihan dropdown pada bahan yang ditarik dari database
+            tr.querySelector('select').value = item.bahan_id;
+
+            bodyTabelBahan.appendChild(tr);
+        });
+    }
+
+    // Pasang pelatuk (trigger) agar fungsi jalan otomatis
+    dropdownSiklus.addEventListener('change', tarikDataResep);
+    dropdownWaktu.addEventListener('change', tarikDataResep);
+    
+    // Jika user mengubah jumlah pasien SETELAH auto-fill muncul, tabel akan terhitung ulang otomatis!
+    inputPasien.addEventListener('input', renderTabelBahan);
+    
+    document.querySelectorAll(".preset").forEach(btn => {
+        btn.addEventListener("click", () => {
+            // Beri sedikit jeda agar nilai input terganti dulu, baru render ulang tabel
+            setTimeout(renderTabelBahan, 50); 
+        });
     });
 </script>
 

@@ -69,7 +69,7 @@
 
                                             <th style="width: 200px">
                                                 <i class="bi bi-arrow-repeat"></i>
-                                                Siklus Menu
+                                                Siklus
                                             </th>
 
                                             <th style="width: 150px">
@@ -111,7 +111,7 @@
                                             <!-- SIKLUS -->
                                             <td class="text-center">
                                                 <span class="view-mode siklus-text">
-                                                    Siklus {{ pesanan.siklus_menu }}
+                                                    {{ pesanan.siklus_menu }}
                                                 </span>
 
                                                 <select class="form-select form-select-sm edit-mode siklus-input d-none">
@@ -238,7 +238,7 @@
 
 </main>
 
-<<!-- AREA CETAK -->
+<!-- AREA CETAK -->
 <div id="print-area" class="d-none">
 
     <style>
@@ -438,6 +438,11 @@
         <p>
             <b>Siklus :</b>
             <span id="print_siklus"></span>
+        </p>
+
+        <p>
+            <b>Waktu Siklus :</b>
+            <span id="print_waktu"></span>
         </p>
 
         <p>
@@ -763,6 +768,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
             document.getElementById('print_siklus').innerText =
                 data.siklus;
+
+            document.getElementById('print_waktu').innerText = 
+                data.waktu;
 
             document.getElementById('print_total').innerText =
                 data.total;

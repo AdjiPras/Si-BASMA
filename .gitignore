@@ -12,6 +12,8 @@ env/
 venv/
 ENV/
 .venv/
+env-pemesanan/
+
 
 # Django secret settings
 */settings.py
@@ -24,6 +26,7 @@ ENV/
 # Django static files
 staticfiles/
 media/
+
 
 # Log files
 *.log

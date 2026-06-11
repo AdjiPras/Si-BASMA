@@ -194,25 +194,21 @@
 
     <body>
 
-        <!-- BUTTON PRINT -->
         <div class="print-btn">
             <button onclick="window.print()">
                 🖨 Cetak PDF
             </button>
         </div>
 
-        <!-- HEADER -->
         <div class="header">
 
             <table>
                 <tr>
 
-                    <!-- LOGO -->
                     <td width="100">
                         <img src="{% static 'img/logo.png' %}" class="logo">
                     </td>
 
-                    <!-- INFO INSTANSI -->
                     <td class="instansi">
 
                         <h2>INSTALASI GIZI RS BASMA</h2>
@@ -236,12 +232,10 @@
 
         </div>
 
-        <!-- JUDUL -->
         <div class="invoice-title">
             INVOICE PESANAN BAHAN
         </div>
 
-        <!-- INFO -->
         <div class="info-box">
 
         <table>
@@ -259,24 +253,16 @@
         </td>
 
         <td width="50%">
-
             <div class="info-title">Informasi Pesanan</div>
 
-            <strong>No Invoice :</strong>
-            INV-{{ pesanan.id }}
-            <br><br>
+            <strong>No Invoice :</strong> INV-{{ pesanan.id }} <br><br>
+            <strong>Tanggal Distribusi :</strong> {{ pesanan.tanggal_pemesanan|date:"d M Y" }} <br><br>
+            <strong>Siklus Menu :</strong> {{ pesanan.siklus_menu.nama }} <br><br>
+            
+            <strong>Waktu Siklus :</strong> {{ pesanan.waktu_siklus|default:"-" }} <br><br>
+            
 
-            <strong>Tanggal Distribusi :</strong>
-            {{ pesanan.tanggal_pemesanan|date:"d M Y" }}
-            <br><br>
-
-            <strong>Siklus Menu :</strong>
-            {{ pesanan.siklus_menu.nama }}
-            <br><br>
-
-            <strong>Total Pasien :</strong>
-            {{ pesanan.jumlah_pasien }}
-
+            <strong>Total Pasien :</strong> {{ pesanan.jumlah_pasien }}
         </td>
 
         </tr>
@@ -285,14 +271,13 @@
 
         </div>
 
-        <!-- TABLE -->
         <table class="table-items">
 
             <thead>
                 <tr>
                     <th width="50">No</th>
-                    <th>Nama Bahan</th>
-                    <th width="120">Qty</th>
+                    <th>Bahan</th>
+                    <th width="120">Jumlah</th>
                     <th>Keterangan</th>
                 </tr>
             </thead>
@@ -333,7 +318,6 @@
 
         </table>
 
-        <!-- SUMMARY -->
         <div class="summary">
 
             <table>
@@ -355,7 +339,6 @@
 
         </div>
 
-        <!-- FOOTER -->
         <div class="footer">
             <div class="ttd">
 

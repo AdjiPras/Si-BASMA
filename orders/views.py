@@ -14,7 +14,7 @@ from io import BytesIO
 
 from django.views.decorators.csrf import csrf_exempt
 from .models import ItemPesanan, Pesanan
-from .models import Kategori, Siklus
+from .models import Kategori, Siklus, MenuSiklus
 from django.core.paginator import Paginator
 
 import json
@@ -189,11 +189,9 @@ def create_pesanan(request):
         pesanan = Pesanan.objects.create(
             operator=request.user,
             tanggal_pemesanan=request.POST.get("tanggal_pemesanan"),
-
-            siklus_menu_id=request.POST.get("siklus_menu"),  # ini sudah OK kalau FK
-
+            siklus_menu_id=request.POST.get("siklus_menu"),
+            waktu_siklus=request.POST.get("waktu_siklus"),
             jumlah_pasien=request.POST.get("jumlah_pasien") or 0,
-            jumlah_karyawan=0,  # kalau sudah tidak dipakai
         )
 
         bahan_ids = request.POST.getlist("bahan[]")
@@ -244,9 +242,10 @@ def detail_pesanan_json(request, id):
         })
 
     return JsonResponse({
-        "tanggal": pesanan.tanggal_pemesanan.strftime("%B %d, %Y"),
+        "tanggal": pesanan.tanggal_pemesanan.strftime("%Y-%m-%d"),
         "siklus": pesanan.siklus_menu.nama,
-        "total": (pesanan.jumlah_pasien or 0) + (pesanan.jumlah_karyawan or 0),
+        "waktu": pesanan.waktu_siklus if hasattr(pesanan, 'waktu_siklus') else "-", 
+        "total": pesanan.jumlah_pasien or 0, 
         "user": pesanan.operator.username,
         "items": data_items
     })
@@ -301,25 +300,14 @@ from .models import Pesanan, ItemPesanan
 
 @login_required
 def preview_pdf_pesanan(request, id):
-
-    # ambil pesanan berdasarkan id
     pesanan = get_object_or_404(Pesanan, id=id)
-
-    # ambil item pesanan terkait
-    detail_items = ItemPesanan.objects.filter(
-        pesanan=pesanan
-    )
+    detail_items = ItemPesanan.objects.filter(pesanan=pesanan)
 
     context = {
         'pesanan': pesanan,
         'detail_items': detail_items
     }
-
-    return render(
-        request,
-        'orders/pdf_template.html',
-        context
-    )
+    return render(request, 'orders/pdf_template.html', context)
 
 
 @login_required
@@ -639,3 +627,28 @@ def siklus_delete(request, pk):
     siklus.delete()
 
     return redirect('siklus_list')
+
+
+# =========================
+# API UNTUK AUTO-FILL RESEP
+# =========================
+@login_required
+def get_resep_siklus(request):
+    siklus_id = request.GET.get('siklus_id')
+    waktu_makan = request.GET.get('waktu_makan')
+
+    # Gunakan filter yang menangani case-insensitive agar tidak error kapital/kecil
+    resep_list = MenuSiklus.objects.filter(
+        siklus_id=siklus_id, 
+        waktu_makan__iexact=waktu_makan 
+    )
+
+    data_bahan = [
+        {
+            'bahan_id': resep.bahan.id,
+            'bahan_nama': resep.bahan.nama,
+            'satuan': resep.bahan.satuan,
+            'qty_standar': resep.qty_standar
+        } for resep in resep_list
+    ]
+    return JsonResponse({'success': True, 'data': data_bahan})

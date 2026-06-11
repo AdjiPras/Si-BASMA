@@ -62,6 +62,30 @@ class Siklus(models.Model):
 
     def __str__(self):
         return self.nama
+    
+# =========================
+# MASTER MENU SIKLUS (DETAIL)
+# =========================
+class MenuSiklus(models.Model):
+    WAKTU_CHOICES = [
+        ('PAGI', 'PAGI'),
+        ('SIANG', 'SIANG'),
+        ('SORE', 'SORE'),
+    ]
+
+    siklus = models.ForeignKey(Siklus, on_delete=models.CASCADE, related_name='detail_menu')
+    
+    # PASTIKAN INI BERNAA 'waktu_makan'
+    waktu_makan = models.CharField(
+        max_length=10, 
+        choices=WAKTU_CHOICES,
+        verbose_name="Waktu Makan"
+    )
+    bahan = models.ForeignKey(Bahan, on_delete=models.CASCADE)
+    qty_standar = models.FloatField(default=0.0, verbose_name="Jumlah") # Tambahkan ini
+
+    def __str__(self):
+        return f"{self.siklus.nama} - {self.waktu_makan} - {self.bahan.nama}"
 
 
 # =========================
@@ -90,7 +114,6 @@ class Pesanan(models.Model):
     )
 
     jumlah_pasien = models.IntegerField(default=0)
-    jumlah_karyawan = models.IntegerField(default=0)
 
     def __str__(self):
         return f"Pesanan #{self.id} - {self.tanggal_pemesanan}"
