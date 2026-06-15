@@ -628,6 +628,39 @@ def siklus_delete(request, pk):
 
     return redirect('siklus_list')
 
+def siklus_detail(request, pk):
+    siklus = get_object_or_404(Siklus, pk=pk)
+    
+    if request.method == "POST":
+        print(request.POST)
+        # Menambah bahan baru
+        if 'tambah_bahan' in request.POST:
+            bahan_id = request.POST.get('bahan_id')
+            waktu = request.POST.get('waktu_makan')
+            qty = request.POST.get('qty')
+            
+            MenuSiklus.objects.create(
+                siklus=siklus,
+                bahan_id=bahan_id,
+                waktu_makan=waktu,
+                qty_standar=qty
+            )
+            return redirect('siklus_detail', pk=pk)
+            
+        # Menghapus bahan
+        elif 'hapus_bahan' in request.POST:
+            menu_id = request.POST.get('menu_id')
+            MenuSiklus.objects.filter(id=menu_id).delete()
+            return redirect('siklus_detail', pk=pk)
+
+    # Data untuk ditampilkan
+    context = {
+        'siklus': siklus,
+        'bahan_list': Bahan.objects.all(),
+        'detail_list': MenuSiklus.objects.filter(siklus=siklus).order_by('waktu_makan')
+    }
+    return render(request, 'orders/siklus_detail.html', context)
+
 
 # =========================
 # API UNTUK AUTO-FILL RESEP
@@ -652,3 +685,24 @@ def get_resep_siklus(request):
         } for resep in resep_list
     ]
     return JsonResponse({'success': True, 'data': data_bahan})
+
+
+def kelola_menu_siklus(request, siklus_id):
+    siklus = Siklus.objects.get(id=siklus_id)
+    if request.method == 'POST':
+        # Ambil data dari form input (bahan, qty, waktu_makan)
+        bahan_id = request.POST.get('bahan')
+        qty = request.POST.get('qty')
+        waktu = request.POST.get('waktu_makan')
+        
+        # Simpan ke tabel MenuSiklus
+        MenuSiklus.objects.create(
+            siklus=siklus,
+            bahan_id=bahan_id,
+            qty_standar=qty,
+            waktu_makan=waktu
+        )
+        return redirect('url_halaman_tadi')
+    
+    context = {'siklus': siklus, 'bahan_list': Bahan.objects.all()}
+    return render(request, 'siklus_detail.html', context)

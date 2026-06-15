@@ -49,6 +49,7 @@ urlpatterns = [
     path('siklus/create/', views.siklus_create, name='siklus_create'),
     path('siklus/<int:pk>/edit/', views.siklus_edit, name='siklus_edit'),
     path('siklus/<int:pk>/delete/', views.siklus_delete, name='siklus_delete'),
+    path('siklus/<int:pk>/detail/', views.siklus_detail, name='siklus_detail'),
     # Path untuk API Auto-fill
     path('api/get-resep/', views.get_resep_siklus, name='api_get_resep'),
 

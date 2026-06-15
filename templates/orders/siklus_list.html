@@ -106,10 +106,10 @@
 
                             <thead class="text-center">
                                 <tr>
-                                    <th width="10">#</th>
-                                    <th>Nama Siklus</th>
+                                    <th>#</th>
+                                    <th width="10%">Siklus</th>
                                     <th>Keterangan</th>
-                                    <th width="120">Aksi</th>
+                                    <th width="30%">Aksi</th>
                                 </tr>
                             </thead>
 
@@ -118,11 +118,11 @@
                                 {% for siklus in siklus_list %}
                                 <tr class="align-middle">
 
-                                    <td>
+                                    <td style="text-align: center;">
                                         {{ forloop.counter }}
                                     </td>
 
-                                    <td>
+                                    <td style="text-align: center;">
 
                                         <span class="text-dark">
                                             {{ siklus.nama }}
@@ -135,6 +135,13 @@
                                     </td>
 
                                     <td style="text-align: center;">
+
+                                        <!-- DETAIL -->
+                                        <a href="{% url 'siklus_detail' siklus.id %}" 
+                                            class="btn btn-info btn-sm" 
+                                            title="Kelola Bahan">
+                                            <i class="bi bi-list-check"></i>
+                                        </a>
 
                                         <!-- EDIT -->
                                         <button type="button"
