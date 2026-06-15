@@ -572,7 +572,7 @@ def siklus_list(request):
         )
 
     # PAGINATION
-    paginator = Paginator(siklus_qs, 10)  # 10 per halaman
+    paginator = Paginator(siklus_qs, 5) 
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
@@ -627,24 +627,27 @@ def siklus_delete(request, pk):
     siklus.delete()
 
     return redirect('siklus_list')
-
+# ============================
+# DETAIL 
+# ============================
 def siklus_detail(request, pk):
     siklus = get_object_or_404(Siklus, pk=pk)
     
     if request.method == "POST":
-        print(request.POST)
         # Menambah bahan baru
         if 'tambah_bahan' in request.POST:
             bahan_id = request.POST.get('bahan_id')
             waktu = request.POST.get('waktu_makan')
             qty = request.POST.get('qty')
             
-            MenuSiklus.objects.create(
-                siklus=siklus,
-                bahan_id=bahan_id,
-                waktu_makan=waktu,
-                qty_standar=qty
-            )
+            # Validasi sederhana agar tidak kosong
+            if bahan_id and waktu and qty:
+                MenuSiklus.objects.create(
+                    siklus=siklus,
+                    bahan_id=bahan_id,
+                    waktu_makan=waktu,
+                    qty_standar=qty
+                )
             return redirect('siklus_detail', pk=pk)
             
         # Menghapus bahan
@@ -652,12 +655,29 @@ def siklus_detail(request, pk):
             menu_id = request.POST.get('menu_id')
             MenuSiklus.objects.filter(id=menu_id).delete()
             return redirect('siklus_detail', pk=pk)
+    
+    filter_waktu = request.GET.get('filter_waktu')
+    detail_qs = MenuSiklus.objects.filter(siklus=siklus)
+    
+    # Terapkan filter waktu jika ada parameter di URL
+    if filter_waktu:
+        detail_qs = detail_qs.filter(waktu_makan=filter_waktu)
+    
+    # Urutkan berdasarkan waktu makan dan nama bahan
+    detail_qs = detail_qs.order_by('waktu_makan', 'bahan__nama')
+    
+    # 3. PAGINASI: 6 item per halaman
+    paginator = Paginator(detail_qs, 6) 
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
-    # Data untuk ditampilkan
+    # 4. KIRIM DATA KE TEMPLATE
     context = {
         'siklus': siklus,
         'bahan_list': Bahan.objects.all(),
-        'detail_list': MenuSiklus.objects.filter(siklus=siklus).order_by('waktu_makan')
+        'detail_list': page_obj,     # Digunakan untuk menampilkan list di tabel
+        'page_obj': page_obj,        # Digunakan untuk navigasi paginasi
+        'filter_waktu': filter_waktu, # Agar dropdown filter tetap terpilih sesuai pilihan user
     }
     return render(request, 'orders/siklus_detail.html', context)
 
