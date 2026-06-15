@@ -494,21 +494,6 @@ def bahan_create(request):
 
     return redirect("master_bahan")
 
-# @login_required
-# def bahan_edit(request, pk):
-#     bahan = get_object_or_404(Bahan, pk=pk)
-
-#     if request.method == "POST":
-#         bahan.nama = request.POST["nama"]
-#         bahan.kategori = request.POST["kategori"]
-#         bahan.satuan = request.POST["satuan"]
-#         bahan.save()
-#         return redirect("master_bahan")
-
-#     return render(request, "orders/bahan_form.html", {
-#         "judul": "Edit Bahan",
-#         "bahan": bahan
-#     })
 
 @login_required
 def bahan_edit(request, pk):
@@ -537,12 +522,6 @@ def bahan_edit(request, pk):
         "kategori_choices": Kategori.objects.all()
     })
 
-
-# @login_required
-# def bahan_delete(request, pk):
-#     bahan = get_object_or_404(Bahan, pk=pk)
-#     bahan.delete()
-#     return redirect("master_bahan")
 
 @login_required
 def bahan_delete(request, pk):
@@ -585,62 +564,68 @@ def siklus_list(request):
 
 @login_required
 def siklus_create(request):
-
     if request.method == 'POST':
-
         nama = request.POST.get('nama')
         keterangan = request.POST.get('keterangan')
 
-        Siklus.objects.create(
-            nama=nama,
-            keterangan=keterangan
-        )
-
+        # Validasi sederhana: pastikan nama tidak kosong
+        if nama:
+            Siklus.objects.create(
+                nama=nama,
+                keterangan=keterangan
+            )
+            messages.success(request, f"Siklus '{nama}' berhasil ditambahkan!")
+        else:
+            messages.error(request, "Gagal menambahkan siklus. Nama siklus tidak boleh kosong.")
+            
+    # Selalu redirect, baik setelah POST sukses atau jika bukan POST
     return redirect('siklus_list')
 
 
 @login_required
 def siklus_edit(request, pk):
-
-    siklus = get_object_or_404(
-        Siklus,
-        pk=pk
-    )
+    siklus = get_object_or_404(Siklus, pk=pk)
 
     if request.method == 'POST':
+        nama = request.POST.get('nama')
+        keterangan = request.POST.get('keterangan')
 
-        siklus.nama = request.POST.get('nama')
-        siklus.keterangan = request.POST.get('keterangan')
-        siklus.save()
+        if nama:
+            siklus.nama = nama
+            siklus.keterangan = keterangan
+            siklus.save()
+            messages.success(request, f"Siklus '{nama}' berhasil diupdate!")
+        else:
+            messages.error(request, "Gagal mengupdate. Nama siklus tidak boleh kosong.")
 
     return redirect('siklus_list')
 
 
 @login_required
 def siklus_delete(request, pk):
-
-    siklus = get_object_or_404(
-        Siklus,
-        pk=pk
-    )
-
+    siklus = get_object_or_404(Siklus, pk=pk)
+    
+    # Simpan nama untuk pesan notifikasi
+    nama_siklus = siklus.nama
     siklus.delete()
-
+    
+    messages.info(request, f"Siklus '{nama_siklus}' berhasil dihapus.")
     return redirect('siklus_list')
+
 # ============================
-# DETAIL 
+# DETAIL SIKLUS
 # ============================
+@login_required
 def siklus_detail(request, pk):
     siklus = get_object_or_404(Siklus, pk=pk)
     
+    # 1. LOGIKA POST: Manipulasi Data
     if request.method == "POST":
-        # Menambah bahan baru
         if 'tambah_bahan' in request.POST:
             bahan_id = request.POST.get('bahan_id')
             waktu = request.POST.get('waktu_makan')
             qty = request.POST.get('qty')
             
-            # Validasi sederhana agar tidak kosong
             if bahan_id and waktu and qty:
                 MenuSiklus.objects.create(
                     siklus=siklus,
@@ -648,22 +633,24 @@ def siklus_detail(request, pk):
                     waktu_makan=waktu,
                     qty_standar=qty
                 )
+                messages.success(request, f"Bahan berhasil ditambahkan ke siklus {siklus.nama}!")
+            else:
+                messages.error(request, "Gagal menambahkan bahan. Pastikan semua kolom terisi.")
             return redirect('siklus_detail', pk=pk)
             
-        # Menghapus bahan
         elif 'hapus_bahan' in request.POST:
             menu_id = request.POST.get('menu_id')
             MenuSiklus.objects.filter(id=menu_id).delete()
+            messages.info(request, "Bahan berhasil dihapus.")
             return redirect('siklus_detail', pk=pk)
     
+    # 2. LOGIKA GET: Pengambilan Data Terfilter
     filter_waktu = request.GET.get('filter_waktu')
     detail_qs = MenuSiklus.objects.filter(siklus=siklus)
     
-    # Terapkan filter waktu jika ada parameter di URL
     if filter_waktu:
         detail_qs = detail_qs.filter(waktu_makan=filter_waktu)
     
-    # Urutkan berdasarkan waktu makan dan nama bahan
     detail_qs = detail_qs.order_by('waktu_makan', 'bahan__nama')
     
     # 3. PAGINASI: 6 item per halaman
@@ -671,13 +658,13 @@ def siklus_detail(request, pk):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    # 4. KIRIM DATA KE TEMPLATE
+    # 4. KONTEKS
     context = {
         'siklus': siklus,
         'bahan_list': Bahan.objects.all(),
-        'detail_list': page_obj,     # Digunakan untuk menampilkan list di tabel
-        'page_obj': page_obj,        # Digunakan untuk navigasi paginasi
-        'filter_waktu': filter_waktu, # Agar dropdown filter tetap terpilih sesuai pilihan user
+        'detail_list': page_obj, 
+        'page_obj': page_obj,
+        'filter_waktu': filter_waktu,
     }
     return render(request, 'orders/siklus_detail.html', context)
 

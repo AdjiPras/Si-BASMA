@@ -52,7 +52,7 @@
                                 </div>
                                 <div class="col-md-2">
                                     <button type="submit" name="tambah_bahan" class="btn btn-sm btn-success">
-                                        <i class="bi bi-plus-circle"></i> Tambah
+                                        <i class="bi bi-plus-circle"></i> &nbsp;Tambah Bahan
                                     </button>
                                 </div>
                             </form>
@@ -182,4 +182,21 @@
         </div>
     </div>
 </main>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        {% for message in messages %}
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: '{{ message|escapejs }}', // Menambahkan |escapejs
+                timer: 2000,
+                showConfirmButton: false,
+                toast: true,
+                position: 'top-end'
+            });
+        {% endfor %}
+    });
+</script>
 {% endblock %}

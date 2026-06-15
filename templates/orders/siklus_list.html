@@ -404,19 +404,32 @@
     </div>
     {% endfor %}
 
-    <!-- SWEET ALERT -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <script>
         document.addEventListener("DOMContentLoaded", function () {
+            
+            // 1. Notifikasi Sukses dari Django Messages (Toast Style)
+            {% for message in messages %}
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: '{{ message|escapejs }}',
+                    timer: 3000,
+                    timerProgressBar: true,
+                    showConfirmButton: false,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                });
+            {% endfor %}
 
-            // TAMBAH
+            // 2. TAMBAH SIKLUS
             document.querySelectorAll(".form-tambah").forEach(form => {
-
                 form.addEventListener("submit", function (e) {
-
                     e.preventDefault();
-
                     Swal.fire({
                         title: 'Simpan Data?',
                         text: "Siklus akan ditambahkan",
@@ -427,36 +440,17 @@
                         confirmButtonText: 'Ya, Simpan',
                         cancelButtonText: 'Batal'
                     }).then((result) => {
-
                         if (result.isConfirmed) {
-
-                            Swal.fire({
-                                title: 'Berhasil!',
-                                text: 'Siklus berhasil disimpan',
-                                icon: 'success',
-                                timer: 1500,
-                                showConfirmButton: false
-                            });
-
-                            setTimeout(() => {
-                                form.submit();
-                            }, 1500);
-
+                            form.submit();
                         }
-
                     });
-
                 });
-
             });
 
-            // EDIT
+            // 3. EDIT SIKLUS
             document.querySelectorAll(".form-edit").forEach(form => {
-
                 form.addEventListener("submit", function (e) {
-
                     e.preventDefault();
-
                     Swal.fire({
                         title: 'Update Data?',
                         text: "Perubahan siklus akan disimpan",
@@ -467,36 +461,17 @@
                         confirmButtonText: 'Ya, Update',
                         cancelButtonText: 'Batal'
                     }).then((result) => {
-
                         if (result.isConfirmed) {
-
-                            Swal.fire({
-                                title: 'Berhasil!',
-                                text: 'Siklus berhasil diupdate',
-                                icon: 'success',
-                                timer: 1500,
-                                showConfirmButton: false
-                            });
-
-                            setTimeout(() => {
-                                form.submit();
-                            }, 1500);
-
+                            form.submit();
                         }
-
                     });
-
                 });
-
             });
 
-            // DELETE
+            // 4. DELETE SIKLUS
             document.querySelectorAll(".form-delete").forEach(form => {
-
                 form.addEventListener("submit", function (e) {
-
                     e.preventDefault();
-
                     Swal.fire({
                         title: 'Hapus Data?',
                         text: "Data yang dihapus tidak dapat dikembalikan",
@@ -507,27 +482,11 @@
                         confirmButtonText: 'Ya, Hapus',
                         cancelButtonText: 'Batal'
                     }).then((result) => {
-
                         if (result.isConfirmed) {
-
-                            Swal.fire({
-                                title: 'Terhapus!',
-                                text: 'Siklus berhasil dihapus',
-                                icon: 'success',
-                                timer: 1500,
-                                showConfirmButton: false
-                            });
-
-                            setTimeout(() => {
-                                form.submit();
-                            }, 1500);
-
+                            form.submit();
                         }
-
                     });
-
                 });
-
             });
 
         });
