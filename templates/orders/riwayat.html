@@ -382,6 +382,18 @@
 
         }
 
+
+        @media print {
+            .row { display: flex; flex-wrap: wrap; }
+            .col-6 { flex: 0 0 50%; max-width: 50%; }
+        }
+
+        /* CSS untuk merapikan titik dua */
+        .info-label {
+            display: inline-block;
+            width: 100px; /* Lebar tetap untuk teks label */
+        }
+
     </style>
 
     <!-- HEADER -->
@@ -426,32 +438,31 @@
 
     <!-- INFO -->
     <div class="info-section">
+        <div class="row">
+            <div class="col-6">
+                <p class="mb-1">
+                    <span class="info-label"><b>Tanggal</b></span>: <span id="print_tanggal"></span>
+                </p>
+                <p class="mb-1">
+                    <span class="info-label"><b>Siklus</b></span>: <span id="print_siklus"></span>
+                </p>
+                <p class="mb-1">
+                    <span class="info-label"><b>Waktu</b></span>: <span id="print_waktu"></span>
+                </p>
+            </div>
 
-        <p>
-            <b>Tanggal :</b>
-            <span id="print_tanggal"></span>
-        </p>
-
-        <p>
-            <b>Siklus :</b>
-            <span id="print_siklus"></span>
-        </p>
-
-        <p>
-            <b>Waktu Siklus :</b>
-            <span id="print_waktu"></span>
-        </p>
-
-        <p>
-            <b>Total Pasien :</b>
-            <span id="print_total"></span>
-        </p>
-
-        <p>
-            <b>User :</b>
-            <span id="print_user"></span>
-        </p>
-
+            <div class="col-6" style="display: flex; justify-content: flex-end;">
+                <div style="text-align: left;">
+                    <p class="mb-1">
+                        <span class="info-label"><b>Pasien</b></span>: <span id="print_total"> </span>
+                        Orang
+                    </p>
+                    <p class="mb-1">
+                        <span class="info-label"><b>User</b></span>: <span id="print_user"></span>
+                    </p>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- TABLE -->
@@ -486,7 +497,7 @@
             </strong>
 
             <br>
-            Operator Gizi
+            Operator Si-BASMA
 
         </div>
 
@@ -729,92 +740,93 @@ function printPage() {
 
     document.querySelector('main').style.display = 'none';
 
-    const printArea = document.getElementById('print-area');
+        const printArea = document.getElementById('print-area');
 
-    printArea.classList.remove('d-none');
+        printArea.classList.remove('d-none');
 
-    window.print();
+        window.print();
 
-    printArea.classList.add('d-none');
+        printArea.classList.add('d-none');
 
-    document.querySelector('main').style.display = '';
-}
+        document.querySelector('main').style.display = '';
+    }
 
-document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function () {
 
-    document.addEventListener("click", async function (e) {
-
-        const btnPrint = e.target.closest('.btn-print');
-
-        if (!btnPrint) return;
-
-        const id = btnPrint.dataset.id;
-
-        try {
-
-            // AMBIL DATA DETAIL
-            const response = await fetch(`/riwayat/detail/${id}/`);
-
-            const data = await response.json();
-
-            console.log(data);
-
-            // HEADER
-            document.getElementById('print_tanggal').innerText =
-                data.tanggal;
-
-            document.getElementById('print_siklus').innerText =
-                data.siklus;
-
-            document.getElementById('print_waktu').innerText = 
-                data.waktu;
-
-            document.getElementById('print_total').innerText =
-                data.total;
-
-            document.getElementById('print_user').innerText =
-                data.user;
-
-            document.getElementById('print_tanggal_footer').innerText =
-                data.tanggal;
-
-            document.getElementById('print_user_footer').innerText =
-                data.user;
-
-            // TABLE ITEMS
-            let html = '';
-
-            data.items.forEach((item, index) => {
-
-                html += `
-                    <tr>
-                        <td class="text-center">${index + 1}</td>
-                        <td>${item.bahan}</td>
-                        <td class="text-center">${item.qty}</td>
-                        <td>${item.keterangan || '-'}</td>
-                    </tr>
-                `;
-            });
-
-            document.getElementById('print_items').innerHTML = html;
-
-            // CETAK
-            printPage();
-
-        } catch (err) {
-
-            console.error(err);
-
-            Swal.fire({
-                icon: 'error',
-                title: 'Gagal',
-                text: 'Data pesanan gagal dimuat'
-            });
+        // Fungsi pembantu untuk format tanggal Indonesia
+        function formatTanggalIndonesia(tanggalStr) {
+            if (!tanggalStr) return '';
+            const namaBulan = [
+                "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+                "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+            ];
+            const d = new Date(tanggalStr);
+            const day = d.getDate();
+            const month = namaBulan[d.getMonth()];
+            const year = d.getFullYear();
+            return `${day} ${month} ${year}`;
         }
 
-    });
+        document.addEventListener("click", async function (e) {
 
-});
+            const btnPrint = e.target.closest('.btn-print');
+
+            if (!btnPrint) return;
+
+            const id = btnPrint.dataset.id;
+
+            try {
+
+                // AMBIL DATA DETAIL
+                const response = await fetch(`/riwayat/detail/${id}/`);
+                const data = await response.json();
+
+                console.log(data);
+
+                // KONVERSI TANGGAL
+                const tanggalFormat = formatTanggalIndonesia(data.tanggal);
+
+                // HEADER (INFO)
+                document.getElementById('print_tanggal').innerText = tanggalFormat;
+                document.getElementById('print_siklus').innerText = data.siklus;
+                document.getElementById('print_waktu').innerText = data.waktu;
+                document.getElementById('print_total').innerText = data.total;
+                document.getElementById('print_user').innerText = data.user;
+
+                // FOOTER (TTD)
+                document.getElementById('print_tanggal_footer').innerText = tanggalFormat;
+                document.getElementById('print_user_footer').innerText = data.user;
+
+                // TABLE ITEMS
+                let html = '';
+                data.items.forEach((item, index) => {
+                    html += `
+                        <tr>
+                            <td class="text-center">${index + 1}</td>
+                            <td>${item.bahan}</td>
+                            <td class="text-center">${item.qty}</td>
+                            <td>${item.keterangan || '-'}</td>
+                        </tr>
+                    `;
+                });
+
+                document.getElementById('print_items').innerHTML = html;
+
+                // CETAK
+                printPage();
+
+            } catch (err) {
+
+                console.error(err);
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal',
+                    text: 'Data pesanan gagal dimuat'
+                });
+            }
+        });
+    });
 </script>
 
 {% endblock %}
