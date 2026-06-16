@@ -84,7 +84,7 @@
                         <div class="card-body p-0">
                             <div class="d-flex ps-3 justify-content-start align-items-center">
                                 <form method="get" class="row g-2 align-items-center">
-                                    <div class="col-auto">
+                                    <div class="col-auto p-2">
                                         <label class="col-form-label fw-bold">Filter Waktu:</label>
                                     </div>
                                     <div class="col-auto">
@@ -109,7 +109,23 @@
                                 <tbody>
                                     {% for item in detail_list %}
                                     <tr class="align-middle text-center">
-                                        <td><span class="badge bg-primary">{{ item.waktu_makan }}</span></td>
+                                        <!-- <td><span class="badge bg-primary">{{ item.waktu_makan }}</span></td> -->
+                                         <td>
+                                            <span class="badge" 
+                                                style="
+                                                    {% if item.waktu_makan == 'PAGI' %}
+                                                        background-color: #37974F; color: #ffffff;
+                                                    {% elif item.waktu_makan == 'SIANG' %}
+                                                        background-color: #007BFF; color: #ffffff;
+                                                    {% elif item.waktu_makan == 'SORE' %}
+                                                        background-color: #AC7716; color: #ffffff;
+                                                    {% else %}
+                                                        background-color: #6C757D; color: #ffffff;
+                                                    {% endif %}
+                                                ">
+                                                {{ item.waktu_makan }}
+                                            </span>
+                                        </td>
                                         <td class="text-start">{{ item.bahan.nama }}</td>
                                         <td>{{ item.qty_standar }} {{ item.bahan.satuan }}</td>
                                         <td>
