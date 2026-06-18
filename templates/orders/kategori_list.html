@@ -373,138 +373,152 @@
     </div>
     {% endfor %}
 
-    <!-- SWEET ALERT -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <!-- ALERT -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
 
-            // =========================
-            // TAMBAH
-            // =========================
+            // 1. TAMBAH
             document.querySelectorAll(".form-tambah").forEach(form => {
-
                 form.addEventListener("submit", function (e) {
-
                     e.preventDefault();
-
                     Swal.fire({
                         title: 'Simpan Data?',
-                        text: "Kategori akan ditambahkan",
+                        text: "Data akan ditambahkan",
                         icon: 'question',
                         showCancelButton: true,
                         confirmButtonColor: '#198754',
-                        cancelButtonColor: '#6c757d',
-                        confirmButtonText: 'Ya, Simpan',
-                        cancelButtonText: 'Batal'
+                        confirmButtonText: 'Ya, Simpan'
                     }).then((result) => {
-
                         if (result.isConfirmed) {
-
-                            Swal.fire({
-                                title: 'Berhasil!',
-                                text: 'Kategori berhasil disimpan',
-                                icon: 'success',
-                                timer: 1500,
-                                showConfirmButton: false
-                            });
-
-                            setTimeout(() => {
-                                form.submit();
-                            }, 1500);
-
+                            form.submit();
                         }
-
                     });
-
                 });
-
             });
 
-            // =========================
-            // EDIT
-            // =========================
+            // 2. EDIT
             document.querySelectorAll(".form-edit").forEach(form => {
-
                 form.addEventListener("submit", function (e) {
-
                     e.preventDefault();
-
                     Swal.fire({
                         title: 'Update Data?',
-                        text: "Perubahan kategori akan disimpan",
-                        icon: 'warning',
+                        text: "Perubahan akan disimpan",
+                        icon: 'question',
                         showCancelButton: true,
                         confirmButtonColor: '#ffc107',
-                        cancelButtonColor: '#6c757d',
-                        confirmButtonText: 'Ya, Update',
-                        cancelButtonText: 'Batal'
+                        confirmButtonText: 'Ya, Update'
                     }).then((result) => {
-
                         if (result.isConfirmed) {
-
-                            Swal.fire({
-                                title: 'Berhasil!',
-                                text: 'Kategori berhasil diupdate',
-                                icon: 'success',
-                                timer: 1500,
-                                showConfirmButton: false
-                            });
-
-                            setTimeout(() => {
-                                form.submit();
-                            }, 1500);
-
+                            form.submit();
                         }
-
                     });
-
                 });
-
             });
 
-            // =========================
-            // DELETE
-            // =========================
+            // 3. DELETE
             document.querySelectorAll(".form-delete").forEach(form => {
-
                 form.addEventListener("submit", function (e) {
-
                     e.preventDefault();
-
                     Swal.fire({
                         title: 'Hapus Data?',
-                        text: "Data yang dihapus tidak dapat dikembalikan",
-                        icon: 'error',
+                        text: "Data tidak dapat dikembalikan!",
+                        icon: 'warning',
                         showCancelButton: true,
                         confirmButtonColor: '#dc3545',
-                        cancelButtonColor: '#6c757d',
-                        confirmButtonText: 'Ya, Hapus',
-                        cancelButtonText: 'Batal'
+                        confirmButtonText: 'Ya, Hapus'
                     }).then((result) => {
-
                         if (result.isConfirmed) {
-
-                            Swal.fire({
-                                title: 'Terhapus!',
-                                text: 'Kategori berhasil dihapus',
-                                icon: 'success',
-                                timer: 1500,
-                                showConfirmButton: false
-                            });
-
-                            setTimeout(() => {
-                                form.submit();
-                            }, 1500);
-
+                            form.submit();
                         }
-
                     });
-
                 });
-
             });
 
+            // Helper function agar kode lebih rapi (Toast Kanan Atas)
+            function showSuccessToast(msg) {
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: msg,
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true
+                });
+            }
+        });
+    </script> -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            // 1. NOTIFIKASI SUKSES (Muncul setelah halaman dimuat kembali)
+            {% for message in messages %}
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: '{{ message|escapejs }}',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true
+                });
+            {% endfor %}
+
+            // 2. TAMBAH (Konfirmasi saja, tanpa notifikasi tambahan)
+            document.querySelectorAll(".form-tambah").forEach(form => {
+                form.addEventListener("submit", function (e) {
+                    e.preventDefault();
+                    Swal.fire({
+                        title: 'Simpan Data?',
+                        text: "Data akan ditambahkan",
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonColor: '#198754',
+                        confirmButtonText: 'Ya, Simpan'
+                    }).then((result) => {
+                        if (result.isConfirmed) form.submit();
+                    });
+                });
+            });
+
+            // 3. EDIT (Konfirmasi saja)
+            document.querySelectorAll(".form-edit").forEach(form => {
+                form.addEventListener("submit", function (e) {
+                    e.preventDefault();
+                    Swal.fire({
+                        title: 'Update Data?',
+                        text: "Perubahan akan disimpan",
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonColor: '#ffc107',
+                        confirmButtonText: 'Ya, Update'
+                    }).then((result) => {
+                        if (result.isConfirmed) form.submit();
+                    });
+                });
+            });
+
+            // 4. DELETE (Konfirmasi saja)
+            document.querySelectorAll(".form-delete").forEach(form => {
+                form.addEventListener("submit", function (e) {
+                    e.preventDefault();
+                    Swal.fire({
+                        title: 'Hapus Data?',
+                        text: "Data tidak dapat dikembalikan!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#dc3545',
+                        confirmButtonText: 'Ya, Hapus'
+                    }).then((result) => {
+                        if (result.isConfirmed) form.submit();
+                    });
+                });
+            });
         });
     </script>
 

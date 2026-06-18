@@ -105,70 +105,46 @@ def dashboard(request):
 # =========================
 @login_required
 def kategori_list(request):
-
     q = request.GET.get('q', '')
-
     kategori_qs = Kategori.objects.all().order_by('nama')
-
     if q:
         kategori_qs = kategori_qs.filter(
             nama__icontains=q
         )
-
     # PAGINATION
     paginator = Paginator(kategori_qs, 6)  # 10 per halaman
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-
     context = {
         'kategori_list': page_obj,  # penting: ganti ini
         'page_obj': page_obj,
         'q': q,
     }
-
     return render(request, 'orders/kategori_list.html', context)
 
 
 @login_required
 def kategori_create(request):
-
     if request.method == 'POST':
-
         nama = request.POST.get('nama')
-
-        Kategori.objects.create(
-            nama=nama
-        )
-
+        Kategori.objects.create(nama=nama)
+        messages.success(request, 'Kategori berhasil ditambahkan!')
     return redirect('kategori_list')
-
 
 @login_required
 def kategori_edit(request, pk):
-
-    kategori = get_object_or_404(
-        Kategori,
-        pk=pk
-    )
-
+    kategori = get_object_or_404(Kategori, pk=pk)
     if request.method == 'POST':
-
         kategori.nama = request.POST.get('nama')
         kategori.save()
-
+        messages.success(request, 'Kategori berhasil diupdate!')
     return redirect('kategori_list')
-
 
 @login_required
 def kategori_delete(request, pk):
-
-    kategori = get_object_or_404(
-        Kategori,
-        pk=pk
-    )
-
+    kategori = get_object_or_404(Kategori, pk=pk)
     kategori.delete()
-
+    messages.success(request, 'Kategori berhasil dihapus!')
     return redirect('kategori_list')
 
 
@@ -338,16 +314,7 @@ def update_bahan(request, pesanan_id):
     except Exception as e:
         print("Update bahan error:", e)
         return JsonResponse({'success': False, 'error': str(e)})
-    
-@login_required
-def delete_pesanan(request, id):
-    pesanan = get_object_or_404(Pesanan, id=id)
 
-    pesanan.delete()
-
-    messages.success(request, "Data pesanan berhasil dihapus.")
-
-    return redirect('riwayat_pesanan')
 
 # =========================
 # REKAP PESANAN
@@ -363,6 +330,16 @@ def rekap_pesanan(request, pesanan_id):
     }
     return render(request, "orders/rekap.html", context)
 
+    
+@login_required
+def delete_pesanan(request, id):
+    pesanan = get_object_or_404(Pesanan, id=id)
+
+    pesanan.delete()
+
+    messages.success(request, "Data pesanan berhasil dihapus.")
+
+    return redirect('riwayat_pesanan')
 
 # =========================
 # EXPORT CSV
@@ -497,31 +474,25 @@ def bahan_create(request):
             kategori=kategori,
             satuan=satuan
         )
-
+        messages.success(request, 'Bahan berhasil ditambahkan!')
         return redirect("master_bahan")
 
     return redirect("master_bahan")
-
 
 @login_required
 def bahan_edit(request, pk):
 
     bahan = get_object_or_404(Bahan, pk=pk)
-
     if request.method == "POST":
-
         bahan.nama = request.POST["nama"]
-
         kategori = get_object_or_404(
             Kategori,
             id=request.POST.get("kategori")
         )
-
         bahan.kategori = kategori
         bahan.satuan = request.POST["satuan"]
-
         bahan.save()
-
+        messages.success(request, 'Bahan berhasil diupdate!')
         return redirect("master_bahan")
 
     return render(request, "orders/bahan_form.html", {
@@ -530,15 +501,14 @@ def bahan_edit(request, pk):
         "kategori_choices": Kategori.objects.all()
     })
 
-
 @login_required
 def bahan_delete(request, pk):
     bahan = get_object_or_404(Bahan, pk=pk)
 
     if request.method == "POST":
         bahan.delete()
+        messages.success(request, 'Bahan berhasil dihapus!')
         return redirect("master_bahan")
-
     return render(request, "orders/bahan_confirm_delete.html", {
         "bahan": bahan
     })

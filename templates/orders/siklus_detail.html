@@ -117,6 +117,39 @@
                             </table>
                         </div>
                     </div>
+                    
+                    <!-- PAGINASI -->
+                    <div class="d-flex justify-content-center mt-3 mb-4">
+                        <nav>
+                            <ul class="pagination pagination-sm">
+                                
+                                {% if detail_list.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ detail_list.previous_page_number }}{% if filter_waktu %}&filter_waktu={{ filter_waktu }}{% endif %}">&laquo;</a>
+                                </li>
+                                {% endif %}
+
+                                {% for num in detail_list.paginator.page_range %}
+                                    {% if detail_list.number == num %}
+                                        <li class="page-item active">
+                                            <span class="page-link">{{ num }}</span>
+                                        </li>
+                                    {% else %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ num }}{% if filter_waktu %}&filter_waktu={{ filter_waktu }}{% endif %}">{{ num }}</a>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+
+                                {% if detail_list.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ detail_list.next_page_number }}{% if filter_waktu %}&filter_waktu={{ filter_waktu }}{% endif %}">&raquo;</a>
+                                </li>
+                                {% endif %}
+                                
+                            </ul>
+                        </nav>
+                    </div>
                 </div>
             </div>
         </div>

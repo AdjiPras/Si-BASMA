@@ -537,5 +537,63 @@
     </div>
     {% endfor %}
 
+    <!-- ALERT -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // 1. Notifikasi Django (Muncul saat halaman load)
+            {% if messages %}
+                {% for message in messages %}
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: '{{ message|escapejs }}',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true
+                    });
+                {% endfor %}
+            {% endif %}
+
+            // 2. Konfirmasi Tambah/Edit (Menggunakan event listener pada form)
+            const forms = document.querySelectorAll(".form-tambah, .form-edit, .form-delete");
+            
+            forms.forEach(form => {
+                form.addEventListener("submit", function (e) {
+                    e.preventDefault();
+                    
+                    let title = "Konfirmasi";
+                    let text = "Apakah Anda yakin?";
+                    let color = "#025697";
+                    let icon = "question";
+
+                    if (form.classList.contains("form-tambah")) {
+                        title = "Simpan Data?"; text = "Bahan akan ditambahkan."; color = "#198754";
+                    } else if (form.classList.contains("form-edit")) {
+                        title = "Update Data?"; text = "Perubahan akan disimpan."; color = "#ffc107";
+                    } else if (form.classList.contains("form-delete")) {
+                        title = "Hapus Data?"; text = "Data tidak dapat dikembalikan!"; color = "#dc3545"; icon = "warning";
+                    }
+
+                    Swal.fire({
+                        title: title,
+                        text: text,
+                        icon: icon,
+                        showCancelButton: true,
+                        confirmButtonColor: color,
+                        cancelButtonColor: '#6c757d',
+                        confirmButtonText: 'Ya, Lanjutkan'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+
 </main>
 {% endblock %}
