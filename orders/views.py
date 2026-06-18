@@ -702,7 +702,7 @@ def kelola_menu_siklus(request, siklus_id):
     # Menampilkan data
     context = {
         'siklus': siklus, 
-        'bahan_list': Bahan.objects.all(),
-        'detail_list': MenuSiklus.objects.filter(siklus=siklus)
+        'bahan_list': Bahan.objects.all().order_by('nama'),
+        'detail_list': MenuSiklus.objects.filter(siklus=siklus).order_by('waktu_makan', 'bahan__nama')
     }
     return render(request, 'siklus_detail.html', context)

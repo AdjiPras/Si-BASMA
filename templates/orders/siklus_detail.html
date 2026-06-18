@@ -42,7 +42,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <select name="bahan_id" class="form-select" required>
-                                        {% for b in bahan_list %}
+                                        {% for b in bahan_list|dictsort:"nama" %}
                                             <option value="{{b.id}}">{{b.nama}} ({{b.satuan}})</option>
                                         {% endfor %}
                                     </select>
@@ -117,7 +117,7 @@
                             </table>
                         </div>
                     </div>
-                    
+
                     <!-- PAGINASI -->
                     <div class="d-flex justify-content-center mt-3 mb-4">
                         <nav>
