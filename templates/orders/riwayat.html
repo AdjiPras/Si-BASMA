@@ -17,7 +17,6 @@
             </div>
             {% endif %}
             <div class="row">
-                
                 <div class="col-sm-6">
                     <h3 class="mb-0">Riwayat Pesanan</h3>
                 </div>
@@ -44,51 +43,57 @@
                                 <h3 class="card-title">Daftar Riwayat Pesanan</h3>
                             </div>
 
-                            <div class="text-end mt-2">
-                                <button class="btn btn-warning btn-sm me-3" id="toggleEdit">
-                                    <i class="bi bi-pencil"> </i>&nbsp;
-                                    <b>Edit</b> 
-                                </button>
+                            <!-- TOMBOL NAVIGASI & AKSI -->
+                            <div class="d-flex justify-content-between align-items-center px-3 mt-3">
+                                <div>
+                                    <!-- Tombol Baru untuk Cetak Checklist -->
+                                    <button class="btn btn-info btn-sm text-white" id="printSelectedBtn" disabled>
+                                        <i class="bi bi-printer-fill"></i>&nbsp;
+                                        <b>Cetak Terpilih (<span id="selectedCount">0</span>)</b>
+                                    </button>
+                                </div>
+                                <div class="text-end">
+                                    <button class="btn btn-warning btn-sm me-2" id="toggleEdit">
+                                        <i class="bi bi-pencil"> </i>&nbsp;
+                                        <b>Edit</b> 
+                                    </button>
 
-                                <button class="btn btn-primary btn-sm d-none" id="saveAll">
-                                    <i class="bi bi-download"> </i>&nbsp;
-                                    <b>Simpan Perubahan</b>
-                                </button>
+                                    <button class="btn btn-primary btn-sm d-none" id="saveAll">
+                                        <i class="bi bi-download"> </i>&nbsp;
+                                        <b>Simpan Perubahan</b>
+                                    </button>
+                                </div>
                             </div>
 
                             <div class="card-body">
                                 <table class="table table-bordered table-hover">
                                     <thead class="text-center">
                                         <tr>
+                                            <!-- Checkbox Pilih Semua -->
+                                            <th style="width: 40px">
+                                                <input type="checkbox" class="form-check-input" id="selectAll">
+                                            </th>
                                             <th style="width: 50px">#</th>
-
-                                            <th style="width: 180px">
-                                                Tanggal
-                                            </th>
-
-                                            <th style="width: 200px">
-                                                Siklus
-                                            </th>
-
-                                            <th style="width: 150px">
-                                                Jumlah Pasien
-                                            </th>
-
-                                            <th style="width: 120px">
-                                                Aksi
-                                            </th>
+                                            <th style="width: 180px">Tanggal</th>
+                                            <th style="width: 200px">Siklus</th>
+                                            <th style="width: 150px">Jumlah Pasien</th>
+                                            <th style="width: 120px">Aksi</th>
                                         </tr>
                                     </thead>
 
                                     <tbody>
                                         {% for pesanan in page_obj %}
                                         <tr class="align-middle" data-id="{{ pesanan.id }}">
+                                            
+                                            <!-- Checkbox Item -->
+                                            <td class="text-center">
+                                                <input type="checkbox" class="form-check-input row-checkbox" data-id="{{ pesanan.id }}">
+                                            </td>
 
                                             <td class="text-center">{{ forloop.counter }}</td>
 
                                             <!-- TANGGAL -->
                                             <td class="text-center">
-
                                                 <!-- VIEW MODE -->
                                                 <span class="view-mode tanggal-text">
                                                     {{ pesanan.tanggal_pemesanan|date:"Y-m-d" }}
@@ -102,7 +107,6 @@
                                                         value="{{ pesanan.tanggal_pemesanan|date:'Y-m-d' }}"
                                                     >
                                                 </div>
-
                                             </td>
 
                                             <!-- SIKLUS -->
@@ -118,9 +122,8 @@
                                                 </select>
                                             </td>
 
-                                            <!-- TOTAL PASIEN (EDITABLE BARU) -->
+                                            <!-- TOTAL PASIEN -->
                                             <td class="text-center">
-
                                                 <span class="view-mode total-text">
                                                     {{ pesanan.jumlah_pasien|default:0 }}
                                                 </span>
@@ -151,69 +154,41 @@
                                 </table>
                             </div>
 
-                            <!-- PAGINATION ALA ADMINLTE -->
+                            <!-- PAGINATION -->
                             <div class="d-flex justify-content-center mt-2 mb-4">
-
                                 <ul class="pagination pagination-sm m-0 float-end">
-
                                     {% if page_obj.has_previous %}
                                     <li class="page-item">
-
-                                        <a class="page-link"
-                                        href="?page=1{% if q %}&q={{ q }}{% endif %}{% if kategori_aktif %}&kategori={{ kategori_aktif }}{% endif %}">
-
+                                        <a class="page-link" href="?page=1{% if q %}&q={{ q }}{% endif %}{% if kategori_aktif %}&kategori={{ kategori_aktif }}{% endif %}">
                                             &laquo;
-
                                         </a>
-
                                     </li>
-
                                     <li class="page-item">
-
-                                        <a class="page-link"
-                                        href="?page={{ page_obj.previous_page_number }}{% if q %}&q={{ q }}{% endif %}{% if kategori_aktif %}&kategori={{ kategori_aktif }}{% endif %}">
-
+                                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if q %}&q={{ q }}{% endif %}{% if kategori_aktif %}&kategori={{ kategori_aktif }}{% endif %}">
                                             Prev
-
                                         </a>
-
                                     </li>
                                     {% endif %}
 
                                     <li class="page-item active">
-
                                         <span class="page-link bg-primary border-primary">
                                             {{ page_obj.number }}
                                         </span>
-
                                     </li>
 
                                     {% if page_obj.has_next %}
                                     <li class="page-item">
-
-                                        <a class="page-link"
-                                        href="?page={{ page_obj.next_page_number }}{% if q %}&q={{ q }}{% endif %}{% if kategori_aktif %}&kategori={{ kategori_aktif }}{% endif %}">
-
+                                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if q %}&q={{ q }}{% endif %}{% if kategori_aktif %}&kategori={{ kategori_aktif }}{% endif %}">
                                             Next
-
                                         </a>
-
                                     </li>
-
                                     <li class="page-item">
-
-                                        <a class="page-link"
-                                        href="?page={{ page_obj.paginator.num_pages }}{% if q %}&q={{ q }}{% endif %}{% if kategori_aktif %}&kategori={{ kategori_aktif }}{% endif %}">
-
+                                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if q %}&q={{ q }}{% endif %}{% if kategori_aktif %}&kategori={{ kategori_aktif }}{% endif %}">
                                             &raquo;
-
                                         </a>
-
                                     </li>
                                     {% endif %}
-
                                 </ul>
-
                             </div>
 
                         </div>
@@ -230,132 +205,86 @@
                 {% endif %}
             </div>
         </div>
-
     </div>
-
 </main>
 
-<!-- AREA CETAK -->
+<!-- AREA CETAK SINGLE (Lama) -->
 <div id="print-area" class="d-none">
-
     <style>
-
         #print-area{
             padding: 30px;
             font-family: Arial, sans-serif;
             color: #000;
         }
-
-        /* ======================
-        HEADER
-        ====================== */
         .print-header{
             border-bottom: 3px solid #025697;
             padding-bottom: 15px;
             margin-bottom: 25px;
         }
-
         .print-header table{
             width: 100%;
         }
-
         .print-logo{
             width: 90px;
         }
-
         .instansi-title{
             font-size: 24px;
             font-weight: bold;
             color: #025697;
             margin-bottom: 5px;
         }
-
         .instansi-info{
             font-size: 13px;
             line-height: 1.5;
         }
-
-        /* ======================
-        TITLE
-        ====================== */
-        .invoice-title{
-            text-align: center;
-            margin-top: 25px;
-            margin-bottom: 30px;
-        }
-
-        .invoice-title h2{
-            margin: 0;
-            color: #025697;
-        }
-
-        /* ======================
-        INFO
-        ====================== */
         .info-section{
             margin-bottom: 25px;
         }
-
         .info-section p{
             margin-bottom: 8px;
         }
-
-        /* ======================
-        TABLE
-        ====================== */
         .print-table{
             width: 100%;
             border-collapse: collapse;
         }
-
         .print-table th,
         .print-table td{
             border: 1px solid #000;
             padding: 10px;
         }
-
         .print-table th{
             background: #025697;
-            color: rgb(26, 24, 24);
+            color: white;
             text-align: center;
         }
-
         .text-center{
             text-align: center;
         }
-
-        /* ======================
-        FOOTER
-        ====================== */
         .print-footer{
             margin-top: 60px;
             width: 100%;
         }
-
         .ttd{
             width: 250px;
             margin-left: auto;
             text-align: center;
         }
-
         .ttd-space{
             height: 80px;
         }
+        .info-label {
+            display: inline-block;
+            width: 100px;
+        }
 
-        /* ======================
-        PRINT ONLY
-        ====================== */
         @media print {
-
             body *{
                 visibility: hidden;
             }
-
             #print-area,
             #print-area *{
                 visibility: visible;
             }
-
             #print-area{
                 position: absolute;
                 left: 0;
@@ -363,103 +292,45 @@
                 width: 100%;
                 background: white;
             }
-
-            .instansi-title{
-                font-size: 26px;
-                font-weight: bold;
-                color: #025697;
-                margin-bottom: 8px;
-            }
-
-            .instansi-info{
-                font-size: 14px;
-                line-height: 1.7;
-            }
-
             .print-logo{
                 display: block;
             }
-
-        }
-
-
-        @media print {
             .row { display: flex; flex-wrap: wrap; }
             .col-6 { flex: 0 0 50%; max-width: 50%; }
         }
-
-        /* CSS untuk merapikan titik dua */
-        .info-label {
-            display: inline-block;
-            width: 100px; /* Lebar tetap untuk teks label */
-        }
-
     </style>
 
     <!-- HEADER -->
     <div class="print-header">
-
         <table>
             <tr>
-
-                <!-- LOGO KIRI -->
                 <td style="width: 35%; vertical-align: middle;">
-
-                    <img src="{% static 'assets/images/si-basma-logo.png' %}"
-                        class="print-logo"
-                        style="width: 260px; height: auto;">
-
+                    <img src="{% static 'assets/images/si-basma-logo.png' %}" class="print-logo" style="width: 260px; height: auto;">
                 </td>
-
-                <!-- INSTANSI KANAN -->
                 <td style="width: 65%; vertical-align: middle; text-align: right;">
-
-                    <div class="instansi-title">
-                        INSTALASI GIZI RS BASMA
-                    </div>
-
+                    <div class="instansi-title">INSTALASI GIZI RS BASMA</div>
                     <div class="instansi-info">
                         Jl. Kaliurang KM 10, Sleman, Yogyakarta <br>
                         Telp: (0274) 123456 <br>
                         Email: gizirsbasma@gmail.com
                     </div>
-
                 </td>
-
             </tr>
         </table>
-
     </div>
-
-    <!-- TITLE -->
-    <!-- <div class="invoice-title">
-        <h2>Detail Pemesanan Bahan</h2>
-    </div> -->
 
     <!-- INFO -->
     <div class="info-section">
         <div class="row">
             <div class="col-6">
-                <p class="mb-1">
-                    <span class="info-label"><b>Tanggal</b></span>: <span id="print_tanggal"></span>
-                </p>
-                <p class="mb-1">
-                    <span class="info-label"><b>Siklus</b></span>: <span id="print_siklus"></span>
-                </p>
-                <p class="mb-1">
-                    <span class="info-label"><b>Waktu</b></span>: <span id="print_waktu"></span>
-                </p>
+                <p class="mb-1"><span class="info-label"><b>Tanggal</b></span>: <span id="print_tanggal"></span></p>
+                <p class="mb-1"><span class="info-label"><b>Siklus</b></span>: <span id="print_siklus"></span></p>
+                <p class="mb-1"><span class="info-label"><b>Waktu</b></span>: <span id="print_waktu"></span></p>
             </div>
-
             <div class="col-6" style="display: flex; justify-content: flex-end;">
                 <div style="text-align: left;">
-                    <p class="mb-1">
-                        <span class="info-label"><b>Pasien</b></span>: <span id="print_total"> </span>
-                        Orang
-                    </p>
-                    <p class="mb-1">
-                        <span class="info-label"><b>User</b></span>: <span id="print_user"></span>
-                    </p>
+                    <p class="mb-1"><span class="info-label"><b>Pasien</b></span>: <span id="print_total"> </span> Orang</p>
+                    <p class="mb-1"><span class="info-label"><b>User</b></span>: <span id="print_user"></span></p>
                 </div>
             </div>
         </div>
@@ -467,7 +338,6 @@
 
     <!-- TABLE -->
     <table class="print-table">
-
         <thead>
             <tr>
                 <th width="50">No</th>
@@ -476,47 +346,112 @@
                 <th>Keterangan</th>
             </tr>
         </thead>
-
-        <tbody id="print_items">
-        </tbody>
-
+        <tbody id="print_items"></tbody>
     </table>
 
     <!-- FOOTER -->
     <div class="print-footer">
-
         <div class="ttd">
-
-            Yogyakarta,
-            <span id="print_tanggal_footer"></span>
-
+            Yogyakarta, <span id="print_tanggal_footer"></span>
             <div class="ttd-space"></div>
-
-            <strong>
-                <span id="print_user_footer"></span>
-            </strong>
-
-            <br>
+            <strong><span id="print_user_footer"></span></strong><br>
             Operator Si-BASMA
-
         </div>
-
     </div>
+</div>
 
+<!-- AREA CETAK MASSAL (BANYAK DATA) -->
+<div id="print-area-multiple" class="d-none">
+    <style>
+        #print-area-multiple {
+            padding: 30px;
+            font-family: Arial, sans-serif;
+            color: #000;
+        }
+        .page-break {
+            page-break-after: always;
+            break-after: page;
+            margin-bottom: 40px; /* Jarak visual jika tidak dicetak fisik */
+        }
+        /* Menghilangkan page break di elemen terakhir agar tidak ada halaman kosong di akhir */
+        .page-break:last-child {
+            page-break-after: avoid;
+            break-after: avoid;
+            margin-bottom: 0;
+        }
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #print-area-multiple,
+            #print-area-multiple * {
+                visibility: visible;
+            }
+            #print-area-multiple {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                background: white;
+            }
+        }
+    </style>
+    <div id="multiple-records-container">
+        <!-- Template data pesanan massal akan di-inject ke sini oleh Javascript -->
+    </div>
 </div>
 
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- SCRIPT UTAMA - KONTROL CHECKBOX & EDIT MODE -->
 <script>
     let editMode = false;
 
     const toggleEditBtn = document.getElementById('toggleEdit');
     const saveAllBtn = document.getElementById('saveAll');
+    const selectAllCheckbox = document.getElementById('selectAll');
+    const rowCheckboxes = document.querySelectorAll('.row-checkbox');
+    const printSelectedBtn = document.getElementById('printSelectedBtn');
+    const selectedCountSpan = document.getElementById('selectedCount');
+
+    // ===================================
+    // MANAJEMEN CHECKBOX & SELECTION
+    // ===================================
+    function updateSelectedCount() {
+        const checkedCount = document.querySelectorAll('.row-checkbox:checked').length;
+        selectedCountSpan.innerText = checkedCount;
+        
+        if (checkedCount > 0) {
+            printSelectedBtn.removeAttribute('disabled');
+            printSelectedBtn.classList.replace('btn-info', 'btn-success');
+        } else {
+            printSelectedBtn.setAttribute('disabled', 'true');
+            printSelectedBtn.classList.replace('btn-success', 'btn-info');
+        }
+    }
+
+    if(selectAllCheckbox) {
+        selectAllCheckbox.addEventListener('change', function() {
+            rowCheckboxes.forEach(cb => {
+                cb.checked = selectAllCheckbox.checked;
+            });
+            updateSelectedCount();
+        });
+    }
+
+    rowCheckboxes.forEach(cb => {
+        cb.addEventListener('change', function() {
+            const allChecked = document.querySelectorAll('.row-checkbox:checked').length === rowCheckboxes.length;
+            selectAllCheckbox.checked = allChecked;
+            updateSelectedCount();
+        });
+    });
 
     // =========================
     // TOGGLE EDIT MODE
     // =========================
     toggleEditBtn.addEventListener('click', function () {
-
         editMode = true;
 
         // tampilkan input edit
@@ -534,18 +469,14 @@
         saveAllBtn.classList.remove('d-none');
     });
 
-
     // =========================
     // SAVE ALL
     // =========================
     saveAllBtn.addEventListener('click', function () {
-
         let data = [];
 
         document.querySelectorAll('tr[data-id]').forEach(row => {
-
             const id = row.dataset.id;
-
             const siklus = row.querySelector('.siklus-input').value;
             const tanggal = row.querySelector('.tanggal-input').value;
             const total = row.querySelector('.total-input').value;
@@ -596,208 +527,132 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-
-        // =========================
-        // INIT MODAL (SAFE)
-        // =========================
-        const modalDetailEl = document.getElementById('modalDetail');
         const modalDeleteEl = document.getElementById('modalDelete');
-        const modalPdfEl = document.getElementById('modalPdfPreview');
-
-        const modalDetail = modalDetailEl ? new bootstrap.Modal(modalDetailEl) : null;
         const modalDelete = modalDeleteEl ? new bootstrap.Modal(modalDeleteEl) : null;
-        const modalPdf = modalPdfEl ? new bootstrap.Modal(modalPdfEl) : null;
 
-        let currentPesananId = null;
-        let canvasData = null;
-
-        // =========================
-        // CLICK HANDLER (GLOBAL SAFE)
-        // =========================
         document.addEventListener('click', function (e) {
-
             // =====================
-            // DELETE
+            // DELETE ACTION
             // =====================
             const btnDelete = e.target.closest('.btn-delete');
             if (btnDelete && modalDelete) {
-
-                document.getElementById('formDelete').action =
-                    `/pesanan/delete/${btnDelete.dataset.id}/`;
-
+                document.getElementById('formDelete').action = `/pesanan/delete/${btnDelete.dataset.id}/`;
                 modalDelete.show();
             }
         });
-
-        // =========================
-        // PDF PREVIEW (SAFE)
-        // =========================
-        const previewBtn = document.getElementById('previewPdfBtn');
-        if (previewBtn) {
-
-            previewBtn.addEventListener('click', function (e) {
-                e.preventDefault();
-
-                const modalBody = document.querySelector('#modalDetail .modal-body');
-                if (!modalBody) return;
-
-                html2canvas(modalBody, { scale: 2 }).then(canvas => {
-
-                    canvasData = canvas.toDataURL('image/png');
-
-                    document.getElementById('pdf_preview_container').innerHTML =
-                        `<img src="${canvasData}" class="img-fluid">`;
-
-                    if (modalPdf) modalPdf.show();
-                });
-            });
-        }
-
-        // =========================
-        // DOWNLOAD PDF (SAFE)
-        // =========================
-        const downloadBtn = document.getElementById('downloadPdfBtn');
-        if (downloadBtn) {
-
-            downloadBtn.addEventListener('click', function () {
-
-                if (!canvasData) return;
-
-                const { jsPDF } = window.jspdf;
-                const pdf = new jsPDF('p', 'pt', 'a4');
-
-                const imgProps = pdf.getImageProperties(canvasData);
-                const width = pdf.internal.pageSize.getWidth();
-                const height = (imgProps.height * width) / imgProps.width;
-
-                pdf.addImage(canvasData, 'PNG', 0, 0, width, height);
-
-                const tanggal = document.getElementById('detail_tanggal')?.innerText || 'pesanan';
-
-                pdf.save(`Pesanan_${tanggal}.pdf`);
-            });
-        }
-
     });
 </script>
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- SWEET ALERT DELETE -->
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-
-    // =========================
-    // DELETE SWEET ALERT
-    // =========================
     document.addEventListener('click', function (e) {
-
         const btnDelete = e.target.closest('.btn-delete');
-
         if (btnDelete) {
-
             const id = btnDelete.dataset.id;
-
             Swal.fire({
                 title: 'Hapus Data?',
                 text: "Data pesanan akan dihapus permanen.",
                 icon: 'warning',
-
                 showCancelButton: true,
-
                 confirmButtonColor: '#d33',
                 cancelButtonColor: '#6c757d',
-
                 confirmButtonText: 'Ya, Hapus',
                 cancelButtonText: 'Batal',
-
                 reverseButtons: true,
-
                 backdrop: true,
                 allowOutsideClick: false,
-
                 customClass: {
                     popup: 'shadow rounded-4'
                 }
-
             }).then((result) => {
-
                 if (result.isConfirmed) {
-
-                    // redirect delete
                     window.location.href = `/pesanan/delete/${id}/`;
-
                 }
-
             });
         }
     });
-
 });
 </script>
 
-<!-- CETAK -->
+<!-- SCRIPT CETAK SINGLE & MASAL (CHECKLIST) -->
 <script>
-function printPage() {
+    // Fungsi pembantu untuk format tanggal Indonesia
+    function formatTanggalIndonesia(tanggalStr) {
+        if (!tanggalStr) return '';
+        const namaBulan = [
+            "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+            "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+        ];
+        const d = new Date(tanggalStr);
+        const day = d.getDate();
+        const month = namaBulan[d.getMonth()];
+        const year = d.getFullYear();
+        return `${day} ${month} ${year}`;
+    }
 
-    document.querySelector('main').style.display = 'none';
-
+    // Fungsi Cetak Layar Tunggal
+    function printSinglePage() {
+        document.querySelector('main').style.display = 'none';
         const printArea = document.getElementById('print-area');
-
         printArea.classList.remove('d-none');
 
         window.print();
 
         printArea.classList.add('d-none');
+        document.querySelector('main').style.display = '';
+    }
 
+    // Fungsi Cetak Layar Massal
+    function printMultiplePage() {
+        document.querySelector('main').style.display = 'none';
+        const printAreaMultiple = document.getElementById('print-area-multiple');
+        printAreaMultiple.classList.remove('d-none');
+
+        window.print();
+
+        printAreaMultiple.classList.add('d-none');
         document.querySelector('main').style.display = '';
     }
 
     document.addEventListener("DOMContentLoaded", function () {
-
-        // Fungsi pembantu untuk format tanggal Indonesia
-        function formatTanggalIndonesia(tanggalStr) {
-            if (!tanggalStr) return '';
-            const namaBulan = [
-                "Januari", "Februari", "Maret", "April", "Mei", "Juni",
-                "Juli", "Agustus", "September", "Oktober", "November", "Desember"
-            ];
-            const d = new Date(tanggalStr);
-            const day = d.getDate();
-            const month = namaBulan[d.getMonth()];
-            const year = d.getFullYear();
-            return `${day} ${month} ${year}`;
-        }
-
+        
+        // ===================================
+        // PROSES CETAK DATA SINGLE
+        // ===================================
         document.addEventListener("click", async function (e) {
-
             const btnPrint = e.target.closest('.btn-print');
-
             if (!btnPrint) return;
 
             const id = btnPrint.dataset.id;
 
-            try {
+            // Indikator Loading Swal
+            Swal.fire({
+                title: 'Sedang Memuat...',
+                text: 'Mengambil data detail pesanan',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
 
-                // AMBIL DATA DETAIL
+            try {
                 const response = await fetch(`/riwayat/detail/${id}/`);
                 const data = await response.json();
+                Swal.close();
 
-                console.log(data);
-
-                // KONVERSI TANGGAL
                 const tanggalFormat = formatTanggalIndonesia(data.tanggal);
 
-                // HEADER (INFO)
+                // Isi data single ke #print-area
                 document.getElementById('print_tanggal').innerText = tanggalFormat;
                 document.getElementById('print_siklus').innerText = data.siklus;
                 document.getElementById('print_waktu').innerText = data.waktu;
                 document.getElementById('print_total').innerText = data.total;
                 document.getElementById('print_user').innerText = data.user;
 
-                // FOOTER (TTD)
                 document.getElementById('print_tanggal_footer').innerText = tanggalFormat;
                 document.getElementById('print_user_footer').innerText = data.user;
 
-                // TABLE ITEMS
                 let html = '';
                 data.items.forEach((item, index) => {
                     html += `
@@ -809,16 +664,13 @@ function printPage() {
                         </tr>
                     `;
                 });
-
                 document.getElementById('print_items').innerHTML = html;
 
-                // CETAK
-                printPage();
+                printSinglePage();
 
             } catch (err) {
-
                 console.error(err);
-
+                Swal.close();
                 Swal.fire({
                     icon: 'error',
                     title: 'Gagal',
@@ -826,7 +678,149 @@ function printPage() {
                 });
             }
         });
+
+        // ==========================================
+        // PROSES CETAK MASSAL (CHECKED ITEMS)
+        // ==========================================
+        const printSelectedBtn = document.getElementById('printSelectedBtn');
+        printSelectedBtn.addEventListener('click', async function () {
+            const checkedCheckboxes = document.querySelectorAll('.row-checkbox:checked');
+            if (checkedCheckboxes.length === 0) return;
+
+            const ids = Array.from(checkedCheckboxes).map(cb => cb.dataset.id);
+
+            // Tampilkan loading progress bar
+            Swal.fire({
+                title: 'Menyiapkan Dokumen...',
+                html: `Memproses data ke-<b>0</b> dari ${ids.length} pesanan.`,
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            const container = document.getElementById('multiple-records-container');
+            container.innerHTML = ''; // bersihkan cetakan lama
+
+            try {
+                let successCount = 0;
+                
+                // Ambil data satu-persatu secara asynchronous dan gabungkan ke template
+                for (let i = 0; i < ids.length; i++) {
+                    const id = ids[i];
+                    
+                    // Update teks loading Swal
+                    Swal.getHtmlContainer().querySelector('b').textContent = (i + 1);
+
+                    const response = await fetch(`/riwayat/detail/${id}/`);
+                    if (!response.ok) throw new Error(`Gagal mengambil data ID: ${id}`);
+                    
+                    const data = await response.json();
+                    const tanggalFormat = formatTanggalIndonesia(data.tanggal);
+
+                    // Buat elemen per halaman pesanan
+                    const recordDiv = document.createElement('div');
+                    recordDiv.className = 'page-break';
+
+                    // Buat HTML Table Item
+                    let itemsHtml = '';
+                    data.items.forEach((item, index) => {
+                        itemsHtml += `
+                            <tr>
+                                <td style="text-align: center;">${index + 1}</td>
+                                <td>${item.bahan}</td>
+                                <td style="text-align: center;">${item.qty}</td>
+                                <td>${item.keterangan || '-'}</td>
+                            </tr>
+                        `;
+                    });
+
+                    // Susun Layout Struktur Dokumen Cetak (menggunakan style inline yang aman & solid)
+                    recordDiv.innerHTML = `
+                        <!-- HEADER -->
+                        <div class="print-header">
+                            <table style="width:100%;">
+                                <tr>
+                                    <td style="width: 35%; vertical-align: middle;">
+                                        <img src="{% static 'assets/images/si-basma-logo.png' %}" style="width: 260px; height: auto;">
+                                    </td>
+                                    <td style="width: 65%; vertical-align: middle; text-align: right;">
+                                        <div class="instansi-title">INSTALASI GIZI RS BASMA</div>
+                                        <div class="instansi-info">
+                                            Jl. Kaliurang KM 10, Sleman, Yogyakarta <br>
+                                            Telp: (0274) 123456 <br>
+                                            Email: gizirsbasma@gmail.com
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <!-- INFO -->
+                        <div class="info-section">
+                            <div class="row">
+                                <div class="col-6">
+                                    <p class="mb-1"><span class="info-label"><b>Tanggal</b></span>: <span>${tanggalFormat}</span></p>
+                                    <p class="mb-1"><span class="info-label"><b>Siklus</b></span>: <span>${data.siklus}</span></p>
+                                    <p class="mb-1"><span class="info-label"><b>Waktu</b></span>: <span>${data.waktu}</span></p>
+                                </div>
+                                <div class="col-6" style="display: flex; justify-content: flex-end;">
+                                    <div style="text-align: left;">
+                                        <p class="mb-1"><span class="info-label"><b>Pasien</b></span>: <span>${data.total}</span> Orang</p>
+                                        <p class="mb-1"><span class="info-label"><b>User</b></span>: <span>${data.user}</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TABLE -->
+                        <table class="print-table">
+                            <thead>
+                                <tr>
+                                    <th width="50">No</th>
+                                    <th>Nama Bahan</th>
+                                    <th width="120">Qty</th>
+                                    <th>Keterangan</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${itemsHtml}
+                            </tbody>
+                        </table>
+
+                        <!-- FOOTER -->
+                        <div class="print-footer">
+                            <div class="ttd">
+                                Yogyakarta, <span>${tanggalFormat}</span>
+                                <div class="ttd-space"></div>
+                                <strong><span>${data.user}</span></strong><br>
+                                Operator Si-BASMA
+                            </div>
+                        </div>
+                    `;
+
+                    container.appendChild(recordDiv);
+                    successCount++;
+                }
+
+                // Tutup loading
+                Swal.close();
+
+                // Lakukan pencetakan massal
+                if (successCount > 0) {
+                    printMultiplePage();
+                }
+
+            } catch (err) {
+                console.error(err);
+                Swal.close();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal',
+                    text: 'Terjadi kesalahan saat memproses salah satu pesanan.'
+                });
+            }
+        });
     });
 </script>
-
 {% endblock %}

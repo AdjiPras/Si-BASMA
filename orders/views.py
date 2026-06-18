@@ -339,7 +339,15 @@ def update_bahan(request, pesanan_id):
         print("Update bahan error:", e)
         return JsonResponse({'success': False, 'error': str(e)})
     
+@login_required
+def delete_pesanan(request, id):
+    pesanan = get_object_or_404(Pesanan, id=id)
 
+    pesanan.delete()
+
+    messages.success(request, "Data pesanan berhasil dihapus.")
+
+    return redirect('riwayat_pesanan')
 
 # =========================
 # REKAP PESANAN
@@ -694,22 +702,37 @@ def get_resep_siklus(request):
     return JsonResponse({'success': True, 'data': data_bahan})
 
 
+@login_required
 def kelola_menu_siklus(request, siklus_id):
-    siklus = Siklus.objects.get(id=siklus_id)
-    if request.method == 'POST':
-        # Ambil data dari form input (bahan, qty, waktu_makan)
-        bahan_id = request.POST.get('bahan')
-        qty = request.POST.get('qty')
-        waktu = request.POST.get('waktu_makan')
-        
-        # Simpan ke tabel MenuSiklus
-        MenuSiklus.objects.create(
-            siklus=siklus,
-            bahan_id=bahan_id,
-            qty_standar=qty,
-            waktu_makan=waktu
-        )
-        return redirect('url_halaman_tadi')
+    siklus = get_object_or_404(Siklus, id=siklus_id)
     
-    context = {'siklus': siklus, 'bahan_list': Bahan.objects.all()}
+    if request.method == 'POST':
+        # LOGIKA TAMBAH
+        if 'tambah_bahan' in request.POST:
+            bahan_id = request.POST.get('bahan')
+            qty = request.POST.get('qty')
+            waktu = request.POST.get('waktu_makan')
+            
+            MenuSiklus.objects.create(
+                siklus=siklus,
+                bahan_id=bahan_id,
+                qty_standar=qty,
+                waktu_makan=waktu
+            )
+            messages.success(request, "Bahan berhasil ditambahkan.")
+            return redirect('kelola_menu_siklus', siklus_id=siklus_id)
+
+        # LOGIKA HAPUS
+        elif 'hapus_menu' in request.POST:
+            menu_id = request.POST.get('menu_id')
+            MenuSiklus.objects.filter(id=menu_id).delete()
+            messages.info(request, "Menu siklus berhasil dihapus.")
+            return redirect('kelola_menu_siklus', siklus_id=siklus_id)
+    
+    # Menampilkan data
+    context = {
+        'siklus': siklus, 
+        'bahan_list': Bahan.objects.all(),
+        'detail_list': MenuSiklus.objects.filter(siklus=siklus)
+    }
     return render(request, 'siklus_detail.html', context)

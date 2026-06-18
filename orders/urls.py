@@ -86,6 +86,11 @@ urlpatterns = [
         views.detail_pesanan_json,
         name='detail_pesanan_json'
     ),
+        path(
+        'pesanan/delete/<int:id>/',
+        views.delete_pesanan,
+        name='delete_pesanan'
+    ),
 
     # =========================
     # MASTER BAHAN

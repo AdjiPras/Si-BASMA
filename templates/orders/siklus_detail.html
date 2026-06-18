@@ -28,10 +28,10 @@
                     
                     <div class="card mb-4">
                         <div class="card-header" style="background-color: #025697; color: aliceblue;">
-                            <h3 class="card-title">Tambah Bahan ke Siklus 1</h3>
+                            <h3 class="card-title">Tambah Bahan ke {{ siklus.nama }}</h3>
                         </div>
                         <div class="card-body">
-                            <form method="post" class="row g-2">
+                            <form method="post" class="row g-2 form-tambah">
                                 {% csrf_token %}
                                 <div class="col-md-3">
                                     <select name="waktu_makan" class="form-select" required>
@@ -51,40 +51,22 @@
                                     <input type="number" step="any" name="qty" class="form-control" placeholder="Jumlah" required>
                                 </div>
                                 <div class="col-md-2">
-                                    <button type="submit" name="tambah_bahan" class="btn btn-sm btn-success">
-                                        <i class="bi bi-plus-circle"></i> &nbsp;Tambah Bahan
+                                    <button type="submit" name="tambah_bahan" class="btn btn-success w-100">
+                                        <i class="bi bi-plus-circle"></i> Tambah
                                     </button>
                                 </div>
                             </form>
                         </div>
                     </div>
 
-                    <!-- <div class="card mb-3">
-                        <div class="card-body">
-                            <form method="get" class="row g-2 align-items-center">
-                                <div class="col-auto">
-                                    <label class="col-form-label fw-bold">Filter Waktu:</label>
-                                </div>
-                                <div class="col-auto">
-                                    <select name="filter_waktu" class="form-select form-select-sm" onchange="this.form.submit()">
-                                        <option value="">Semua Waktu</option>
-                                        <option value="PAGI" {% if filter_waktu == 'PAGI' %}selected{% endif %}>PAGI</option>
-                                        <option value="SIANG" {% if filter_waktu == 'SIANG' %}selected{% endif %}>SIANG</option>
-                                        <option value="SORE" {% if filter_waktu == 'SORE' %}selected{% endif %}>SORE</option>
-                                    </select>
-                                </div>
-                            </form>
-                        </div>
-                    </div> -->
-
                     <div class="card">
                         <div class="card-header" style="background-color: #025697; color: aliceblue;">
                             <h3 class="card-title">Daftar Bahan Terpilih</h3>
                         </div>
                         <div class="card-body p-0">
-                            <div class="d-flex ps-3 justify-content-start align-items-center">
+                            <div class="d-flex ps-3 pt-2 justify-content-start align-items-center">
                                 <form method="get" class="row g-2 align-items-center">
-                                    <div class="col-auto p-2">
+                                    <div class="col-auto">
                                         <label class="col-form-label fw-bold">Filter Waktu:</label>
                                     </div>
                                     <div class="col-auto">
@@ -97,7 +79,8 @@
                                     </div>
                                 </form>
                             </div>
-                            <table class="table table-bordered table-hover mb-0">
+                            
+                            <table class="table table-bordered table-hover mt-2">
                                 <thead class="table-light text-center">
                                     <tr>
                                         <th>Waktu</th>
@@ -109,90 +92,31 @@
                                 <tbody>
                                     {% for item in detail_list %}
                                     <tr class="align-middle text-center">
-                                        <!-- <td><span class="badge bg-primary">{{ item.waktu_makan }}</span></td> -->
-                                         <td>
-                                            <span class="badge" 
-                                                style="
-                                                    {% if item.waktu_makan == 'PAGI' %}
-                                                        background-color: #37974F; color: #ffffff;
-                                                    {% elif item.waktu_makan == 'SIANG' %}
-                                                        background-color: #007BFF; color: #ffffff;
-                                                    {% elif item.waktu_makan == 'SORE' %}
-                                                        background-color: #AC7716; color: #ffffff;
-                                                    {% else %}
-                                                        background-color: #6C757D; color: #ffffff;
-                                                    {% endif %}
-                                                ">
+                                        <td>
+                                            <span class="badge" style="background-color: {% if item.waktu_makan == 'PAGI' %}#37974F{% elif item.waktu_makan == 'SIANG' %}#007BFF{% else %}#AC7716{% endif %}; color: #ffffff;">
                                                 {{ item.waktu_makan }}
                                             </span>
                                         </td>
                                         <td class="text-start">{{ item.bahan.nama }}</td>
                                         <td>{{ item.qty_standar }} {{ item.bahan.satuan }}</td>
                                         <td>
-                                            <form method="post" class="d-inline">
+                                            <form method="post" class="d-inline form-delete">
                                                 {% csrf_token %}
                                                 <input type="hidden" name="menu_id" value="{{ item.id }}">
-                                                <button type="submit" name="hapus_bahan" class="btn btn-danger btn-sm" onclick="return confirm('Hapus bahan ini?')">
+                                                <input type="hidden" name="hapus_bahan" value="1"> 
+                                                <button type="submit" class="btn btn-danger btn-sm">
                                                     <i class="bi bi-trash"></i>
                                                 </button>
                                             </form>
                                         </td>
                                     </tr>
                                     {% empty %}
-                                    <tr>
-                                        <td colspan="4" class="text-center text-muted py-3">Belum ada bahan ditambahkan.</td>
-                                    </tr>
+                                    <tr><td colspan="4" class="text-center text-muted py-3">Belum ada bahan ditambahkan.</td></tr>
                                     {% endfor %}
                                 </tbody>
                             </table>
-
-                            <!-- Paginasi -->
-                            <!-- <div class="card-footer d-flex justify-content-center">
-                                <nav aria-label="Page navigation">
-                                    <ul class="pagination pagination-sm m-0">
-                                        {% if page_obj.has_previous %}
-                                            <li class="page-item"><a class="page-link" href="?page=1">&laquo;</a></li>
-                                            <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Prev</a></li>
-                                        {% endif %}
-
-                                        <li class="page-item active"><span class="page-link">{{ page_obj.number }}</span></li>
-
-                                        {% if page_obj.has_next %}
-                                            <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
-                                            <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">&raquo;</a></li>
-                                        {% endif %}
-                                    </ul>
-                                </nav>
-                            </div> -->
-
-                            <div class="card-footer d-flex justify-content-center">
-                                <nav aria-label="Page navigation">
-                                    <ul class="pagination pagination-sm m-0">
-                                        {% if page_obj.has_previous %}
-                                            <li class="page-item">
-                                                <a class="page-link" href="?page=1{% if filter_waktu %}&filter_waktu={{ filter_waktu }}{% endif %}">&laquo;</a>
-                                            </li>
-                                            <li class="page-item">
-                                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if filter_waktu %}&filter_waktu={{ filter_waktu }}{% endif %}">Prev</a>
-                                            </li>
-                                        {% endif %}
-
-                                        <li class="page-item active"><span class="page-link">{{ page_obj.number }}</span></li>
-
-                                        {% if page_obj.has_next %}
-                                            <li class="page-item">
-                                                <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if filter_waktu %}&filter_waktu={{ filter_waktu }}{% endif %}">Next</a>
-                                            </li>
-                                            <li class="page-item">
-                                                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if filter_waktu %}&filter_waktu={{ filter_waktu }}{% endif %}">&raquo;</a>
-                                            </li>
-                                        {% endif %}
-                                    </ul>
-                                </nav>
-                            </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -202,17 +126,67 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+        // 1. Notifikasi Django Messages
         {% for message in messages %}
             Swal.fire({
-                icon: 'success',
-                title: 'Berhasil!',
-                text: '{{ message|escapejs }}', // Menambahkan |escapejs
-                timer: 2000,
-                showConfirmButton: false,
                 toast: true,
-                position: 'top-end'
+                position: 'top-end',
+                icon: '{% if "error" in message.tags %}error{% else %}success{% endif %}',
+                // title: '{{ message|escapejs }}',
+                title: 'Berhasil!',
+                text: '{{ message|escapejs }}',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
             });
         {% endfor %}
+
+        // 2. Konfirmasi Tambah
+        document.querySelector(".form-tambah").addEventListener("submit", function(e) {
+            e.preventDefault(); // Mencegah kirim langsung
+            let form = this;
+            
+            Swal.fire({
+                title: 'Tambah Bahan?',
+                text: "Bahan akan dimasukkan ke dalam daftar siklus.",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#198754',
+                confirmButtonText: 'Ya, Tambah'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Kita buat input hidden untuk memastikan field name="tambah_bahan" ikut terkirim
+                    let hiddenInput = document.createElement("input");
+                    hiddenInput.setAttribute("type", "hidden");
+                    hiddenInput.setAttribute("name", "tambah_bahan");
+                    form.appendChild(hiddenInput);
+                    
+                    form.submit(); // Kirim form
+                }
+            });
+        });
+
+        // 3. Konfirmasi Hapus (Menggunakan Event Delegation)
+        document.addEventListener("submit", function(e) {
+            if (e.target.classList.contains("form-delete")) {
+                e.preventDefault();
+                let form = e.target;
+                
+                Swal.fire({
+                    title: 'Hapus bahan?',
+                    text: "Data yang dihapus tidak dapat dikembalikan!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#dc3545',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Ya, Hapus!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            }
+        });
     });
 </script>
 {% endblock %}
