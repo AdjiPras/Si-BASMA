@@ -43,6 +43,33 @@ urlpatterns = [
     ),
 
     # =========================
+    # PENGGUNA
+    # =========================
+    path(
+        "pengguna/",
+        views.pengguna_list,
+        name="pengguna_list"
+    ),
+
+    path(
+        "pengguna/create/",
+        views.pengguna_create,
+        name="pengguna_create"
+    ),
+
+    path(
+        "pengguna/edit/<int:pk>/",
+        views.pengguna_edit,
+        name="pengguna_edit"
+    ),
+
+    path(
+        "pengguna/delete/<int:pk>/",
+        views.pengguna_delete,
+        name="pengguna_delete"
+    ),
+
+    # =========================
     # SIKLUS
     # =========================
     path('siklus/', views.siklus_list, name='siklus_list'),

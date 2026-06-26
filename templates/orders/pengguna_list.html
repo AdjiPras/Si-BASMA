@@ -1,0 +1,485 @@
+{% extends 'orders/base.html' %}
+{% load static %}
+
+{% block title %}Daftar Pengguna | Si-BASMA{% endblock %}
+
+{% block content %}
+<main class="app-main">
+
+    <div class="app-content-header">
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-sm-6">
+                    <h3 class="mb-0">
+                        Daftar Pengguna
+                    </h3>
+                </div>
+
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-end">
+                        <li class="breadcrumb-item">
+                            <a href="#">Home</a>
+                        </li>
+
+                        <li class="breadcrumb-item active">
+                            Daftar Pengguna
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt-3">
+        <div class="row justify-content-center">
+            <div class="col-lg-9">
+                <div class="card mb-3">
+                    <div class="card-body">
+
+                        <form method="get"
+                            class="row g-2 align-items-center">
+                            <div class="col-md-7">
+                                <input type="text"
+                                    name="q"
+                                    class="form-control"
+                                    placeholder="Cari username, nama, atau email..."
+                                    value="{{ q }}">
+                            </div>
+
+                            <div class="col-md-2">
+                                <button class="btn btn-secondary w-100">
+                                    <i class="bi bi-search"></i>
+                                    Filter
+                                </button>
+                            </div>
+
+                            <div class="col-md-3 text-end">
+                                {% if request.user.is_superuser %}
+                                <button type="button"
+                                        class="btn btn-success btn-sm w-100"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modalTambahPengguna">
+
+                                    <i class="bi bi-plus-circle"></i>
+                                    Tambah Pengguna
+                                </button>
+                                {% endif %}
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+
+                    <div class="card-header" style="background-color: #025697; color: aliceblue;">
+                        <h3 class="card-title">
+                            Daftar Pengguna
+                        </h3>
+                    </div>
+
+                    <div class="card-body">
+
+                        <table class="table table-bordered table-hover">
+
+                            <thead class="text-center">
+                                <tr>
+                                    <th width="10">#</th>
+                                    <th>Username</th>
+                                    <th>Nama Lengkap</th>
+                                    <th>Email</th>
+                                    <th>Role</th> 
+                                    <th width="120">Aksi</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {% for pengguna in page_obj %}
+                                <tr class="align-middle">
+                                    <td class="text-center">
+                                        {{ forloop.counter0|add:page_obj.start_index }}
+                                    </td>
+                                    <td class="text-center">
+                                        {{ pengguna.username }}
+                                    </td>
+                                    <td>
+                                        {{ pengguna.first_name }} {{ pengguna.last_name }}
+                                    </td>
+                                    <td class="text-center">
+                                        {{ pengguna.email }}
+                                    </td>
+                                    <td class="text-center">
+                                        {% if pengguna.is_superuser %}
+                                            <span class="badge px-2 py-2" style="font-size: 12px; border-radius: 8px; background-color: #1049b2 !important; color: #fff !important;">
+                                                Admin
+                                            </span>
+                                        {% elif pengguna.is_staff %}
+                                            <span class="badge px-2 py-2" style="font-size: 12px; border-radius: 8px; background-color: #00ACC1 !important; color: #fff !important;">
+                                                Staff
+                                            </span>
+                                        {% else %}
+                                            <span class="badge px-2 py-2" style="font-size: 12px; border-radius: 8px; background-color: #43A047 !important; color: #fff !important;">
+                                                Operator
+                                            </span>
+                                        {% endif %}
+                                    </td>
+
+                                    <td class="text-center">
+                                        <button type="button"
+                                                class="btn btn-warning btn-sm"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#modalEdit{{ pengguna.id }}">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+
+                                        <form method="post"
+                                            action="{% url 'pengguna_delete' pengguna.id %}"
+                                            class="d-inline form-delete">
+                                            {% csrf_token %}
+                                            <button type="submit"
+                                                    class="btn btn-danger btn-sm">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="6"
+                                        class="text-center text-muted py-4">
+                                        Data pengguna belum ada
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+
+                        <div class="d-flex justify-content-center mt-4">
+                            <nav>
+                                <ul class="pagination">
+
+                                    {% if page_obj.has_previous %}
+                                    <li class="page-item">
+
+                                        <a class="page-link"
+                                        href="?page={{ page_obj.previous_page_number }}&q={{ q }}">
+
+                                            Previous
+
+                                        </a>
+
+                                    </li>
+                                    {% endif %}
+
+                                    {% for num in page_obj.paginator.page_range %}
+
+                                        {% if page_obj.number == num %}
+                                        <li class="page-item active">
+
+                                            <span class="page-link">
+                                                {{ num }}
+                                            </span>
+
+                                        </li>
+
+                                        {% else %}
+                                        <li class="page-item">
+
+                                            <a class="page-link"
+                                            href="?page={{ num }}&q={{ q }}">
+
+                                                {{ num }}
+
+                                            </a>
+
+                                        </li>
+                                        {% endif %}
+
+                                    {% endfor %}
+
+                                    {% if page_obj.has_next %}
+                                    <li class="page-item">
+
+                                        <a class="page-link"
+                                        href="?page={{ page_obj.next_page_number }}&q={{ q }}">
+
+                                            Next
+
+                                        </a>
+
+                                    </li>
+                                    {% endif %}
+
+                                </ul>
+
+                            </nav>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="modal fade"
+         id="modalTambahPengguna"
+         tabindex="-1">
+
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <form method="post"
+                      action="{% url 'pengguna_create' %}"
+                      class="form-tambah">
+
+                    {% csrf_token %}
+
+                    <div class="modal-header">
+
+                        <h5 class="modal-title">
+                            Tambah Pengguna
+                        </h5>
+
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"></button>
+
+                    </div>
+
+                    <div class="modal-body">
+
+                        <div class="mb-3">
+                            <label class="form-label">Username</label>
+                            <input type="text"
+                                   name="username"
+                                   class="form-control"
+                                   required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Nama Depan (First Name)</label>
+                            <input type="text"
+                                   name="first_name"
+                                   class="form-control">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Nama Belakang (Last Name)</label>
+                            <input type="text"
+                                   name="last_name"
+                                   class="form-control">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email"
+                                   name="email"
+                                   class="form-control"
+                                   required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Password</label>
+                            <input type="password"
+                                   name="password"
+                                   class="form-control"
+                                   required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Role Akses</label>
+                            <select name="role" class="form-select" required>
+                                <option value="operator">Operator</option>
+                                <option value="staff">Staff</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button"
+                                class="btn btn-secondary btn-sm"
+                                data-bs-dismiss="modal">
+                            Batal
+                        </button>
+
+                        <button type="submit"
+                                class="btn btn-primary btn-sm">
+                            Simpan
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    {% for pengguna in page_obj %}
+    <div class="modal fade"
+         id="modalEdit{{ pengguna.id }}"
+         tabindex="-1">
+
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <form method="post"
+                      action="{% url 'pengguna_edit' pengguna.id %}"
+                      class="form-edit">
+
+                    {% csrf_token %}
+
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            Edit Pengguna
+                        </h5>
+                        <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal">
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+
+                        <div class="mb-3">
+                            <label class="form-label">Username</label>
+                            <input type="text"
+                                   name="username"
+                                   class="form-control"
+                                   value="{{ pengguna.username }}"
+                                   required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Nama Depan (First Name)</label>
+                            <input type="text"
+                                   name="first_name"
+                                   class="form-control"
+                                   value="{{ pengguna.first_name }}">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Nama Belakang (Last Name)</label>
+                            <input type="text"
+                                   name="last_name"
+                                   class="form-control"
+                                   value="{{ pengguna.last_name }}">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email"
+                                   name="email"
+                                   class="form-control"
+                                   value="{{ pengguna.email }}"
+                                   required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Password</label>
+                            <input type="password"
+                                   name="password"
+                                   class="form-control"
+                                   placeholder="Kosongkan jika tidak ingin mengubah password">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Role Akses</label>
+                            <select name="role" class="form-select" required>
+                                <option value="operator" {% if not pengguna.is_staff and not pengguna.is_superuser %}selected{% endif %}>Operator</option>
+                                <option value="staff" {% if pengguna.is_staff and not pengguna.is_superuser %}selected{% endif %}>Staff</option>
+                                <option value="admin" {% if pengguna.is_superuser %}selected{% endif %}>Admin</option>
+                            </select>
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer">
+
+                        <button type="button"
+                                class="btn btn-secondary btn-sm"
+                                data-bs-dismiss="modal">
+
+                            Batal
+
+                        </button>
+
+                        <button type="submit"
+                                class="btn btn-warning btn-sm">
+
+                            Update
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // 1. Notifikasi Django (Muncul saat halaman load)
+            {% if messages %}
+                {% for message in messages %}
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: '{% if message.tags == "error" %}error{% else %}success{% endif %}',
+                        title: '{% if message.tags == "error" %}Gagal!{% else %}Berhasil!{% endif %}',
+                        text: '{{ message|escapejs }}',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true
+                    });
+                {% endfor %}
+            {% endif %}
+
+            // 2. Konfirmasi Tambah/Edit/Hapus (Menggunakan event listener pada form)
+            const forms = document.querySelectorAll(".form-tambah, .form-edit, .form-delete");
+            
+            forms.forEach(form => {
+                form.addEventListener("submit", function (e) {
+                    e.preventDefault();
+                    
+                    let title = "Konfirmasi";
+                    let text = "Apakah Anda yakin?";
+                    let color = "#025697";
+                    let icon = "question";
+
+                    if (form.classList.contains("form-tambah")) {
+                        title = "Simpan Data?"; text = "Pengguna baru akan ditambahkan."; color = "#198754";
+                    } else if (form.classList.contains("form-edit")) {
+                        title = "Update Data?"; text = "Perubahan data pengguna akan disimpan."; color = "#ffc107";
+                    } else if (form.classList.contains("form-delete")) {
+                        title = "Hapus Data?"; text = "Akun pengguna ini akan dihapus secara permanen!"; color = "#dc3545"; icon = "warning";
+                    }
+
+                    Swal.fire({
+                        title: title,
+                        text: text,
+                        icon: icon,
+                        showCancelButton: true,
+                        confirmButtonColor: color,
+                        cancelButtonColor: '#6c757d',
+                        confirmButtonText: 'Ya, Lanjutkan'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+
+</main>
+{% endblock %}

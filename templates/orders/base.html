@@ -339,11 +339,9 @@
 
                                 <!-- FOOTER (INI YANG PENTING - SIGN OUT) -->
                                 <li class="d-flex justify-content-between p-2">
-
                                     <a href="#" class="btn btn-outline-secondary btn-sm">
                                         Profile
                                     </a>
-
                                     <!-- SIGN OUT -->
                                     <form action="{% url 'logout' %}" method="POST">
                                         {% csrf_token %}
@@ -354,14 +352,10 @@
                                             Sign out
                                         </button>
                                     </form>
-
                                 </li>
-
                             </ul>
                         </li>
-
                     </ul>
-
                 </div>
             </nav>
             
@@ -380,150 +374,106 @@
                 <div class="sidebar-wrapper" style="background:linear-gradient(180deg,rgba(7,35,92,0.95),rgba(11,78,162,0.92));">
                     <nav class="mt-2">
 
-                        <ul
-                            class="nav sidebar-menu flex-column"
+                        <ul class="nav sidebar-menu flex-column"
                             data-lte-toggle="treeview"
                             role="navigation"
                             aria-label="Main navigation"
                             data-accordion="false"
-                            id="navigation"
-                        >
+                            id="navigation">
 
-                            <!-- DASHBOARD -->
                             <li class="nav-item {% if request.resolver_match.url_name == 'dashboard' %}menu-open{% endif %}">
-
                                 <a href="{% url 'dashboard' %}"
                                 class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
-
                                     <i class="nav-icon bi bi-speedometer2"></i>
-
                                     <p>Dashboard</p>
-
                                 </a>
-
                             </li>
 
 
-                            <!-- MASTER DATA -->
+                            {% if request.user.is_staff %}
                             <li class="nav-item {% if request.resolver_match.url_name == 'master_bahan' or request.resolver_match.url_name == 'kategori_list' or request.resolver_match.url_name == 'siklus_list' %}menu-open{% endif %}">
 
                                 <a href="#"
                                 class="nav-link {% if request.resolver_match.url_name == 'master_bahan' or request.resolver_match.url_name == 'kategori_list' or request.resolver_match.url_name == 'siklus_list' %}active{% endif %}">
-
                                     <i class="nav-icon bi bi-database-fill-check"></i>
-
                                     <p>
                                         Master Data
                                         <i class="nav-arrow bi bi-chevron-right"></i>
                                     </p>
-
                                 </a>
 
                                 <ul class="nav nav-treeview">
-
-                                    <!-- BAHAN -->
                                     <li class="nav-item">
-
                                         <a href="{% url 'master_bahan' %}"
                                         class="nav-link {% if request.resolver_match.url_name == 'master_bahan' %}active{% endif %}">
-
                                             <i class="nav-icon bi bi-chevron-right"></i>
-
                                             <p>Bahan</p>
-
                                         </a>
-
                                     </li>
 
-
-                                    <!-- KATEGORI -->
                                     <li class="nav-item">
-
                                         <a href="{% url 'kategori_list' %}"
                                         class="nav-link {% if request.resolver_match.url_name == 'kategori_list' %}active{% endif %}">
-
                                             <i class="nav-icon bi bi-chevron-right"></i>
-
                                             <p>Kategori</p>
-
                                         </a>
-
                                     </li>
 
-
-                                    <!-- SIKLUS -->
                                     <li class="nav-item">
-
                                         <a href="{% url 'siklus_list' %}"
                                         class="nav-link {% if request.resolver_match.url_name == 'siklus_list' %}active{% endif %}">
-
                                             <i class="nav-icon bi bi-chevron-right"></i>
-
                                             <p>Siklus</p>
-
                                         </a>
-
                                     </li>
-
                                 </ul>
 
                             </li>
+                            {% endif %}
 
 
-                            <!-- PESANAN -->
                             <li class="nav-item {% if request.resolver_match.url_name == 'create_pesanan' or request.resolver_match.url_name == 'riwayat_pesanan' %}menu-open{% endif %}">
-
                                 <a href="#"
                                 class="nav-link {% if request.resolver_match.url_name == 'create_pesanan' or request.resolver_match.url_name == 'riwayat_pesanan' %}active{% endif %}">
-
                                     <i class="nav-icon bi bi-basket-fill"></i>
-
                                     <p>
                                         Pesanan
                                         <i class="nav-arrow bi bi-chevron-right"></i>
                                     </p>
-
                                 </a>
 
                                 <ul class="nav nav-treeview">
-
-                                    <!-- TAMBAH PESANAN -->
                                     <li class="nav-item">
-
                                         <a href="{% url 'create_pesanan' %}"
                                         class="nav-link {% if request.resolver_match.url_name == 'create_pesanan' %}active{% endif %}">
-
                                             <i class="nav-icon bi bi-chevron-right"></i>
-
                                             <p>Tambah Pesanan</p>
-
                                         </a>
-
                                     </li>
 
-
-                                    <!-- RIWAYAT -->
                                     <li class="nav-item">
-
                                         <a href="{% url 'riwayat_pesanan' %}"
                                         class="nav-link {% if request.resolver_match.url_name == 'riwayat_pesanan' %}active{% endif %}">
-
                                             <i class="nav-icon bi bi-chevron-right"></i>
-
                                             <p>Riwayat Pesanan</p>
-
                                         </a>
-
                                     </li>
-
                                 </ul>
-
                             </li>
 
+
+                            {% if request.user.is_superuser %}
+                            <li class="nav-item {% if request.resolver_match.url_name == 'pengguna_list' %}menu-open{% endif %}">
+                                <a href="{% url 'pengguna_list' %}"
+                                class="nav-link {% if request.resolver_match.url_name == 'pengguna_list' %}active{% endif %}">
+                                    <i class="nav-icon bi bi-people-fill"></i>
+                                    <p>Pengguna</p>
+                                </a>
+                            </li>
+                            {% endif %}
+
                         </ul>
-
                     </nav>
-
                 </div>
             </aside>
             

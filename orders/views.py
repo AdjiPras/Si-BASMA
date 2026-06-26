@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.http import HttpResponse
 from django.http import JsonResponse
 
-from .models import Bahan, Pesanan, ItemPesanan
+from .models import Bahan, Pesanan, ItemPesanan, User
 
 import csv
 from django.template.loader import get_template
@@ -706,3 +706,125 @@ def kelola_menu_siklus(request, siklus_id):
         'detail_list': MenuSiklus.objects.filter(siklus=siklus).order_by('waktu_makan', 'bahan__nama')
     }
     return render(request, 'siklus_detail.html', context)
+
+
+# =========================
+# PENGGUNA
+# =========================
+@login_required
+def pengguna_list(request):
+    q = request.GET.get("q", "")
+    pengguna_list = User.objects.all().order_by("username")
+
+    if q:
+        pengguna_list = pengguna_list.filter(
+            username__icontains=q
+        ) | User.objects.filter(
+            first_name__icontains=q
+        ) | User.objects.filter(
+            last_name__icontains=q
+        ) | User.objects.filter(
+            email__icontains=q
+        )
+
+    paginator = Paginator(pengguna_list, 5)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        "page_obj": page_obj,
+        "pengguna_list": page_obj,
+        "q": q
+    }
+
+    return render(request, "orders/pengguna_list.html", context)
+
+
+@login_required
+def pengguna_create(request):
+    if request.method == "POST":
+        username = request.POST.get("username")
+        first_name = request.POST.get("first_name")
+        last_name = request.POST.get("last_name")
+        email = request.POST.get("email")
+        password = request.POST.get("password")
+        role = request.POST.get("role") # 'admin', 'staff', atau 'operator'
+
+        if User.objects.filter(username=username).exists():
+            messages.error(request, "Username sudah digunakan!")
+            return redirect("pengguna_list")
+
+        user = User.objects.create_user(
+            username=username,
+            first_name=first_name,
+            last_name=last_name,
+            email=email,
+            password=password
+        )
+
+        # Atur hak akses berdasarkan pilihan kolom role biasa
+        if role == "admin":
+            user.is_superuser = True
+            user.is_staff = True
+        elif role == "staff":
+            user.is_superuser = False
+            user.is_staff = True # Level staf di bawah superuser
+        else:
+            user.is_superuser = False
+            user.is_staff = False # User biasa / Operator
+
+        user.save()
+
+        messages.success(request, "Pengguna berhasil ditambahkan!")
+        return redirect("pengguna_list")
+
+    return redirect("pengguna_list")
+
+
+@login_required
+def pengguna_edit(request, pk):
+    pengguna = get_object_or_404(User, pk=pk)
+
+    if request.method == "POST":
+        pengguna.username = request.POST.get("username")
+        pengguna.first_name = request.POST.get("first_name")
+        pengguna.last_name = request.POST.get("last_name")
+        pengguna.email = request.POST.get("email")
+        role = request.POST.get("role")
+
+        if request.POST.get("password"):
+            pengguna.set_password(request.POST.get("password"))
+
+        # Update hak akses level menu
+        if role == "admin":
+            pengguna.is_superuser = True
+            pengguna.is_staff = True
+        elif role == "staff":
+            pengguna.is_superuser = False
+            pengguna.is_staff = True
+        else:
+            pengguna.is_superuser = False
+            pengguna.is_staff = False
+
+        pengguna.save()
+
+        messages.success(request, "Pengguna berhasil diupdate!")
+        return redirect("pengguna_list")
+
+    return redirect("pengguna_list")
+
+
+@login_required
+def pengguna_delete(request, pk):
+    pengguna = get_object_or_404(User, pk=pk)
+    if request.method == "POST":
+        pengguna.delete()
+        messages.success(request, "Pengguna berhasil dihapus!")
+        return redirect("pengguna_list")
+    return render(
+        request,
+        "orders/pengguna_confirm_delete.html",
+        {
+            "pengguna": pengguna
+        }
+    )
