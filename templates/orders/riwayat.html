@@ -67,6 +67,7 @@
                                             <th style="width: 50px">#</th>
                                             <th style="width: 180px">Tanggal</th>
                                             <th style="width: 200px">Siklus</th>
+                                            <th style="width: 120px">Waktu</th>
                                             <th style="width: 150px">Jumlah Pasien</th>
                                             <th style="width: 120px">Aksi</th>
                                         </tr>
@@ -113,6 +114,16 @@
                                                 </select>
                                             </td>
 
+                                            <!-- WAKTU SIKLUS -->
+                                            <td class="text-center">
+                                                <span class="view-mode waktu-text">{{ pesanan.waktu_makan|default:"-" }}</span>
+                                                <select class="form-select form-select-sm edit-mode waktu-input d-none">
+                                                    <option value="PAGI" {% if pesanan.waktu_makan == "PAGI" %}selected{% endif %}>PAGI</option>
+                                                    <option value="SIANG" {% if pesanan.waktu_makan == "SIANG" %}selected{% endif %}>SIANG</option>
+                                                    <option value="SORE" {% if pesanan.waktu_makan == "SORE" %}selected{% endif %}>SORE</option>
+                                                </select>
+                                            </td>
+
                                             <!-- TOTAL PASIEN -->
                                             <td class="text-center">
                                                 <span class="view-mode total-text">
@@ -126,6 +137,9 @@
 
                                             <!-- AKSI -->
                                             <td class="text-center">
+                                                <a href="{% url 'edit_pesanan' pesanan.id %}" class="btn btn-sm btn-warning">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
                                                 <!-- CETAK PDF -->
                                                 <button class="btn btn-sm btn-secondary btn-print"
                                                     data-id="{{ pesanan.id }}">
@@ -464,6 +478,7 @@
                 row.querySelector('.siklus-text').innerText = row.querySelector('.siklus-input').value;
                 row.querySelector('.tanggal-text').innerText = row.querySelector('.tanggal-input').value;
                 row.querySelector('.total-text').innerText = row.querySelector('.total-input').value;
+                row.querySelector('.waktu-text').innerText = row.querySelector('.waktu-input').value;
             });
             document.querySelectorAll('.edit-mode').forEach(el => el.classList.add('d-none'));
             document.querySelectorAll('.view-mode').forEach(el => el.classList.remove('d-none'));

@@ -1,0 +1,348 @@
+{% extends 'orders/base.html' %}
+{% load static %}
+{% block title %}Pemesanan Bahan | Si-BASMA{% endblock %}
+
+{% block content %}
+<main class="app-main">
+    <div class="app-content-header">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-6">
+                    <h3 class="mb-0">Edit Detail Pesanan</h3>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-end">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Edit Detail Pesanan</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="app-content">
+        <div class="container-fluid px-4">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="card mt-2">
+                            
+                        <!-- HEADER -->
+                        <div class="card-header" style="background-color: #025697; color: aliceblue;">
+                            <div class="card-title" style="font-weight: 600;">Form Edit</div>
+                        </div>
+
+                        <div class="app-content">
+                            <div class="container-fluid mt-3 mb-4">
+                                <div class="row justify-content-center">
+                                    <div class="col-lg-12">
+                                        <div class="card mt-2">
+                                            <!-- FORM -->
+                                            <form method="post">
+                                                {% csrf_token %}
+
+                                                <!-- BODY -->
+                                                <div class="card-body">
+
+                                                    <!-- PARAMETER -->
+                                                    <div class="row mb-3">
+                                                        <div class="col-md-3">
+                                                            <label class="form-label" style="font-weight: bold;">Tanggal Pesan</label>
+                                                            <input type="date" class="form-control" name="tanggal_pemesanan" 
+                                                                value="{{ pesanan.tanggal_pemesanan|date:'Y-m-d' }}" required>
+                                                        </div>
+
+                                                        <div class="col-md-3">
+                                                            <label class="form-label" style="font-weight: bold;">Siklus</label>
+                                                            <select name="siklus_menu" id="siklus_menu" class="form-select" required>
+                                                                {% for siklus in siklus_list %}
+                                                                <option value="{{ siklus.id }}" {% if pesanan.siklus_menu_id == siklus.id %}selected{% endif %}>
+                                                                    {{ siklus.nama }}
+                                                                </option>
+                                                                {% endfor %}
+                                                            </select>
+                                                        </div>
+
+                                                        <div class="col-md-3">
+                                                            <label class="form-label" style="font-weight: bold;">Waktu Siklus</label>
+                                                            <select name="waktu_makan" id="waktu_makan" class="form-select" required>
+                                                                <option value="PAGI" {% if pesanan.waktu_makan == "PAGI" %}selected{% endif %}>Pagi</option>
+                                                                <option value="SIANG" {% if pesanan.waktu_makan == "SIANG" %}selected{% endif %}>Siang</option>
+                                                                <option value="SORE" {% if pesanan.waktu_makan == "SORE" %}selected{% endif %}>Sore</option>
+                                                            </select>
+                                                        </div>
+
+                                                        <div class="col-md-3">
+                                                            <label class="form-label" style="font-weight: bold;">Pasien</label>
+                                                            <input type="number" id="pasien" name="jumlah_pasien" class="form-control" value="{{ pesanan.jumlah_pasien|default:0 }}">
+                                                            
+                                                            <div class="mt-2 d-flex gap-1 flex-wrap">
+                                                                <small class="text-muted fw-bold">Quick Preset :</small>
+                                                                <button type="button" class="btn btn-outline-primary btn-sm preset" data-value="10">10</button>
+                                                                <button type="button" class="btn btn-outline-primary btn-sm preset" data-value="20">20</button>
+                                                                <button type="button" class="btn btn-outline-primary btn-sm preset" data-value="30">30</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <hr>
+
+                                                    <!-- DAFTAR BAHAN -->
+                                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                                        <h6 class="mb-0" style="font-weight: bold;">Daftar Bahan</h6>
+                                                        <button type="button" class="btn btn-sm" id="add-row"
+                                                        style="background-color: #19aa25; color: aliceblue;">
+                                                            <i class="bi bi-plus-circle"></i> Tambah Bahan
+                                                        </button>
+                                                    </div>
+
+                                                    <div class="table-responsive">
+                                                        <table class="table table-bordered table-hover align-middle">
+                                                            <thead class="table-light">
+                                                                <tr class="text-center">
+                                                                    <th>Bahan</th>
+                                                                    <th width="200">Jumlah</th>
+                                                                    <th width="200">Keterangan</th>
+                                                                    <th width="80">Aksi</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody id="bahan-table">
+                                                                {% if items %}
+                                                                    {% for item in items %}
+                                                                    <tr>
+                                                                        <td>
+                                                                            <select class="form-select" name="bahan[]">
+                                                                                {% for bahan in bahan_list %}
+                                                                                <option value="{{ bahan.id }}" {% if bahan.id == item.bahan_id %}selected{% endif %}>
+                                                                                    {{ bahan.nama }}
+                                                                                </option>
+                                                                                {% endfor %}
+                                                                            </select>
+                                                                        </td>
+                                                                        <td>
+                                                                            <input type="number" step="any" min="0" name="qty[]" class="form-control" value="{{ item.qty }}">
+                                                                        </td>
+                                                                        <td>
+                                                                            <input type="text" name="keterangan[]" class="form-control" value="{{ item.keterangan|default:'' }}" placeholder="Contoh: untuk diet pasien / tambahan">
+                                                                        </td>
+                                                                        <td class="text-center">
+                                                                            <button type="button" class="btn btn-danger btn-sm remove-row">
+                                                                                <i class="bi bi-trash"></i>
+                                                                            </button>
+                                                                        </td>
+                                                                    </tr>
+                                                                    {% endfor %}
+                                                                {% else %}
+                                                                    <tr>
+                                                                        <td>
+                                                                            <select class="form-select" name="bahan[]">
+                                                                                {% for bahan in bahan_list %}
+                                                                                <option value="{{ bahan.id }}">{{ bahan.nama }}</option>
+                                                                                {% endfor %}
+                                                                            </select>
+                                                                        </td>
+                                                                        <td>
+                                                                            <input type="number" step="any" min="0" name="qty[]" class="form-control">
+                                                                        </td>
+                                                                        <td>
+                                                                            <input type="text" name="keterangan[]" class="form-control" placeholder="Contoh: untuk diet pasien / tambahan">
+                                                                        </td>
+                                                                        <td class="text-center">
+                                                                            <button type="button" class="btn btn-danger btn-sm remove-row">
+                                                                                <i class="bi bi-trash"></i>
+                                                                            </button>
+                                                                        </td>
+                                                                    </tr>
+                                                                {% endif %}
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+
+                                                </div>
+
+                                                <!-- FOOTER -->
+                                                <div class="card-footer text-end">
+                                                    <a href="{% url 'riwayat_pesanan' %}" class="btn btn-sm" 
+                                                        style="background-color: #971802; color: aliceblue;">
+                                                        Batal
+                                                    </a>
+                                                    
+                                                    <button type="submit" class="btn btn-sm" 
+                                                        style="background-color: #025697; color: aliceblue;">
+                                                        Simpan
+                                                    </button>
+                                                </div>
+
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+<script>
+    const tableBody = document.getElementById("bahan-table");
+
+    // 1. TAMBAH BARIS
+    document.getElementById("add-row").onclick = function () {
+        // Clone baris pertama sebagai template
+        const firstRow = tableBody.querySelector("tr");
+        const row = firstRow.cloneNode(true);
+
+        // Reset semua input di baris baru
+        row.querySelectorAll("input").forEach(i => i.value = "");
+        row.querySelectorAll("select").forEach(s => s.selectedIndex = 0);
+
+        tableBody.appendChild(row);
+    };
+
+    // 2. HAPUS BARIS (EVENT DELEGATION)
+    // Listener ditaruh di tabel, bukan di tombol. 
+    // Ini membuat tombol hapus di baris yang baru muncul (atau dari database) otomatis berfungsi.
+    tableBody.addEventListener("click", function (e) {
+        if (e.target.closest(".remove-row")) {
+            const rows = tableBody.querySelectorAll("tr");
+            if (rows.length > 1) {
+                e.target.closest("tr").remove();
+            } else {
+                alert("Minimal harus ada satu baris bahan!");
+            }
+        }
+    });
+
+    // 3. HITUNG TOTAL PASIEN
+    function hitungTotal() {
+        let pasien = parseInt(document.getElementById("pasien").value || 0);
+        const totalOrang = document.getElementById("total_orang");
+        if (totalOrang) totalOrang.value = pasien;
+    }
+
+    document.addEventListener("input", function (e) {
+        if (e.target.id === "pasien") {
+            hitungTotal();
+        }
+    });
+
+    document.querySelectorAll(".preset").forEach(btn => {
+        btn.addEventListener("click", () => {
+            document.getElementById("pasien").value = btn.dataset.value;
+            hitungTotal();
+        });
+    });
+</script>
+
+<!-- VALIDASI BAHAN -->
+<script>
+    document.querySelector("form").addEventListener("submit", function(e) {
+        let valid = false;
+
+        document.querySelectorAll("input[name='qty[]']").forEach(input => {
+            if (input.value && parseFloat(input.value) > 0) {
+                valid = true;
+            }
+        });
+
+        if (!valid) {
+            alert("Minimal isi 1 jumlah bahan!");
+            e.preventDefault();
+        }
+    });
+</script>
+
+<!-- AUTO-FILL RESEP -->
+<script>
+    const dropdownSiklus = document.getElementById('siklus_menu');
+    const dropdownWaktu = document.getElementById('waktu_makan');
+    const inputPasien = document.getElementById('pasien');
+    const bodyTabelBahan = document.getElementById('bahan-table');
+
+    // Variabel penampung resep dari database
+    let resepAktif = [];
+
+    // Fungsi untuk menarik data dari API Django
+    function tarikDataResep() {
+        let siklusId = dropdownSiklus.value;
+        let waktuMakan = dropdownWaktu.value; // Pastikan ini nilainya 'PAGI', 'SIANG', 'SORE'
+
+        if (siklusId && waktuMakan) {
+            // Parameter harus 'waktu_makan' agar cocok dengan views.py
+            fetch(`/api/get-resep/?siklus_id=${siklusId}&waktu_makan=${waktuMakan}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        resepAktif = data.data;
+                        renderTabelBahan();
+                    }
+                });
+        }
+    }
+
+    // Fungsi untuk menggambar ulang tabel sesuai resep
+    function renderTabelBahan() {
+        // 1. Kosongkan tabel saat ini
+        bodyTabelBahan.innerHTML = '';
+
+        // Jika resep kosong, tambahkan 1 baris kosong default
+        if (resepAktif.length === 0) {
+            document.getElementById("add-row").click();
+            return;
+        }
+
+        // 2. Buat baris baru untuk setiap bahan di dalam resep
+        resepAktif.forEach(item => {
+            let tr = document.createElement('tr');
+            
+            // AMBIL NILAI ASLI (Tanpa dikalikan pasien)
+            let qtyAsli = item.qty_standar; 
+
+            // Kita butuh dropdown bawaan Django agar ID bahan sesuai
+            let optionsHTML = `
+                <select class="form-select" name="bahan[]">
+                    {% for bahan in bahan_list %}
+                        <option value="{{ bahan.id }}">{{ bahan.nama }}</option>
+                    {% endfor %}
+                </select>
+            `;
+
+            tr.innerHTML = `
+                <td>${optionsHTML}</td>
+                <td>
+                    <input type="number" step="any" min="0" name="qty[]" class="form-control" value="${qtyAsli > 0 ? qtyAsli : ''}">
+                </td>
+                <td>
+                    <input type="text" name="keterangan[]" class="form-control" placeholder="Keterangan">
+                </td>
+                <td class="text-center">
+                    <button type="button" class="btn btn-danger btn-sm remove-row"><i class="bi bi-trash"></i></button>
+                </td>
+            `;
+
+            // Kunci pilihan dropdown pada bahan yang ditarik dari database
+            tr.querySelector('select').value = item.bahan_id;
+
+            bodyTabelBahan.appendChild(tr);
+        });
+    }
+
+    // Pasang pelatuk (trigger) agar fungsi jalan otomatis
+    dropdownSiklus.addEventListener('change', tarikDataResep);
+    dropdownWaktu.addEventListener('change', tarikDataResep);
+    
+    // Jika user mengubah jumlah pasien SETELAH auto-fill muncul, tabel akan terhitung ulang otomatis!
+    inputPasien.addEventListener('input', renderTabelBahan);
+    
+    document.querySelectorAll(".preset").forEach(btn => {
+        btn.addEventListener("click", () => {
+            // Beri sedikit jeda agar nilai input terganti dulu, baru render ulang tabel
+            setTimeout(renderTabelBahan, 50); 
+        });
+    });
+</script>
+
+{% endblock %}

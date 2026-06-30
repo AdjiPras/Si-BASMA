@@ -226,19 +226,61 @@ def detail_pesanan_json(request, id):
         "items": data_items
     })
 
+# @login_required
+# def edit_pesanan(request, id):
+#     pesanan = get_object_or_404(Pesanan, id=id)
+
+#     if request.method == 'POST':
+#         pesanan.tanggal_pemesanan = request.POST.get('tanggal_pemesanan')
+#         pesanan.siklus_menu = request.POST.get('siklus_menu')
+#         pesanan.jumlah_pasien = request.POST.get('jumlah_pasien')
+#         pesanan.jumlah_karyawan = request.POST.get('jumlah_karyawan')
+#         pesanan.save()
+
+#     return redirect('riwayat_pesanan')
+
 @login_required
 def edit_pesanan(request, id):
     pesanan = get_object_or_404(Pesanan, id=id)
+    bahan_list = Bahan.objects.all()
+    siklus_list = Siklus.objects.all().order_by('nama')
 
-    if request.method == 'POST':
-        pesanan.tanggal_pemesanan = request.POST.get('tanggal_pemesanan')
-        pesanan.siklus_menu = request.POST.get('siklus_menu')
-        pesanan.jumlah_pasien = request.POST.get('jumlah_pasien')
-        pesanan.jumlah_karyawan = request.POST.get('jumlah_karyawan')
+    if request.method == "POST":
+        # 1. Update data utama pesanan
+        pesanan.tanggal_pemesanan = request.POST.get("tanggal_pemesanan")
+        pesanan.siklus_menu_id = request.POST.get("siklus_menu")
+        pesanan.waktu_makan = request.POST.get("waktu_makan")
+        pesanan.jumlah_pasien = request.POST.get("jumlah_pasien") or 0
         pesanan.save()
 
-    return redirect('riwayat_pesanan')
+        # 2. Hapus semua item lama dan buat baru (Cara paling aman & mudah)
+        ItemPesanan.objects.filter(pesanan=pesanan).delete()
 
+        bahan_ids = request.POST.getlist("bahan[]")
+        qtys = request.POST.getlist("qty[]")
+        keterangans = request.POST.getlist("keterangan[]")
+
+        for bahan_id, qty, keterangan in zip(bahan_ids, qtys, keterangans):
+            if qty and float(qty) > 0:
+                ItemPesanan.objects.create(
+                    pesanan=pesanan,
+                    bahan_id=bahan_id,
+                    qty=qty,
+                    keterangan=keterangan
+                )
+        
+        messages.success(request, "Pesanan berhasil diupdate!")
+        return redirect("riwayat_pesanan")
+
+    # Ambil items untuk ditampilkan di form
+    items = ItemPesanan.objects.filter(pesanan=pesanan)
+    
+    return render(request, "orders/edit_pesanan.html", {
+        "pesanan": pesanan,
+        "items": items,
+        "bahan_list": bahan_list,
+        "siklus_list": siklus_list,
+    })
 
 
 @login_required
