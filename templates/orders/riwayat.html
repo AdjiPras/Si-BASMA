@@ -289,6 +289,13 @@
             .row { display: flex; flex-wrap: wrap; }
             .col-6 { flex: 0 0 50%; max-width: 50%; }
         }
+        /* Gunakan satu definisi CSS untuk kedua area cetak */
+        #print-area, #print-area-multiple { padding: 30px; font-family: Arial, sans-serif; color: #000; }
+        .print-header { border-bottom: 3px solid #025697; padding-bottom: 15px; margin-bottom: 25px; }
+        .print-table { width: 100%; border-collapse: collapse; }
+        .print-table th, .print-table td { border: 1px solid #000; padding: 10px; }
+        .print-table th { background: #025697; color: white; text-align: center; }
+        .page-break { page-break-after: always; }
     </style>
 
     <!-- HEADER -->
@@ -386,6 +393,10 @@
                 background: white;
             }
         }
+        .page-break {
+            page-break-after: always;
+            break-after: page;
+        }
     </style>
     <div id="multiple-records-container">
         <!-- Template data pesanan massal akan di-inject ke sini oleh Javascript -->
@@ -393,13 +404,10 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         
-        // ===================================
-        // 1. NOTIFIKASI DARI DJANGO (Muncul otomatis setelah redirect)
-        // ===================================
+        // --- 1. NOTIFIKASI DARI DJANGO ---
         {% for message in messages %}
             Swal.fire({
                 toast: true,
@@ -413,9 +421,58 @@
             });
         {% endfor %}
 
-        // ===================================
-        // 2. KONFIRMASI DELETE (SweetAlert2)
-        // ===================================
+        // --- 2. VARIABLE & ELEMENT ---
+        const toggleEditBtn = document.getElementById('toggleEdit');
+        const saveAllBtn = document.getElementById('saveAll');
+        const selectAllCheckbox = document.getElementById('selectAll');
+        const rowCheckboxes = document.querySelectorAll('.row-checkbox');
+        const printSelectedBtn = document.getElementById('printSelectedBtn');
+        const selectedCountSpan = document.getElementById('selectedCount');
+
+        // --- 3. LOGIKA CHECKBOX & EDIT MODE ---
+        function updateSelectedCount() {
+            const checkedCount = document.querySelectorAll('.row-checkbox:checked').length;
+            selectedCountSpan.innerText = checkedCount;
+            printSelectedBtn.disabled = (checkedCount === 0);
+            printSelectedBtn.classList.toggle('btn-success', checkedCount > 0);
+            printSelectedBtn.classList.toggle('btn-info', checkedCount === 0);
+        }
+
+        if(selectAllCheckbox) {
+            selectAllCheckbox.addEventListener('change', () => {
+                rowCheckboxes.forEach(cb => cb.checked = selectAllCheckbox.checked);
+                updateSelectedCount();
+            });
+        }
+
+        rowCheckboxes.forEach(cb => {
+            cb.addEventListener('change', () => {
+                selectAllCheckbox.checked = document.querySelectorAll('.row-checkbox:checked').length === rowCheckboxes.length;
+                updateSelectedCount();
+            });
+        });
+
+        toggleEditBtn.addEventListener('click', function () {
+            document.querySelectorAll('.edit-mode').forEach(el => el.classList.remove('d-none'));
+            document.querySelectorAll('.view-mode').forEach(el => el.classList.add('d-none'));
+            toggleEditBtn.classList.add('d-none');
+            saveAllBtn.classList.remove('d-none');
+        });
+
+        saveAllBtn.addEventListener('click', function () {
+            document.querySelectorAll('tr[data-id]').forEach(row => {
+                row.querySelector('.siklus-text').innerText = row.querySelector('.siklus-input').value;
+                row.querySelector('.tanggal-text').innerText = row.querySelector('.tanggal-input').value;
+                row.querySelector('.total-text').innerText = row.querySelector('.total-input').value;
+            });
+            document.querySelectorAll('.edit-mode').forEach(el => el.classList.add('d-none'));
+            document.querySelectorAll('.view-mode').forEach(el => el.classList.remove('d-none'));
+            saveAllBtn.classList.add('d-none');
+            toggleEditBtn.classList.remove('d-none');
+            Swal.fire({ icon: 'success', title: 'Berhasil!', text: 'Perubahan disimpan.', timer: 2000 });
+        });
+
+        // --- 4. LOGIKA DELETE ---
         document.addEventListener('click', function (e) {
             const btnDelete = e.target.closest('.btn-delete');
             if (btnDelete) {
@@ -436,66 +493,7 @@
             }
         });
 
-        // ===================================
-        // 3. LOGIKA CHECKBOX & EDIT MODE
-        // ===================================
-        const toggleEditBtn = document.getElementById('toggleEdit');
-        const saveAllBtn = document.getElementById('saveAll');
-        const selectAllCheckbox = document.getElementById('selectAll');
-        const rowCheckboxes = document.querySelectorAll('.row-checkbox');
-        const printSelectedBtn = document.getElementById('printSelectedBtn');
-        const selectedCountSpan = document.getElementById('selectedCount');
-
-        function updateSelectedCount() {
-            const checkedCount = document.querySelectorAll('.row-checkbox:checked').length;
-            selectedCountSpan.innerText = checkedCount;
-            if (checkedCount > 0) {
-                printSelectedBtn.removeAttribute('disabled');
-                printSelectedBtn.classList.replace('btn-info', 'btn-success');
-            } else {
-                printSelectedBtn.setAttribute('disabled', 'true');
-                printSelectedBtn.classList.replace('btn-success', 'btn-info');
-            }
-        }
-
-        if(selectAllCheckbox) {
-            selectAllCheckbox.addEventListener('change', function() {
-                rowCheckboxes.forEach(cb => cb.checked = selectAllCheckbox.checked);
-                updateSelectedCount();
-            });
-        }
-
-        rowCheckboxes.forEach(cb => {
-            cb.addEventListener('change', function() {
-                selectAllCheckbox.checked = document.querySelectorAll('.row-checkbox:checked').length === rowCheckboxes.length;
-                updateSelectedCount();
-            });
-        });
-
-        toggleEditBtn.addEventListener('click', function () {
-            document.querySelectorAll('.edit-mode').forEach(el => el.classList.remove('d-none'));
-            document.querySelectorAll('.view-mode').forEach(el => el.classList.add('d-none'));
-            toggleEditBtn.classList.add('d-none');
-            saveAllBtn.classList.remove('d-none');
-        });
-
-        saveAllBtn.addEventListener('click', function () {
-            // Logika Save All Anda
-            document.querySelectorAll('tr[data-id]').forEach(row => {
-                row.querySelector('.siklus-text').innerText = row.querySelector('.siklus-input').value;
-                row.querySelector('.tanggal-text').innerText = row.querySelector('.tanggal-input').value;
-                row.querySelector('.total-text').innerText = row.querySelector('.total-input').value;
-            });
-            document.querySelectorAll('.edit-mode').forEach(el => el.classList.add('d-none'));
-            document.querySelectorAll('.view-mode').forEach(el => el.classList.remove('d-none'));
-            saveAllBtn.classList.add('d-none');
-            toggleEditBtn.classList.remove('d-none');
-            Swal.fire({ icon: 'success', title: 'Berhasil!', text: 'Perubahan disimpan.', timer: 2000 });
-        });
-
-        // ===================================
-        // 4. FUNGSI CETAK (Single & Massal)
-        // ===================================
+        // --- 5. FUNGSI CETAK (SINGLE & MASSAL) ---
         function formatTanggalIndonesia(tanggalStr) {
             if (!tanggalStr) return '';
             const namaBulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
@@ -503,19 +501,19 @@
             return `${d.getDate()} ${namaBulan[d.getMonth()]} ${d.getFullYear()}`;
         }
 
+        // Cetak Single
         document.addEventListener("click", async function (e) {
             const btnPrint = e.target.closest('.btn-print');
             if (!btnPrint) return;
 
             const id = btnPrint.dataset.id;
-            Swal.fire({ title: 'Sedang Memuat...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+            Swal.fire({ title: 'Memuat data...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
 
             try {
                 const response = await fetch(`/riwayat/detail/${id}/`);
                 const data = await response.json();
                 Swal.close();
                 
-                // Isi data dan jalankan print
                 document.getElementById('print_tanggal').innerText = formatTanggalIndonesia(data.tanggal);
                 document.getElementById('print_siklus').innerText = data.siklus;
                 document.getElementById('print_waktu').innerText = data.waktu;
@@ -538,6 +536,105 @@
             } catch (err) {
                 Swal.close();
                 Swal.fire({ icon: 'error', title: 'Gagal', text: 'Data gagal dimuat' });
+            }
+        });
+
+        // Cetak Massal (Selected)
+        printSelectedBtn.addEventListener('click', async function () {
+            const selectedIds = Array.from(document.querySelectorAll('.row-checkbox:checked'))
+                                    .map(cb => cb.dataset.id);
+
+            if (selectedIds.length === 0) return;
+
+            Swal.fire({ title: 'Menyiapkan data...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+            try {
+                const query = selectedIds.map(id => `ids[]=${id}`).join('&');
+                const response = await fetch(`/riwayat/detail-multiple/?${query}`);
+                const data = await response.json();
+                
+                let containerHtml = '';
+                data.pesanan.forEach(p => {
+                    // STRUKTUR DIBAWAH INI SAMA PERSIS DENGAN CETAK TUNGGAL ANDA
+                    containerHtml += `
+                    <div class="page-break">
+                        <div class="print-header">
+                            <table>
+                                <tr>
+                                    <td style="width: 35%; vertical-align: middle;">
+                                        <img src="{% static 'assets/images/si-basma-logo.png' %}" class="print-logo" style="width: 260px; height: auto;">
+                                    </td>
+                                    <td style="width: 65%; vertical-align: middle; text-align: right;">
+                                        <div class="instansi-title">INSTALASI GIZI RS BASMA</div>
+                                        <div class="instansi-info">
+                                            Jl. Kaliurang KM 10, Sleman, Yogyakarta <br>
+                                            Telp: (0274) 123456 <br>
+                                            Email: gizirsbasma@gmail.com
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div class="info-section">
+                            <div class="row">
+                                <div class="col-6">
+                                    <p class="mb-1"><span class="info-label"><b>Tanggal</b></span>: ${p.tanggal}</p>
+                                    <p class="mb-1"><span class="info-label"><b>Siklus</b></span>: ${p.siklus}</p>
+                                    <p class="mb-1"><span class="info-label"><b>Waktu</b></span>: ${p.waktu}</p>
+                                </div>
+                                <div class="col-6" style="display: flex; justify-content: flex-end;">
+                                    <div style="text-align: left;">
+                                        <p class="mb-1"><span class="info-label"><b>Pasien</b></span>: ${p.total} Orang</p>
+                                        <p class="mb-1"><span class="info-label"><b>User</b></span>: ${p.user}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <table class="print-table">
+                            <thead>
+                                <tr>
+                                    <th width="50">No</th>
+                                    <th>Nama Bahan</th>
+                                    <th width="120">Qty</th>
+                                    <th>Keterangan</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${p.items.map((it, i) => `
+                                    <tr>
+                                        <td style="text-align:center">${i + 1}</td>
+                                        <td>${it.bahan}</td>
+                                        <td style="text-align:center">${it.qty}</td>
+                                        <td>${it.keterangan || '-'}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+
+                        <div class="print-footer">
+                            <div class="ttd">
+                                Yogyakarta, ${p.tanggal}
+                                <div class="ttd-space"></div>
+                                <strong>${p.user}</strong><br>
+                                Operator Si-BASMA
+                            </div>
+                        </div>
+                    </div>`;
+                });
+
+                document.getElementById('multiple-records-container').innerHTML = containerHtml;
+                Swal.close();
+
+                document.querySelector('main').style.display = 'none';
+                document.getElementById('print-area-multiple').classList.remove('d-none');
+                window.print();
+                document.getElementById('print-area-multiple').classList.add('d-none');
+                document.querySelector('main').style.display = '';
+            } catch (err) {
+                Swal.close();
+                Swal.fire({ icon: 'error', title: 'Gagal', text: 'Gagal memproses cetak massal' });
             }
         });
     });

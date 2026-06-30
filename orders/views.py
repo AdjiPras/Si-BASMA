@@ -341,6 +341,33 @@ def delete_pesanan(request, id):
 
     return redirect('riwayat_pesanan')
 
+@login_required
+def detail_pesanan_multiple_json(request):
+    # Mengambil list ID dari query parameter
+    ids = request.GET.getlist('ids[]')
+    pesanan_data = []
+
+    for id in ids:
+        pesanan = get_object_or_404(Pesanan, id=id)
+        items = ItemPesanan.objects.filter(pesanan=pesanan)
+        
+        data_items = [{
+            "bahan": item.bahan.nama,
+            "qty": item.qty,
+            "keterangan": item.keterangan or '-'
+        } for item in items]
+
+        pesanan_data.append({
+            "id": pesanan.id,
+            "tanggal": pesanan.tanggal_pemesanan.strftime("%Y-%m-%d"),
+            "siklus": pesanan.siklus_menu.nama if pesanan.siklus_menu else "-",
+            "waktu": pesanan.waktu_makan,
+            "total": pesanan.jumlah_pasien or 0,
+            "user": pesanan.operator.username,
+            "items": data_items
+        })
+        
+    return JsonResponse({"pesanan": pesanan_data})
 # =========================
 # EXPORT CSV
 # =========================

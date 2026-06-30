@@ -119,6 +119,8 @@ urlpatterns = [
         name='delete_pesanan'
     ),
 
+    path('riwayat/detail-multiple/', views.detail_pesanan_multiple_json, name='detail_pesanan_multiple'),
+
     # =========================
     # MASTER BAHAN
     # =========================
