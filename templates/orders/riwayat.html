@@ -38,21 +38,21 @@
                             <div class="d-flex justify-content-between align-items-center px-3 mt-3">
                                 <div>
                                     <!-- Tombol Baru untuk Cetak Checklist -->
-                                    <button class="btn btn-info btn-sm text-white" id="printSelectedBtn" disabled>
+                                    <button class="btn btn-primary btn-sm text-white" id="printSelectedBtn" disabled>
                                         <i class="bi bi-printer-fill"></i>&nbsp;
                                         <b>Cetak Terpilih (<span id="selectedCount">0</span>)</b>
                                     </button>
                                 </div>
                                 <div class="text-end">
-                                    <button class="btn btn-warning btn-sm me-2" id="toggleEdit">
+                                    <!-- <button class="btn btn-warning btn-sm me-2" id="toggleEdit">
                                         <i class="bi bi-pencil"> </i>&nbsp;
                                         <b>Edit</b> 
-                                    </button>
+                                    </button> -->
 
-                                    <button class="btn btn-primary btn-sm d-none" id="saveAll">
+                                    <!-- <button class="btn btn-primary btn-sm d-none" id="saveAll">
                                         <i class="bi bi-download"> </i>&nbsp;
                                         <b>Simpan Perubahan</b>
-                                    </button>
+                                    </button> -->
                                 </div>
                             </div>
 
@@ -82,7 +82,7 @@
                                                 <input type="checkbox" class="form-check-input row-checkbox" data-id="{{ pesanan.id }}">
                                             </td>
 
-                                            <td class="text-center">{{ forloop.counter }}</td>
+                                            <td class="text-center"> {{ forloop.counter0|add:page_obj.start_index }}</td>
 
                                             <!-- TANGGAL -->
                                             <td class="text-center">
@@ -141,10 +141,10 @@
                                                     <i class="bi bi-pencil"></i>
                                                 </a>
                                                 <!-- CETAK PDF -->
-                                                <button class="btn btn-sm btn-secondary btn-print"
+                                                <!-- <button class="btn btn-sm btn-secondary btn-print"
                                                     data-id="{{ pesanan.id }}">
                                                     <i class="bi bi-printer"></i>
-                                                </button>
+                                                </button> -->
 
                                                 <!-- DELETE -->
                                                 <button class="btn btn-sm btn-danger btn-delete"
@@ -213,111 +213,40 @@
     </div>
 </main>
 
-<!-- AREA CETAK SINGLE (Lama) -->
+<!-- AREA CETAK SINGLE -->
 <div id="print-area" class="d-none">
     <style>
-        #print-area{
-            padding: 30px;
-            font-family: Arial, sans-serif;
-            color: #000;
-        }
-        .print-header{
-            border-bottom: 3px solid #025697;
-            padding-bottom: 15px;
-            margin-bottom: 25px;
-        }
-        .print-header table{
-            width: 100%;
-        }
-        .print-logo{
-            width: 90px;
-        }
-        .instansi-title{
-            font-size: 24px;
-            font-weight: bold;
-            color: #025697;
-            margin-bottom: 5px;
-        }
-        .instansi-info{
-            font-size: 13px;
-            line-height: 1.5;
-        }
-        .info-section{
-            margin-bottom: 25px;
-        }
-        .info-section p{
-            margin-bottom: 8px;
-        }
-        .print-table{
-            width: 100%;
-            border-collapse: collapse;
-        }
-        .print-table th,
-        .print-table td{
-            border: 1px solid #000;
-            padding: 10px;
-        }
-        .print-table th{
-            background: #025697;
-            color: white;
-            text-align: center;
-        }
-        .text-center{
-            text-align: center;
-        }
-        .print-footer{
-            margin-top: 60px;
-            width: 100%;
-        }
-        .ttd{
-            width: 250px;
-            margin-left: auto;
-            text-align: center;
-        }
-        .ttd-space{
-            height: 80px;
-        }
-        .info-label {
-            display: inline-block;
-            width: 100px;
-        }
+        /* Gaya Visual Minimalis */
+        #print-area { padding: 40px; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #333; }
+        .print-header { border-bottom: 2px solid #000; padding-bottom: 20px; margin-bottom: 30px; }
+        .instansi-title { font-size: 24px; font-weight: bold; color: #025697; margin-bottom: 5px; }
+        .instansi-info { font-size: 13px; line-height: 1.5; color: #666; }
+        
+        .print-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .print-table th { border-top: 2px solid #000; border-bottom: 2px solid #000; padding: 15px 10px; text-align: center; font-weight: bold; font-size: 13px; text-transform: uppercase; background: none; color: #000; }
+        .print-table td { border-bottom: 1px solid #eee; padding: 15px 10px; font-size: 13px; }
+        
+        .info-section { margin-bottom: 30px; }
+        .info-label { display: inline-block; width: 100px; font-weight: bold; }
+        
+        .print-footer { margin-top: 50px; }
+        .ttd { width: 250px; margin-left: auto; text-align: center; }
+        .ttd-space { height: 60px; }
 
         @media print {
-            body *{
-                visibility: hidden;
-            }
-            #print-area,
-            #print-area *{
-                visibility: visible;
-            }
-            #print-area{
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100%;
-                background: white;
-            }
-            .print-logo{
-                display: block;
-            }
+            body * { visibility: hidden; }
+            #print-area, #print-area * { visibility: visible; }
+            #print-area { position: absolute; left: 0; top: 0; width: 100%; }
             .row { display: flex; flex-wrap: wrap; }
             .col-6 { flex: 0 0 50%; max-width: 50%; }
         }
-        /* Gunakan satu definisi CSS untuk kedua area cetak */
-        #print-area, #print-area-multiple { padding: 30px; font-family: Arial, sans-serif; color: #000; }
-        .print-header { border-bottom: 3px solid #025697; padding-bottom: 15px; margin-bottom: 25px; }
-        .print-table { width: 100%; border-collapse: collapse; }
-        .print-table th, .print-table td { border: 1px solid #000; padding: 10px; }
-        .print-table th { background: #025697; color: white; text-align: center; }
-        .page-break { page-break-after: always; }
     </style>
 
-    <!-- HEADER -->
     <div class="print-header">
-        <table>
+        <table style="width: 100%;">
             <tr>
                 <td style="width: 35%; vertical-align: middle;">
-                    <img src="{% static 'assets/images/si-basma-logo.png' %}" class="print-logo" style="width: 260px; height: auto;">
+                    <img src="{% static 'assets/images/si-basma-logo3.png' %}" class="print-logo" style="width: 200px;">
                 </td>
                 <td style="width: 65%; vertical-align: middle; text-align: right;">
                     <div class="instansi-title">INSTALASI GIZI RS BASMA</div>
@@ -331,24 +260,22 @@
         </table>
     </div>
 
-    <!-- INFO -->
     <div class="info-section">
         <div class="row">
             <div class="col-6">
-                <p class="mb-1"><span class="info-label"><b>Tanggal</b></span>: <span id="print_tanggal"></span></p>
-                <p class="mb-1"><span class="info-label"><b>Siklus</b></span>: <span id="print_siklus"></span></p>
-                <p class="mb-1"><span class="info-label"><b>Waktu</b></span>: <span id="print_waktu"></span></p>
+                <p class="mb-1"><span class="info-label">Tanggal</span>: <span id="print_tanggal"></span></p>
+                <p class="mb-1"><span class="info-label">Siklus</span>: <span id="print_siklus"></span></p>
+                <p class="mb-1"><span class="info-label">Waktu</span>: <span id="print_waktu"></span></p>
             </div>
             <div class="col-6" style="display: flex; justify-content: flex-end;">
                 <div style="text-align: left;">
-                    <p class="mb-1"><span class="info-label"><b>Pasien</b></span>: <span id="print_total"> </span> Orang</p>
-                    <p class="mb-1"><span class="info-label"><b>User</b></span>: <span id="print_user"></span></p>
+                    <p class="mb-1"><span class="info-label">Pasien</span>: <span id="print_total"></span> Orang</p>
+                    <p class="mb-1"><span class="info-label">User</span>: <span id="print_user"></span></p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- TABLE -->
     <table class="print-table">
         <thead>
             <tr>
@@ -361,7 +288,6 @@
         <tbody id="print_items"></tbody>
     </table>
 
-    <!-- FOOTER -->
     <div class="print-footer">
         <div class="ttd">
             Yogyakarta, <span id="print_tanggal_footer"></span>
@@ -372,44 +298,15 @@
     </div>
 </div>
 
-<!-- AREA CETAK MASSAL (BANYAK DATA) -->
+<!-- AREA CETAK MASSAL -->
 <div id="print-area-multiple" class="d-none">
     <style>
-        #print-area-multiple {
-            padding: 30px;
-            font-family: Arial, sans-serif;
-            color: #000;
-        }
-        .page-break {
-            page-break-after: always;
-            break-after: page;
-            margin-bottom: 40px; /* Jarak visual jika tidak dicetak fisik */
-        }
-        /* Menghilangkan page break di elemen terakhir agar tidak ada halaman kosong di akhir */
-        .page-break:last-child {
-            page-break-after: avoid;
-            break-after: avoid;
-            margin-bottom: 0;
-        }
+        #print-area-multiple { padding: 40px; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #333; }
+        .page-break { page-break-after: always; break-after: page; }
         @media print {
-            body * {
-                visibility: hidden;
-            }
-            #print-area-multiple,
-            #print-area-multiple * {
-                visibility: visible;
-            }
-            #print-area-multiple {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100%;
-                background: white;
-            }
-        }
-        .page-break {
-            page-break-after: always;
-            break-after: page;
+            body * { visibility: hidden; }
+            #print-area-multiple, #print-area-multiple * { visibility: visible; }
+            #print-area-multiple { position: absolute; left: 0; top: 0; width: 100%; }
         }
     </style>
     <div id="multiple-records-container">
@@ -449,7 +346,7 @@
             selectedCountSpan.innerText = checkedCount;
             printSelectedBtn.disabled = (checkedCount === 0);
             printSelectedBtn.classList.toggle('btn-success', checkedCount > 0);
-            printSelectedBtn.classList.toggle('btn-info', checkedCount === 0);
+            printSelectedBtn.classList.toggle('btn-primary', checkedCount === 0);
         }
 
         if(selectAllCheckbox) {
@@ -577,7 +474,7 @@
                             <table>
                                 <tr>
                                     <td style="width: 35%; vertical-align: middle;">
-                                        <img src="{% static 'assets/images/si-basma-logo.png' %}" class="print-logo" style="width: 260px; height: auto;">
+                                        <img src="{% static 'assets/images/si-basma-logo3.png' %}" class="print-logo" style="width: 260px; height: auto;">
                                     </td>
                                     <td style="width: 65%; vertical-align: middle; text-align: right;">
                                         <div class="instansi-title">INSTALASI GIZI RS BASMA</div>

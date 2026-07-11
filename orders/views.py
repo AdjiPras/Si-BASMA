@@ -61,7 +61,7 @@ def dashboard(request):
     start_date = request.GET.get("start_date")
     end_date = request.GET.get("end_date")
 
-    # base queryset
+    # base queryset pesanan
     pesanan_qs = Pesanan.objects.all()
 
     # filter tanggal jika ada
@@ -70,10 +70,12 @@ def dashboard(request):
     if end_date:
         pesanan_qs = pesanan_qs.filter(created_at__date__lte=end_date)
 
-    # total pesanan (setelah filter)
+    # Menghitung total
     total_pesanan = pesanan_qs.count()
+    total_bahan = Bahan.objects.count()  
+    total_siklus = Siklus.objects.count() 
 
-    # data grafik per hari
+    # data grafik per hari (tetap untuk pesanan)
     chart_data_qs = (
         pesanan_qs
         .annotate(date=TruncDate("created_at"))
@@ -83,14 +85,16 @@ def dashboard(request):
     )
 
     chart_labels = [
-        item["date"].strftime("%Y-%m-%d") for item in chart_data_qs
+        item["date"].strftime("%Y-%m-%d") for item in chart_data_qs if item["date"]
     ]
     chart_data = [
-        item["total"] for item in chart_data_qs
+        item["total"] for item in chart_data_qs if item["date"]
     ]
 
     context = {
         "total_pesanan": total_pesanan,
+        "total_bahan": total_bahan,     
+        "total_siklus": total_siklus,   
         "chart_labels": chart_labels,
         "chart_data": chart_data,
         "start_date": start_date,
@@ -506,7 +510,7 @@ def master_bahan(request):
         )
 
     # PAGINATION
-    paginator = Paginator(bahan_list, 5)
+    paginator = Paginator(bahan_list, 10)
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
 
