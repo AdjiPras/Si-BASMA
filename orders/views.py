@@ -91,12 +91,16 @@ def dashboard(request):
         item["total"] for item in chart_data_qs if item["date"]
     ]
 
+    # Ambil 5 pesanan terbaru untuk "Aktivitas Terbaru"
+    pesanan_terbaru = Pesanan.objects.all().order_by('-id')[:6]
+
     context = {
         "total_pesanan": total_pesanan,
         "total_bahan": total_bahan,     
         "total_siklus": total_siklus,   
         "chart_labels": chart_labels,
         "chart_data": chart_data,
+        "pesanan_terbaru": pesanan_terbaru,
         "start_date": start_date,
         "end_date": end_date,
     }

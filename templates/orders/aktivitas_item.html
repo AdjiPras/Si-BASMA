@@ -1,0 +1,16 @@
+<div class="d-flex align-items-center p-2 rounded" style="background-color: {{ bg_color }};">
+    <div class="flex-grow-1 d-flex align-items-center gap-2">
+        <!-- Nama Siklus -->
+        <div class="fw-bold" style="font-size: 13px; color: #333;">
+            {{ p.siklus_menu.nama|default:"Siklus Tanpa Nama" }}
+        </div>
+
+        <!-- Badge Waktu (sekarang berada di sebelah nama) -->
+        <span class="badge" style="font-size: 13px; background-color: {{ badge_bg }}; color: {{ badge_text }};">
+            {{ p.waktu_makan|title|default:"-" }}
+        </span>
+    </div>
+    <div class="text-muted" style="font-size: 11px;">
+        {{ p.created_at|date:"d M Y H:i" }}
+    </div>
+</div>
