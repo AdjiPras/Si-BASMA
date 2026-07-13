@@ -2,127 +2,130 @@
 {% load static %}
 {% block title %}Dashboard | Si-BASMA{% endblock %}
 
+{% block header_title %}
+    <h5 class="mb-0">Dashboard</h5>
+{% endblock %}
+
 {% block content %}
-<main class="app-content-wrapper">
-    <!-- Header Dashboard -->
-    <div class="container-fluid py-4">
-        <div class="app-content-header">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-sm-6">
-                        <h3 class="mb-0">Dashboard</h3>
-                    </div>
-                    <div class="col-sm-6">
-                        <ol class="breadcrumb float-sm-end">
-                        <li class="breadcrumb-item"><a href="#">Home</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+<main class="app-main p-3">
+    <div class="app-content-header py-3">
+        <div class="container-fluid">
+            <div class="row align-items-center">
+                <div class="col-sm-6"></div>
+
+                <div class="col-sm-6 d-flex justify-content-end">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb mb-0">
+                            <li class="breadcrumb-item"><a href="#">Home</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
                         </ol>
-                    </div>
+                    </nav>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Baris Statistik Atas -->
-        <div class="row g-3 mb-4">
-            <!-- Total Pesanan (Biru) -->
-            <div class="col-md-3">
-                <div class="card p-3 border-0 shadow-sm">
-                    <div class="d-flex align-items-center">
-                        <div class="rounded text-white" style="width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; background-color: #1976d2; box-shadow: 0 4px 10px rgba(25, 118, 210, 0.3);">
-                            <i class="fa-solid fa-cart-shopping" style="font-size: 22px;"></i>
-                        </div>
-                        <div class="ms-3">
-                            <h5 class="mb-0 fw-bold">{{ total_pesanan }}</h5>
-                            <small class="text-muted">Total Pesanan</small>
-                        </div>
+    <!-- Baris Statistik Atas -->
+    <div class="row g-3 mb-4">
+        <!-- Total Pesanan (Biru) -->
+        <div class="col-md-3">
+            <div class="card p-3 border-0 shadow-sm">
+                <div class="d-flex align-items-center">
+                    <div class="rounded text-white" style="width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; background-color: #1976d2; box-shadow: 0 4px 10px rgba(25, 118, 210, 0.3);">
+                        <i class="fa-solid fa-cart-shopping" style="font-size: 22px;"></i>
                     </div>
-                    <!-- persentase -->
-                    <small class="mt-2" style="color: #2e7d32; font-weight: 600;">+12% 
-                        <span class="text-muted fw-normal">dari minggu lalu</span>
-                    </small>
+                    <div class="ms-3">
+                        <h5 class="mb-0 fw-bold">{{ total_pesanan }}</h5>
+                        <small class="text-muted">Total Pesanan</small>
+                    </div>
                 </div>
+                <!-- persentase -->
+                <small class="mt-2" style="color: #2e7d32; font-weight: 600;">+12% 
+                    <span class="text-muted fw-normal">dari minggu lalu</span>
+                </small>
             </div>
-            
-            <!-- Total Bahan (Kuning) -->
-            <div class="col-md-3">
-                <div class="card p-3 border-0 shadow-sm">
-                    <div class="d-flex align-items-center">
-                        <div class="rounded text-white" style="width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; background-color: #fbc02d; box-shadow: 0 4px 10px rgba(251, 192, 45, 0.3);">
-                            <i class="fa-solid fa-boxes-stacked" style="font-size: 22px;"></i>
-                        </div>
-                        <div class="ms-3">
-                            <h5 class="mb-0 fw-bold">{{ total_bahan }}</h5>
-                            <small class="text-muted">Total Bahan</small>
-                        </div>
+        </div>
+        
+        <!-- Total Bahan (Kuning) -->
+        <div class="col-md-3">
+            <div class="card p-3 border-0 shadow-sm">
+                <div class="d-flex align-items-center">
+                    <div class="rounded text-white" style="width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; background-color: #fbc02d; box-shadow: 0 4px 10px rgba(251, 192, 45, 0.3);">
+                        <i class="fa-solid fa-boxes-stacked" style="font-size: 22px;"></i>
                     </div>
-                    <!-- persentase -->
-                    <small class="mt-2" style="color: #2e7d32; font-weight: 600;">+12% 
-                        <span class="text-muted fw-normal">dari minggu lalu</span>
-                    </small>
-                </div>
-            </div>
-
-            <!-- Total Siklus (Hijau) -->
-            <div class="col-md-3">
-                <div class="card p-3 border-0 shadow-sm">
-                    <div class="d-flex align-items-center">
-                        <div class="rounded text-white" style="width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; background-color: #388e3c; box-shadow: 0 4px 10px rgba(56, 142, 60, 0.3);">
-                            <i class="fa-solid fa-refresh" style="font-size: 22px;"></i>
-                        </div>
-                        <div class="ms-3">
-                            <h5 class="mb-0 fw-bold">{{ total_siklus }}</h5>
-                            <small class="text-muted">Siklus</small>
-                        </div>
+                    <div class="ms-3">
+                        <h5 class="mb-0 fw-bold">{{ total_bahan }}</h5>
+                        <small class="text-muted">Total Bahan</small>
                     </div>
-                    <!-- persentase -->
-                    <small class="mt-2" style="color: #2e7d32; font-weight: 600;">+12% 
-                        <span class="text-muted fw-normal">dari minggu lalu</span>
-                    </small>
                 </div>
-            </div>
-
-            <!-- Total Pengguna (Ungu) -->
-            <div class="col-md-3">
-                <div class="card p-3 border-0 shadow-sm">
-                    <div class="d-flex align-items-center">
-                        <div class="rounded text-white" style="width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; background-color: #7b1fa2; box-shadow: 0 4px 10px rgba(123, 31, 162, 0.3);">
-                            <i class="fa-solid fa-users" style="font-size: 22px;"></i>
-                        </div>
-                        <div class="ms-3">
-                            <h5 class="mb-0 fw-bold">{{ total_pengguna }}</h5>
-                            <small class="text-muted">Pengguna</small>
-                        </div>
-                    </div>
-                    <!-- persentase -->
-                    <small class="mt-2" style="color: #2e7d32; font-weight: 600;">+12% 
-                        <span class="text-muted fw-normal">dari minggu lalu</span>
-                    </small>
-                </div>
+                <!-- persentase -->
+                <small class="mt-2" style="color: #2e7d32; font-weight: 600;">+12% 
+                    <span class="text-muted fw-normal">dari minggu lalu</span>
+                </small>
             </div>
         </div>
 
-        <!-- Baris Tengah: Grafik & Aktivitas Terbaru -->
-        <div class="row g-3 mb-4">
-            <!-- Grafik tetap di sebelah kiri -->
-            <div class="col-md-8">
-                <div class="card border-0 shadow-sm p-3">
-                    <div class="d-flex justify-content-between">
-                        <h6>Pemesanan Per Hari</h6>
-                        <select class="form-select form-select-sm w-auto"><option>7 Hari Terakhir</option></select>
+        <!-- Total Siklus (Hijau) -->
+        <div class="col-md-3">
+            <div class="card p-3 border-0 shadow-sm">
+                <div class="d-flex align-items-center">
+                    <div class="rounded text-white" style="width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; background-color: #388e3c; box-shadow: 0 4px 10px rgba(56, 142, 60, 0.3);">
+                        <i class="fa-solid fa-refresh" style="font-size: 22px;"></i>
                     </div>
-                    <canvas id="orderChart"></canvas>
+                    <div class="ms-3">
+                        <h5 class="mb-0 fw-bold">{{ total_siklus }}</h5>
+                        <small class="text-muted">Siklus</small>
+                    </div>
                 </div>
+                <!-- persentase -->
+                <small class="mt-2" style="color: #2e7d32; font-weight: 600;">+12% 
+                    <span class="text-muted fw-normal">dari minggu lalu</span>
+                </small>
             </div>
+        </div>
 
-            <!-- Aktivitas Terbaru pindah ke lokasi Ringkasan Cepat -->
-            <div class="col-md-4">
-                <div class="card border-0 shadow-sm p-3 h-100">
-                    <h6 class="mb-3">Aktivitas Terbaru</h6>
+        <!-- Total Pengguna (Ungu) -->
+        <div class="col-md-3">
+            <div class="card p-3 border-0 shadow-sm">
+                <div class="d-flex align-items-center">
+                    <div class="rounded text-white" style="width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; background-color: #7b1fa2; box-shadow: 0 4px 10px rgba(123, 31, 162, 0.3);">
+                        <i class="fa-solid fa-users" style="font-size: 22px;"></i>
+                    </div>
+                    <div class="ms-3">
+                        <h5 class="mb-0 fw-bold">{{ total_pengguna }}</h5>
+                        <small class="text-muted">Pengguna</small>
+                    </div>
+                </div>
+                <!-- persentase -->
+                <small class="mt-2" style="color: #2e7d32; font-weight: 600;">+12% 
+                    <span class="text-muted fw-normal">dari minggu lalu</span>
+                </small>
+            </div>
+        </div>
+    </div>
 
-                    <div class="d-flex flex-column gap-2">
-                    {% for p in pesanan_terbaru %}
-                        <!-- Tentukan variabel warna berdasarkan waktu makan -->
-                        {% if p.waktu_makan|lower == 'pagi' %}
+    <!-- Baris Tengah: Grafik & Aktivitas Terbaru -->
+    <div class="row g-3 mb-4">
+        <!-- Grafik tetap di sebelah kiri -->
+        <div class="col-md-8">
+            <div class="card border-0 shadow-sm p-3">
+                <div class="d-flex justify-content-between">
+                    <h6>Pemesanan Per Hari</h6>
+                    <select class="form-select form-select-sm w-auto"><option>7 Hari Terakhir</option></select>
+                </div>
+                <canvas id="orderChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Aktivitas Terbaru pindah ke lokasi Ringkasan Cepat -->
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm p-3 h-100">
+                <h6 class="mb-3">Aktivitas Terbaru</h6>
+
+                <div class="d-flex flex-column gap-2">
+                {% for p in pesanan_terbaru %}
+                    <!-- Tentukan variabel warna berdasarkan waktu makan -->
+                    {% if p.waktu_makan|lower == 'pagi' %}
                             {% with bg_color="#e8f5e9" badge_bg="#e8f5e9" badge_text="#2e7d32" %}
                                 {% include "orders/aktivitas_item.html" %}
                             {% endwith %}
@@ -157,6 +160,5 @@
                 </div>
             </div>
         </div> -->
-    </div>
 </main>
 {% endblock %}
