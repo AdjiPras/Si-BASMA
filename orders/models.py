@@ -28,6 +28,7 @@ class Bahan(models.Model):
         max_length=50,
         verbose_name="Satuan"
     )
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.nama} ({self.satuan})"
@@ -59,6 +60,7 @@ class Siklus(models.Model):
         blank=True,
         null=True
     )
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.nama

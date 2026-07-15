@@ -39,8 +39,9 @@
                         <small class="text-muted">Total Pesanan</small>
                     </div>
                 </div>
-                <!-- persentase -->
-                <small class="mt-2" style="color: #2e7d32; font-weight: 600;">+12% 
+                <!-- Total Pesanan -->
+                <small class="mt-2" style="color: {% if persen_pesanan >= 0 %}#2e7d32{% else %}#d32f2f{% endif %}; font-weight: 600;">
+                    {% if persen_pesanan >= 0 %}+{% endif %}{{ persen_pesanan }}% 
                     <span class="text-muted fw-normal">dari minggu lalu</span>
                 </small>
             </div>
@@ -58,8 +59,8 @@
                         <small class="text-muted">Total Bahan</small>
                     </div>
                 </div>
-                <!-- persentase -->
-                <small class="mt-2" style="color: #2e7d32; font-weight: 600;">+12% 
+                <small class="mt-2" style="color: {% if persen_bahan >= 0 %}#2e7d32{% else %}#d32f2f{% endif %}; font-weight: 600;">
+                    {% if persen_bahan > 0 %}+{% endif %}{{ persen_bahan }}% 
                     <span class="text-muted fw-normal">dari minggu lalu</span>
                 </small>
             </div>
@@ -77,8 +78,8 @@
                         <small class="text-muted">Siklus</small>
                     </div>
                 </div>
-                <!-- persentase -->
-                <small class="mt-2" style="color: #2e7d32; font-weight: 600;">+12% 
+                <small class="mt-2" style="color: {% if persen_siklus >= 0 %}#2e7d32{% else %}#d32f2f{% endif %}; font-weight: 600;">
+                    {% if persen_siklus > 0 %}+{% endif %}{{ persen_siklus }}% 
                     <span class="text-muted fw-normal">dari minggu lalu</span>
                 </small>
             </div>
@@ -97,7 +98,8 @@
                     </div>
                 </div>
                 <!-- persentase -->
-                <small class="mt-2" style="color: #2e7d32; font-weight: 600;">+12% 
+                <small class="mt-2" style="color: {% if persen_pengguna >= 0 %}#2e7d32{% else %}#d32f2f{% endif %}; font-weight: 600;">
+                    {% if persen_pengguna >= 0 %}+{% endif %}{{ persen_pengguna }}% 
                     <span class="text-muted fw-normal">dari minggu lalu</span>
                 </small>
             </div>

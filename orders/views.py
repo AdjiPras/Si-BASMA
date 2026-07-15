@@ -54,53 +54,65 @@ from django.db.models import Count
 from django.db.models.functions import TruncDate
 from django.shortcuts import render
 from .models import Pesanan
-
+from django.utils import timezone
+from datetime import timedelta
 
 @login_required
 def dashboard(request):
+    from django.utils import timezone
+    from datetime import timedelta
+    from django.db.models import Count
+    from django.db.models.functions import TruncDate
+
     start_date = request.GET.get("start_date")
     end_date = request.GET.get("end_date")
 
-    # base queryset pesanan
+    # Base queryset pesanan
     pesanan_qs = Pesanan.objects.all()
-
-    # filter tanggal jika ada
     if start_date:
         pesanan_qs = pesanan_qs.filter(created_at__date__gte=start_date)
     if end_date:
         pesanan_qs = pesanan_qs.filter(created_at__date__lte=end_date)
 
-    # Menghitung total
-    total_pesanan = pesanan_qs.count()
-    total_bahan = Bahan.objects.count()  
-    total_siklus = Siklus.objects.count() 
+    # Logika Persentase
+    today = timezone.now().date()
+    seven_days_ago = today - timedelta(days=7)
+    fourteen_days_ago = today - timedelta(days=14)
 
-    # data grafik per hari (tetap untuk pesanan)
-    chart_data_qs = (
-        pesanan_qs
-        .annotate(date=TruncDate("created_at"))
-        .values("date")
-        .annotate(total=Count("id"))
-        .order_by("date")
-    )
+    def calculate_percentage(current, previous):
+        if previous == 0:
+            return 100.0 if current > 0 else 0.0
+        return ((current - previous) / previous) * 100
 
-    chart_labels = [
-        item["date"].strftime("%Y-%m-%d") for item in chart_data_qs if item["date"]
-    ]
-    chart_data = [
-        item["total"] for item in chart_data_qs if item["date"]
-    ]
+    # 1. Pesanan
+    pesanan_skrg = Pesanan.objects.filter(created_at__date__gte=seven_days_ago).count()
+    pesanan_lalu = Pesanan.objects.filter(created_at__date__gte=fourteen_days_ago, created_at__date__lt=seven_days_ago).count()
+    
+    # 2. Bahan
+    bahan_skrg = Bahan.objects.filter(created_at__date__gte=seven_days_ago).count()
+    bahan_lalu = Bahan.objects.filter(created_at__date__gte=fourteen_days_ago, created_at__date__lt=seven_days_ago).count()
+    
+    # 3. Siklus
+    siklus_skrg = Siklus.objects.filter(created_at__date__gte=seven_days_ago).count()
+    siklus_lalu = Siklus.objects.filter(created_at__date__gte=fourteen_days_ago, created_at__date__lt=seven_days_ago).count()
 
-    # Ambil 5 pesanan terbaru untuk "Aktivitas Terbaru"
-    pesanan_terbaru = Pesanan.objects.all().order_by('-id')[:6]
+    # 4. Pengguna (Menggunakan date_joined bawaan Django)
+    user_skrg = User.objects.filter(date_joined__date__gte=seven_days_ago).count()
+    user_lalu = User.objects.filter(date_joined__date__gte=fourteen_days_ago, date_joined__date__lt=seven_days_ago).count()
 
     context = {
-        "total_pesanan": total_pesanan,
-        "total_bahan": total_bahan,     
-        "total_siklus": total_siklus,   
-        "chart_labels": chart_labels,
-        "chart_data": chart_data,
-        "pesanan_terbaru": pesanan_terbaru,
+        "total_pesanan": pesanan_qs.count(),
+        "persen_pesanan": round(calculate_percentage(pesanan_skrg, pesanan_lalu), 1),
+        "total_bahan": Bahan.objects.count(),
+        "persen_bahan": round(calculate_percentage(bahan_skrg, bahan_lalu), 1),
+        "total_siklus": Siklus.objects.count(),
+        "persen_siklus": round(calculate_percentage(siklus_skrg, siklus_lalu), 1),
+        "total_pengguna": User.objects.count(),
+        "persen_pengguna": round(calculate_percentage(user_skrg, user_lalu), 1),
+        
+        "chart_labels": [item["date"].strftime("%Y-%m-%d") for item in pesanan_qs.annotate(date=TruncDate("created_at")).values("date").annotate(total=Count("id")).order_by("date") if item["date"]],
+        "chart_data": [item["total"] for item in pesanan_qs.annotate(date=TruncDate("created_at")).values("date").annotate(total=Count("id")).order_by("date") if item["date"]],
+        "pesanan_terbaru": Pesanan.objects.all().order_by('-id')[:6],
         "start_date": start_date,
         "end_date": end_date,
     }
