@@ -68,7 +68,7 @@ urlpatterns = [
         views.pengguna_delete,
         name="pengguna_delete"
     ),
-
+    path('debug-error/', views.debug_error_page, name='debug_error'),
     # =========================
     # SIKLUS
     # =========================
