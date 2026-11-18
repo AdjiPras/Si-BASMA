@@ -145,10 +145,10 @@
                                                     <i class="bi bi-pencil"></i>
                                                 </a>
                                                 <!-- CETAK PDF -->
-                                                <!-- <button class="btn btn-sm btn-secondary btn-print"
-                                                    data-id="{{ pesanan.id }}">
+                                                <button class="btn btn-sm btn-secondary btn-print"
+                                                    data-id="{{ pesanan.id }}" title="Cetak">
                                                     <i class="bi bi-printer"></i>
-                                                </button> -->
+                                                </button>
 
                                                 <!-- DELETE -->
                                                 <button class="btn btn-sm btn-danger btn-delete"
@@ -367,26 +367,28 @@
             });
         });
 
-        toggleEditBtn.addEventListener('click', function () {
-            document.querySelectorAll('.edit-mode').forEach(el => el.classList.remove('d-none'));
-            document.querySelectorAll('.view-mode').forEach(el => el.classList.add('d-none'));
-            toggleEditBtn.classList.add('d-none');
-            saveAllBtn.classList.remove('d-none');
-        });
-
-        saveAllBtn.addEventListener('click', function () {
-            document.querySelectorAll('tr[data-id]').forEach(row => {
-                row.querySelector('.siklus-text').innerText = row.querySelector('.siklus-input').value;
-                row.querySelector('.tanggal-text').innerText = row.querySelector('.tanggal-input').value;
-                row.querySelector('.total-text').innerText = row.querySelector('.total-input').value;
-                row.querySelector('.waktu-text').innerText = row.querySelector('.waktu-input').value;
+        if (toggleEditBtn && saveAllBtn) {
+            toggleEditBtn.addEventListener('click', function () {
+                document.querySelectorAll('.edit-mode').forEach(el => el.classList.remove('d-none'));
+                document.querySelectorAll('.view-mode').forEach(el => el.classList.add('d-none'));
+                toggleEditBtn.classList.add('d-none');
+                saveAllBtn.classList.remove('d-none');
             });
-            document.querySelectorAll('.edit-mode').forEach(el => el.classList.add('d-none'));
-            document.querySelectorAll('.view-mode').forEach(el => el.classList.remove('d-none'));
-            saveAllBtn.classList.add('d-none');
-            toggleEditBtn.classList.remove('d-none');
-            Swal.fire({ icon: 'success', title: 'Berhasil!', text: 'Perubahan disimpan.', timer: 2000 });
-        });
+
+            saveAllBtn.addEventListener('click', function () {
+                document.querySelectorAll('tr[data-id]').forEach(row => {
+                    row.querySelector('.siklus-text').innerText = row.querySelector('.siklus-input').value;
+                    row.querySelector('.tanggal-text').innerText = row.querySelector('.tanggal-input').value;
+                    row.querySelector('.total-text').innerText = row.querySelector('.total-input').value;
+                    row.querySelector('.waktu-text').innerText = row.querySelector('.waktu-input').value;
+                });
+                document.querySelectorAll('.edit-mode').forEach(el => el.classList.add('d-none'));
+                document.querySelectorAll('.view-mode').forEach(el => el.classList.remove('d-none'));
+                saveAllBtn.classList.add('d-none');
+                toggleEditBtn.classList.remove('d-none');
+                Swal.fire({ icon: 'success', title: 'Berhasil!', text: 'Perubahan disimpan.', timer: 2000 });
+            });
+        }
 
         // --- 4. LOGIKA DELETE ---
         document.addEventListener('click', function (e) {
