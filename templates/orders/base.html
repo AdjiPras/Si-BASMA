@@ -1,215 +1,191 @@
 {% load static %}
 <!doctype html>
 <html lang="en">
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <title>{% block title %}Si-BASMA{% endblock %}</title>
 
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-        <meta name="color-scheme" content="light dark" />
-        <meta name="theme-color" content="#007bff" media="(prefers-color-scheme: light)" />
-        <meta name="theme-color" content="#1a1a1a" media="(prefers-color-scheme: dark)" />
-        <meta name="title" content="Si-BASMA" />
-        <meta name="author" content="" />
-        <meta
-        name="description"
-        content=""
-        />
-        <meta
-        name="keywords"
-        content=""
-        />
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>{% block title %}Si-BASMA{% endblock %}</title>
 
-        <meta name="supported-color-schemes" content="light dark" />
-        <link rel="preload" href="{% static 'dist/css/adminlte.css' %}" as="style" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#007bff" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#1a1a1a" media="(prefers-color-scheme: dark)" />
+    <meta name="title" content="Si-BASMA" />
+    <meta name="author" content="" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
 
-        <link
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/@fontsource/source-sans-3@5.0.12/index.css"
-        integrity="sha256-tXJfXfp6Ewt1ilPzLDtQnJV4hclT9XuaZUKyUvmyr+Q="
-        crossorigin="anonymous"
-        media="print"
-        onload="this.media = 'all'"
-        />
-        
-        <link
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/styles/overlayscrollbars.min.css"
-        crossorigin="anonymous"
-        />
+    <meta name="supported-color-schemes" content="light dark" />
+    <link rel="preload" href="{% static 'dist/css/adminlte.css' %}" as="style" />
 
-        <link
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
-        crossorigin="anonymous"
-        />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/source-sans-3@5.0.12/index.css"
+        integrity="sha256-tXJfXfp6Ewt1ilPzLDtQnJV4hclT9XuaZUKyUvmyr+Q=" crossorigin="anonymous" media="print"
+        onload="this.media = 'all'" />
 
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/styles/overlayscrollbars.min.css"
+        crossorigin="anonymous" />
 
-        <link rel="stylesheet" href="{% static 'dist/css/adminlte.css' %}" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
+        crossorigin="anonymous" />
 
-        <link
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.css"
-        integrity="sha256-4MX+61mt9NVvvuPjUWdUdyfZfxSB1/Rf9WtqRHgG5S0="
-        crossorigin="anonymous"
-        />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-        <link
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/css/jsvectormap.min.css"
-        integrity="sha256-+uGLJmmTKOqBr+2E6KDYs/NRsHxSkONXFHUL0fy2O/4="
-        crossorigin="anonymous"
-        />
+    <link rel="stylesheet" href="{% static 'dist/css/adminlte.css' %}" />
 
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.css"
+        integrity="sha256-4MX+61mt9NVvvuPjUWdUdyfZfxSB1/Rf9WtqRHgG5S0=" crossorigin="anonymous" />
 
-        <!-- Kalender -->
-        <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/css/jsvectormap.min.css"
+        integrity="sha256-+uGLJmmTKOqBr+2E6KDYs/NRsHxSkONXFHUL0fy2O/4=" crossorigin="anonymous" />
 
-        <!-- ICON -->
-        <link rel="icon" href="{% static 'assets/images/icon-simrs.png' %}">
-        <link rel="shortcut icon" href="{% static 'assets/images/icon-simrs.png' %}">
-        <link rel="apple-touch-icon" href="{% static 'assets/images/icon-simrs.png' %}">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-        <style>
-            .small-box-icon {
-                font-size: 40px;
-                position: absolute;
-                top: 10px;
-                right: 10px;
-                opacity: 0.3;
-            }
+    <!-- Kalender -->
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css" rel="stylesheet">
 
-            /* ====== CONTAINER ====== */
-            #calendar {
-                background-color: #28a745;
-                padding: 15px;
-                border-radius: 10px;
-            }
+    <!-- ICON -->
+    <link rel="icon" href="{% static 'assets/images/icon-simrs.png' %}">
+    <link rel="shortcut icon" href="{% static 'assets/images/icon-simrs.png' %}">
+    <link rel="apple-touch-icon" href="{% static 'assets/images/icon-simrs.png' %}">
 
-            /* ====== GLOBAL TEXT ====== */
-            .fc {
-                color: white !important;
-                font-family: 'Source Sans 3', sans-serif;
-            }
+    <style>
+        .small-box-icon {
+            font-size: 40px;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            opacity: 0.3;
+        }
 
-            /* ===== HEADER (bulan + panah) ===== */
-            .fc-header-toolbar {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                gap: 20px;
-                margin-bottom: 10px;
-            }
+        /* ====== CONTAINER ====== */
+        #calendar {
+            background-color: #28a745;
+            padding: 15px;
+            border-radius: 10px;
+        }
 
-            /* tombol panah */
-            .fc-button {
-                background: transparent !important;
-                border: none !important;
-                color: white !important;
-                font-size: 18px;
-                box-shadow: none !important;
-            }
+        /* ====== GLOBAL TEXT ====== */
+        .fc {
+            color: white !important;
+            font-family: 'Source Sans 3', sans-serif;
+        }
 
-            /* hover tombol */
-            .fc-button:hover {
-                opacity: 0.7;
-            }
+        /* ===== HEADER (bulan + panah) ===== */
+        .fc-header-toolbar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 10px;
+        }
 
-            /* bulan */
-            .fc-toolbar-title {
-                font-size: 18px;
-                font-weight: 600;
-                color: white !important;
-            }
+        /* tombol panah */
+        .fc-button {
+            background: transparent !important;
+            border: none !important;
+            color: white !important;
+            font-size: 18px;
+            box-shadow: none !important;
+        }
 
-            /* ====== HEADER BULAN ====== */
-            .fc-toolbar-title {
-                text-align: center;
-                width: 100%;
-                font-weight: 600;
-                font-size: 18px;
-            }
+        /* hover tombol */
+        .fc-button:hover {
+            opacity: 0.7;
+        }
 
-            /* center toolbar */
-            .fc-toolbar {
-                justify-content: center !important;
-            }
+        /* bulan */
+        .fc-toolbar-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: white !important;
+        }
 
-            /* ====== HARI (Sun, Mon, dll) ====== */
-            .fc-col-header-cell {
-                color: rgba(255,255,255,0.7) !important;
-                font-size: 13px;
-                font-weight: 500;
-            }
+        /* ====== HEADER BULAN ====== */
+        .fc-toolbar-title {
+            text-align: center;
+            width: 100%;
+            font-weight: 600;
+            font-size: 18px;
+        }
 
-            /* ====== TANGGAL ====== */
-            .fc-daygrid-day-number {
-                color: white !important;
-                font-size: 14px;
-                font-weight: 500;
-            }
+        /* center toolbar */
+        .fc-toolbar {
+            justify-content: center !important;
+        }
 
-            /* ====== GRID CLEAN (PENTING BANGET) ====== */
-            .fc-theme-standard td,
-            .fc-theme-standard th,
-            .fc-scrollgrid {
-                border: none !important;
-            }
+        /* ====== HARI (Sun, Mon, dll) ====== */
+        .fc-col-header-cell {
+            color: rgba(255, 255, 255, 0.7) !important;
+            font-size: 13px;
+            font-weight: 500;
+        }
 
-            /* ====== SPACING PER KOTAK ====== */
-            .fc-daygrid-day-frame {
-                padding: 8px;
-                border-radius: 8px;
-                transition: 0.2s;
-            }
+        /* ====== TANGGAL ====== */
+        .fc-daygrid-day-number {
+            color: white !important;
+            font-size: 14px;
+            font-weight: 500;
+        }
 
-            /* ====== HOVER HALUS ====== */
-            .fc-daygrid-day:hover .fc-daygrid-day-frame {
-                background: rgba(255,255,255,0.08);
-            }
+        /* ====== GRID CLEAN (PENTING BANGET) ====== */
+        .fc-theme-standard td,
+        .fc-theme-standard th,
+        .fc-scrollgrid {
+            border: none !important;
+        }
 
-            /* ====== HARI LUAR BULAN ====== */
-            .fc-day-other .fc-daygrid-day-number {
-                color: rgba(255,255,255,0.3) !important;
-            }
+        /* ====== SPACING PER KOTAK ====== */
+        .fc-daygrid-day-frame {
+            padding: 8px;
+            border-radius: 8px;
+            transition: 0.2s;
+        }
 
-            /* ====== EVENT (BIAR MIRIP CONTOH) ====== */
-            .fc-event {
-                background: rgba(255,255,255,0.25) !important;
-                border: none !important;
-                color: white !important;
-                font-size: 11px;
-                padding: 2px 6px;
-                border-radius: 6px;
-            }
+        /* ====== HOVER HALUS ====== */
+        .fc-daygrid-day:hover .fc-daygrid-day-frame {
+            background: rgba(255, 255, 255, 0.08);
+        }
 
-            /* ====== HILANGKAN SCROLL ====== */
-            .fc-scroller {
-                overflow: hidden !important;
-            }
+        /* ====== HARI LUAR BULAN ====== */
+        .fc-day-other .fc-daygrid-day-number {
+            color: rgba(255, 255, 255, 0.3) !important;
+        }
 
-            /* ====== AUTO HEIGHT ====== */
-            .fc-view-harness {
-                height: auto !important;
-            }
+        /* ====== EVENT (BIAR MIRIP CONTOH) ====== */
+        .fc-event {
+            background: rgba(255, 255, 255, 0.25) !important;
+            border: none !important;
+            color: white !important;
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 6px;
+        }
+
+        /* ====== HILANGKAN SCROLL ====== */
+        .fc-scroller {
+            overflow: hidden !important;
+        }
+
+        /* ====== AUTO HEIGHT ====== */
+        .fc-view-harness {
+            height: auto !important;
+        }
 
 
-            /* NOTIF CSS */
-            .notif-container {
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                z-index: 9999;
-                width: 350px;
-            }
+        /* NOTIF CSS */
+        .notif-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            width: 350px;
+        }
 
-            .notif-container .alert {
-                margin-bottom: 10px;
-            }
+        .notif-container .alert {
+            margin-bottom: 10px;
+        }
 
-            #modalDetailBody {
+        #modalDetailBody {
             font-family: Arial, sans-serif;
             color: #333;
             padding: 20px;
@@ -244,11 +220,11 @@
         /* PDF */
         @media print {
 
-        body * {
-            visibility: hidden;
-        }
+            body * {
+                visibility: hidden;
+            }
 
-        #print-area,
+            #print-area,
             #print-area * {
                 visibility: visible;
             }
@@ -262,42 +238,42 @@
 
         }
 
-        .app-header{
-            height:70px;
-            z-index:1040;
+        .app-header {
+            height: 70px;
+            z-index: 1040;
         }
 
-        .navbar .form-control{
-            border-radius:20px;
+        .navbar .form-control {
+            border-radius: 20px;
         }
 
-        .navbar .input-group-text{
-            border-radius:20px 0 0 20px;
+        .navbar .input-group-text {
+            border-radius: 20px 0 0 20px;
         }
 
-        .navbar .form-control{
-            border-radius:0 20px 20px 0;
+        .navbar .form-control {
+            border-radius: 0 20px 20px 0;
         }
 
-        .navbar .nav-link{
-            color:#495057;
+        .navbar .nav-link {
+            color: #495057;
         }
 
-        .dropdown-menu{
-            border:none;
-            border-radius:15px;
-            box-shadow:0 10px 30px rgba(0,0,0,.12);
+        .dropdown-menu {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, .12);
         }
-        
+
 
         /* PDF PREVIEW */
-        </style>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    </head>
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
 
-    <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
-        <div id="loader" style="
+<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+    <div id="loader" style="
             position: fixed;
             top: 0;
             left: 0;
@@ -310,35 +286,33 @@
             align-items: center;
             flex-direction: column;
         ">
-            <img src="{% static 'assets/images/icon-simrs.png' %}" 
-                alt="Loading..." 
-                id="loader-img"
-                style="width: 100px; margin-bottom: 10px;">
+        <img src="{% static 'assets/images/icon-simrs.png' %}" alt="Loading..." id="loader-img"
+            style="width: 100px; margin-bottom: 10px;">
 
-            <p style="font-size: 14px; color: #666;">Loading...</p>
-        </div>
-        <div class="app-wrapper">
-            
-            <nav class="app-header navbar navbar-expand bg-white shadow-sm border-bottom py-2">
-                <div class="container-fluid">
+        <p style="font-size: 14px; color: #666;">Loading...</p>
+    </div>
+    <div class="app-wrapper">
 
-                    <!-- KIRI -->
-                    <div class="d-flex align-items-center">
-                        <a class="nav-link me-3" data-lte-toggle="sidebar" href="#">
-                            <i class="bi bi-list fs-4 text-dark"></i>
-                        </a>
-                    </div>
+        <nav class="app-header navbar navbar-expand bg-white shadow-sm border-bottom py-2">
+            <div class="container-fluid">
 
-                    <!-- TAMBAHKAN BLOK DI SINI -->
-                    <div class="header-title-wrapper">
-                        {% block header_title %}
-                            <h3 class="mb-0">Sistem</h3>
-                        {% endblock %}
-                    </div>
+                <!-- KIRI -->
+                <div class="d-flex align-items-center">
+                    <a class="nav-link me-3" data-lte-toggle="sidebar" href="#">
+                        <i class="bi bi-list fs-4 text-dark"></i>
+                    </a>
+                </div>
 
-                    <!-- TENGAH -->
-                    <form class="d-none d-md-flex mx-auto" style="width:320px;">
-                        <!-- <div class="input-group">
+                <!-- TAMBAHKAN BLOK DI SINI -->
+                <div class="header-title-wrapper">
+                    {% block header_title %}
+                    <h3 class="mb-0">Sistem</h3>
+                    {% endblock %}
+                </div>
+
+                <!-- TENGAH -->
+                <form class="d-none d-md-flex mx-auto" style="width:320px;">
+                    <!-- <div class="input-group">
                             <span class="input-group-text bg-light border-end-0">
                                 <i class="bi bi-search text-secondary"></i>
                             </span>
@@ -347,206 +321,198 @@
                                 class="form-control border-start-0 bg-light"
                                 placeholder="Cari sesuatu...">
                         </div> -->
-                    </form>
+                </form>
 
-                    <!-- KANAN -->
-                    <ul class="navbar-nav align-items-center">
-                        <!-- User -->
-                        <li class="nav-item dropdown">
-                            <a class="nav-link d-flex align-items-center"
-                            href="#"
-                            data-bs-toggle="dropdown">
+                <!-- KANAN -->
+                <ul class="navbar-nav align-items-center">
+                    <!-- User -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link d-flex align-items-center" href="#" data-bs-toggle="dropdown">
+                            <div class="rounded-circle d-flex justify-content-center align-items-center">
+                                <img src="{% static 'assets/images/icon-simrs.png' %}" class="rounded-circle mb-2"
+                                    width="40" height="40">
+                            </div>
+                            <span class="ms-2 fw-semibold text-dark">
+                                {{ request.user.username }}
+                            </span>
+                            <i class="bi bi-chevron-down ms-2 text-secondary"></i>
+                        </a>
+
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li class="dropdown-header text-center">
                                 <div class="rounded-circle d-flex justify-content-center align-items-center">
-                                    <img src="{% static 'assets/images/icon-simrs.png' %}" 
-                                        class="rounded-circle mb-2" 
+                                    <img src="{% static 'assets/images/icon-simrs.png' %}" class="rounded-circle mb-2"
                                         width="40" height="40">
                                 </div>
-                                <span class="ms-2 fw-semibold text-dark">
-                                    {{ request.user.username }}
-                                </span>
-                                <i class="bi bi-chevron-down ms-2 text-secondary"></i>
+                                <strong>{{ request.user.username }}</strong><br>
+                                <small class="text-muted">Administrator</small>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <i class="bi bi-person me-2"></i>
+                                    Profile
+                                </a>
+                            </li>
+                            <li>
+                                <form action="{% url 'logout' %}" method="POST">
+                                    {% csrf_token %}
+                                    <button type="button" class="dropdown-item text-danger" data-bs-toggle="modal"
+                                        data-bs-target="#logoutModal">
+
+                                        <i class="bi bi-box-arrow-right me-2"></i>
+                                        Sign Out
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
+            <div class="sidebar-brand d-flex justify-content-center align-items-center p-2"
+                style="background:linear-gradient(180deg,rgba(7,35,92,0.95)); height: auto; min-height: 75px;">
+                <a href="{% url 'dashboard' %}" class="brand-link d-flex justify-content-center align-items-center w-100 p-0 m-0"
+                    style="height: auto; max-height: none;">
+                    <img src="{% static 'assets/images/logo_sidebar.png' %}"
+                        style="width: 100%; max-width: 220px; height: auto !important; max-height: none !important; object-fit: contain;"
+                        alt="Logo" class="brand-image m-0" />
+                    <span class="brand-text fw-light"></span>
+                </a>
+            </div>
+
+            <div class="sidebar-wrapper"
+                style="background:linear-gradient(180deg,rgba(7,35,92,0.95),rgba(11,78,162,0.92));">
+                <nav class="mt-2">
+
+                    <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="navigation"
+                        aria-label="Main navigation" data-accordion="false" id="navigation">
+
+                        <li
+                            class="nav-item {% if request.resolver_match.url_name == 'dashboard' %}menu-open{% endif %}">
+                            <a href="{% url 'dashboard' %}"
+                                class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                                <i class="nav-icon bi bi-speedometer2"></i>
+                                <p>Dashboard</p>
+                            </a>
+                        </li>
+
+
+                        {% if request.user.is_staff %}
+                        <li
+                            class="nav-item {% if request.resolver_match.url_name == 'master_bahan' or request.resolver_match.url_name == 'kategori_list' or request.resolver_match.url_name == 'siklus_list' %}menu-open{% endif %}">
+
+                            <a href="#"
+                                class="nav-link {% if request.resolver_match.url_name == 'master_bahan' or request.resolver_match.url_name == 'kategori_list' or request.resolver_match.url_name == 'siklus_list' %}active{% endif %}">
+                                <i class="nav-icon bi bi-database-fill-check"></i>
+                                <p>
+                                    Master Data
+                                    <i class="nav-arrow bi bi-chevron-right"></i>
+                                </p>
                             </a>
 
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li class="dropdown-header text-center">
-                                    <div class="rounded-circle d-flex justify-content-center align-items-center">
-                                        <img src="{% static 'assets/images/icon-simrs.png' %}" 
-                                            class="rounded-circle mb-2" 
-                                            width="40" height="40">
-                                    </div>
-                                    <strong>{{ request.user.username }}</strong><br>
-                                    <small class="text-muted">Administrator</small>
-                                </li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li>
-                                    <a class="dropdown-item" href="#">
-                                        <i class="bi bi-person me-2"></i>
-                                        Profile
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{% url 'master_bahan' %}"
+                                        class="nav-link {% if request.resolver_match.url_name == 'master_bahan' %}active{% endif %}">
+                                        <i class="nav-icon bi bi-chevron-right"></i>
+                                        <p>Bahan</p>
                                     </a>
                                 </li>
-                                <li>
-                                    <form action="{% url 'logout' %}" method="POST">
-                                        {% csrf_token %}
-                                        <button
-                                            type="button"
-                                            class="dropdown-item text-danger"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#logoutModal">
 
-                                            <i class="bi bi-box-arrow-right me-2"></i>
-                                            Sign Out
-                                        </button>
-                                    </form>
+                                <li class="nav-item">
+                                    <a href="{% url 'kategori_list' %}"
+                                        class="nav-link {% if request.resolver_match.url_name == 'kategori_list' %}active{% endif %}">
+                                        <i class="nav-icon bi bi-chevron-right"></i>
+                                        <p>Kategori</p>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="{% url 'siklus_list' %}"
+                                        class="nav-link {% if request.resolver_match.url_name == 'siklus_list' %}active{% endif %}">
+                                        <i class="nav-icon bi bi-chevron-right"></i>
+                                        <p>Siklus</p>
+                                    </a>
+                                </li>
+                            </ul>
+
+                        </li>
+                        {% endif %}
+
+
+                        <li
+                            class="nav-item {% if request.resolver_match.url_name == 'create_pesanan' or request.resolver_match.url_name == 'riwayat_pesanan' %}menu-open{% endif %}">
+                            <a href="#"
+                                class="nav-link {% if request.resolver_match.url_name == 'create_pesanan' or request.resolver_match.url_name == 'riwayat_pesanan' %}active{% endif %}">
+                                <i class="nav-icon bi bi-basket-fill"></i>
+                                <p>
+                                    Pesanan
+                                    <i class="nav-arrow bi bi-chevron-right"></i>
+                                </p>
+                            </a>
+
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{% url 'create_pesanan' %}"
+                                        class="nav-link {% if request.resolver_match.url_name == 'create_pesanan' %}active{% endif %}">
+                                        <i class="nav-icon bi bi-chevron-right"></i>
+                                        <p>Tambah Pesanan</p>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="{% url 'riwayat_pesanan' %}"
+                                        class="nav-link {% if request.resolver_match.url_name == 'riwayat_pesanan' %}active{% endif %}">
+                                        <i class="nav-icon bi bi-chevron-right"></i>
+                                        <p>Riwayat Pesanan</p>
+                                    </a>
                                 </li>
                             </ul>
                         </li>
-                    </ul>
-                </div>
-            </nav>
-            
-            <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
-                <div class="sidebar-brand" style="background:linear-gradient(180deg,rgba(7,35,92,0.95));">
-                    <a href="{% url 'dashboard' %}" class="brand-link">
-                        <img
-                        src="{% static 'assets/images/si-basma-logo3.png' %}" style="width: 120px; height: auto;"
-                        alt="Logo"
-                        class="brand-image opacity-75 shadow"
-                        />
-                        <span class="brand-text fw-light"></span>
-                    </a>
-                </div>
-                
-                <div class="sidebar-wrapper" style="background:linear-gradient(180deg,rgba(7,35,92,0.95),rgba(11,78,162,0.92));">
-                    <nav class="mt-2">
-
-                        <ul class="nav sidebar-menu flex-column"
-                            data-lte-toggle="treeview"
-                            role="navigation"
-                            aria-label="Main navigation"
-                            data-accordion="false"
-                            id="navigation">
-
-                            <li class="nav-item {% if request.resolver_match.url_name == 'dashboard' %}menu-open{% endif %}">
-                                <a href="{% url 'dashboard' %}"
-                                class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
-                                    <i class="nav-icon bi bi-speedometer2"></i>
-                                    <p>Dashboard</p>
-                                </a>
-                            </li>
 
 
-                            {% if request.user.is_staff %}
-                            <li class="nav-item {% if request.resolver_match.url_name == 'master_bahan' or request.resolver_match.url_name == 'kategori_list' or request.resolver_match.url_name == 'siklus_list' %}menu-open{% endif %}">
-
-                                <a href="#"
-                                class="nav-link {% if request.resolver_match.url_name == 'master_bahan' or request.resolver_match.url_name == 'kategori_list' or request.resolver_match.url_name == 'siklus_list' %}active{% endif %}">
-                                    <i class="nav-icon bi bi-database-fill-check"></i>
-                                    <p>
-                                        Master Data
-                                        <i class="nav-arrow bi bi-chevron-right"></i>
-                                    </p>
-                                </a>
-
-                                <ul class="nav nav-treeview">
-                                    <li class="nav-item">
-                                        <a href="{% url 'master_bahan' %}"
-                                        class="nav-link {% if request.resolver_match.url_name == 'master_bahan' %}active{% endif %}">
-                                            <i class="nav-icon bi bi-chevron-right"></i>
-                                            <p>Bahan</p>
-                                        </a>
-                                    </li>
-
-                                    <li class="nav-item">
-                                        <a href="{% url 'kategori_list' %}"
-                                        class="nav-link {% if request.resolver_match.url_name == 'kategori_list' %}active{% endif %}">
-                                            <i class="nav-icon bi bi-chevron-right"></i>
-                                            <p>Kategori</p>
-                                        </a>
-                                    </li>
-
-                                    <li class="nav-item">
-                                        <a href="{% url 'siklus_list' %}"
-                                        class="nav-link {% if request.resolver_match.url_name == 'siklus_list' %}active{% endif %}">
-                                            <i class="nav-icon bi bi-chevron-right"></i>
-                                            <p>Siklus</p>
-                                        </a>
-                                    </li>
-                                </ul>
-
-                            </li>
-                            {% endif %}
-
-
-                            <li class="nav-item {% if request.resolver_match.url_name == 'create_pesanan' or request.resolver_match.url_name == 'riwayat_pesanan' %}menu-open{% endif %}">
-                                <a href="#"
-                                class="nav-link {% if request.resolver_match.url_name == 'create_pesanan' or request.resolver_match.url_name == 'riwayat_pesanan' %}active{% endif %}">
-                                    <i class="nav-icon bi bi-basket-fill"></i>
-                                    <p>
-                                        Pesanan
-                                        <i class="nav-arrow bi bi-chevron-right"></i>
-                                    </p>
-                                </a>
-
-                                <ul class="nav nav-treeview">
-                                    <li class="nav-item">
-                                        <a href="{% url 'create_pesanan' %}"
-                                        class="nav-link {% if request.resolver_match.url_name == 'create_pesanan' %}active{% endif %}">
-                                            <i class="nav-icon bi bi-chevron-right"></i>
-                                            <p>Tambah Pesanan</p>
-                                        </a>
-                                    </li>
-
-                                    <li class="nav-item">
-                                        <a href="{% url 'riwayat_pesanan' %}"
-                                        class="nav-link {% if request.resolver_match.url_name == 'riwayat_pesanan' %}active{% endif %}">
-                                            <i class="nav-icon bi bi-chevron-right"></i>
-                                            <p>Riwayat Pesanan</p>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-
-
-                            {% if request.user.is_superuser %}
-                            <li class="nav-item {% if request.resolver_match.url_name == 'pengguna_list' %}menu-open{% endif %}">
-                                <a href="{% url 'pengguna_list' %}"
+                        {% if request.user.is_superuser %}
+                        <li
+                            class="nav-item {% if request.resolver_match.url_name == 'pengguna_list' %}menu-open{% endif %}">
+                            <a href="{% url 'pengguna_list' %}"
                                 class="nav-link {% if request.resolver_match.url_name == 'pengguna_list' %}active{% endif %}">
-                                    <i class="nav-icon bi bi-people-fill"></i>
-                                    <p>Pengguna</p>
-                                </a>
-                            </li>
-                            {% endif %}
+                                <i class="nav-icon bi bi-people-fill"></i>
+                                <p>Pengguna</p>
+                            </a>
+                        </li>
+                        {% endif %}
 
-                        </ul>
-                    </nav>
-                </div>
-            </aside>
-            
-            {% block content %}{% endblock %}
-       
-            <footer class="app-footer">
-                <div class="float-end d-none d-sm-inline">Heroezweb</div>
+                    </ul>
+                </nav>
+            </div>
+        </aside>
 
-                <strong>
+        {% block content %}{% endblock %}
+
+        <footer class="app-footer">
+            <div class="float-end d-none d-sm-inline">Heroezweb</div>
+
+            <strong>
                 &copy; 2026&nbsp;
                 <a href="" class="text-decoration-none">Si-BASMA. Sistem Pemesanan Bahan Makanan Basah</a>.
-                </strong>
-            </footer>
-        </div>
+            </strong>
+        </footer>
+    </div>
 
-        <script
-        src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/browser/overlayscrollbars.browser.es6.min.js"
-        crossorigin="anonymous"
-        ></script>
+    <script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/browser/overlayscrollbars.browser.es6.min.js"
+        crossorigin="anonymous"></script>
 
-        <script
-        src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
-        crossorigin="anonymous"
-        ></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        crossorigin="anonymous"></script>
 
-        <script src="{% static 'dist/js/adminlte.js' %}"></script>
+    <script src="{% static 'dist/js/adminlte.js' %}"></script>
 
-        <script>
+    <script>
         const SELECTOR_SIDEBAR_WRAPPER = '.sidebar-wrapper';
         const Default = {
             scrollbarTheme: 'os-theme-light',
@@ -560,29 +526,26 @@
             const isMobile = window.innerWidth <= 992;
 
             if (
-            sidebarWrapper &&
-            OverlayScrollbarsGlobal?.OverlayScrollbars !== undefined &&
-            !isMobile
+                sidebarWrapper &&
+                OverlayScrollbarsGlobal?.OverlayScrollbars !== undefined &&
+                !isMobile
             ) {
-            OverlayScrollbarsGlobal.OverlayScrollbars(sidebarWrapper, {
-                scrollbars: {
-                theme: Default.scrollbarTheme,
-                autoHide: Default.scrollbarAutoHide,
-                clickScroll: Default.scrollbarClickScroll,
-                },
-            });
+                OverlayScrollbarsGlobal.OverlayScrollbars(sidebarWrapper, {
+                    scrollbars: {
+                        theme: Default.scrollbarTheme,
+                        autoHide: Default.scrollbarAutoHide,
+                        clickScroll: Default.scrollbarClickScroll,
+                    },
+                });
             }
         });
-        </script>
+    </script>
 
-        <!-- sortablejs -->
-        <script
-        src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"
-        crossorigin="anonymous"
-        ></script>
+    <!-- sortablejs -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js" crossorigin="anonymous"></script>
 
-        <!-- sortablejs -->
-        <script>
+    <!-- sortablejs -->
+    <script>
         new Sortable(document.querySelector('.connectedSortable'), {
             group: 'shared',
             handle: '.card-header',
@@ -592,59 +555,56 @@
         cardHeaders.forEach((cardHeader) => {
             cardHeader.style.cursor = 'move';
         });
-        </script>
+    </script>
 
-        <script
-        src="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.min.js"
-        integrity="sha256-+vh8GkaU7C9/wbSLIcwq82tQ2wTf44aOHA8HlBMwRI8="
-        crossorigin="anonymous"
-        ></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.min.js"
+        integrity="sha256-+vh8GkaU7C9/wbSLIcwq82tQ2wTf44aOHA8HlBMwRI8=" crossorigin="anonymous"></script>
 
-        <script>
+    <script>
         const sales_chart_options = {
             series: [
-            {
-                name: 'Digital Goods',
-                data: [28, 48, 40, 19, 86, 27, 90],
-            },
-            {
-                name: 'Electronics',
-                data: [65, 59, 80, 81, 56, 55, 40],
-            },
+                {
+                    name: 'Digital Goods',
+                    data: [28, 48, 40, 19, 86, 27, 90],
+                },
+                {
+                    name: 'Electronics',
+                    data: [65, 59, 80, 81, 56, 55, 40],
+                },
             ],
             chart: {
-            height: 300,
-            type: 'area',
-            toolbar: {
-                show: false,
-            },
+                height: 300,
+                type: 'area',
+                toolbar: {
+                    show: false,
+                },
             },
             legend: {
-            show: false,
+                show: false,
             },
             colors: ['#0d6efd', '#20c997'],
             dataLabels: {
-            enabled: false,
+                enabled: false,
             },
             stroke: {
-            curve: 'smooth',
+                curve: 'smooth',
             },
             xaxis: {
-            type: 'datetime',
-            categories: [
-                '2023-01-01',
-                '2023-02-01',
-                '2023-03-01',
-                '2023-04-01',
-                '2023-05-01',
-                '2023-06-01',
-                '2023-07-01',
-            ],
+                type: 'datetime',
+                categories: [
+                    '2023-01-01',
+                    '2023-02-01',
+                    '2023-03-01',
+                    '2023-04-01',
+                    '2023-05-01',
+                    '2023-06-01',
+                    '2023-07-01',
+                ],
             },
             tooltip: {
-            x: {
-                format: 'MMMM yyyy',
-            },
+                x: {
+                    format: 'MMMM yyyy',
+                },
             },
         };
 
@@ -653,22 +613,16 @@
             sales_chart_options,
         );
         sales_chart.render();
-        </script>
+    </script>
 
-        <!-- jsvectormap -->
-        <script
-        src="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/js/jsvectormap.min.js"
-        integrity="sha256-/t1nN2956BT869E6H4V1dnt0X5pAQHPytli+1nTZm2Y="
-        crossorigin="anonymous"
-        ></script>
-        <script
-        src="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/maps/world.js"
-        integrity="sha256-XPpPaZlU8S/HWf7FZLAncLg2SAkP8ScUTII89x9D3lY="
-        crossorigin="anonymous"
-        ></script>
+    <!-- jsvectormap -->
+    <script src="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/js/jsvectormap.min.js"
+        integrity="sha256-/t1nN2956BT869E6H4V1dnt0X5pAQHPytli+1nTZm2Y=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/maps/world.js"
+        integrity="sha256-XPpPaZlU8S/HWf7FZLAncLg2SAkP8ScUTII89x9D3lY=" crossorigin="anonymous"></script>
 
-        <!-- jsvectormap -->
-        <script>
+    <!-- jsvectormap -->
+    <script>
         // World map by jsVectorMap
         new jsVectorMap({
             selector: '#world-map',
@@ -678,25 +632,25 @@
         // Sparkline charts
         const option_sparkline1 = {
             series: [
-            {
-                data: [1000, 1200, 920, 927, 931, 1027, 819, 930, 1021],
-            },
+                {
+                    data: [1000, 1200, 920, 927, 931, 1027, 819, 930, 1021],
+                },
             ],
             chart: {
-            type: 'area',
-            height: 50,
-            sparkline: {
-                enabled: true,
-            },
+                type: 'area',
+                height: 50,
+                sparkline: {
+                    enabled: true,
+                },
             },
             stroke: {
-            curve: 'straight',
+                curve: 'straight',
             },
             fill: {
-            opacity: 0.3,
+                opacity: 0.3,
             },
             yaxis: {
-            min: 0,
+                min: 0,
             },
             colors: ['#DCE6EC'],
         };
@@ -706,25 +660,25 @@
 
         const option_sparkline2 = {
             series: [
-            {
-                data: [515, 519, 520, 522, 652, 810, 370, 627, 319, 630, 921],
-            },
+                {
+                    data: [515, 519, 520, 522, 652, 810, 370, 627, 319, 630, 921],
+                },
             ],
             chart: {
-            type: 'area',
-            height: 50,
-            sparkline: {
-                enabled: true,
-            },
+                type: 'area',
+                height: 50,
+                sparkline: {
+                    enabled: true,
+                },
             },
             stroke: {
-            curve: 'straight',
+                curve: 'straight',
             },
             fill: {
-            opacity: 0.3,
+                opacity: 0.3,
             },
             yaxis: {
-            min: 0,
+                min: 0,
             },
             colors: ['#DCE6EC'],
         };
@@ -734,91 +688,91 @@
 
         const option_sparkline3 = {
             series: [
-            {
-                data: [15, 19, 20, 22, 33, 27, 31, 27, 19, 30, 21],
-            },
+                {
+                    data: [15, 19, 20, 22, 33, 27, 31, 27, 19, 30, 21],
+                },
             ],
             chart: {
-            type: 'area',
-            height: 50,
-            sparkline: {
-                enabled: true,
-            },
+                type: 'area',
+                height: 50,
+                sparkline: {
+                    enabled: true,
+                },
             },
             stroke: {
-            curve: 'straight',
+                curve: 'straight',
             },
             fill: {
-            opacity: 0.3,
+                opacity: 0.3,
             },
             yaxis: {
-            min: 0,
+                min: 0,
             },
             colors: ['#DCE6EC'],
         };
 
         const sparkline3 = new ApexCharts(document.querySelector('#sparkline-3'), option_sparkline3);
         sparkline3.render();
-        </script>
+    </script>
 
-        <script>
-            window.addEventListener("load", function () {
-                const loader = document.getElementById("loader");
-                if (loader) {
-                    loader.style.opacity = "0";
-                    loader.style.transition = "opacity 0.5s ease";
-                    setTimeout(() => loader.remove(), 500);
-                }
+    <script>
+        window.addEventListener("load", function () {
+            const loader = document.getElementById("loader");
+            if (loader) {
+                loader.style.opacity = "0";
+                loader.style.transition = "opacity 0.5s ease";
+                setTimeout(() => loader.remove(), 500);
+            }
+        });
+    </script>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var calendarEl = document.getElementById('calendar');
+
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+
+                headerToolbar: {
+                    left: 'prev',
+                    center: 'title',
+                    right: 'next'
+                },
+
+                buttonText: {
+                    prev: '‹',
+                    next: '›'
+                },
+
+                height: 'auto',
+
+                events: [
+                    {
+                        title: 'Pesanan',
+                        start: '2026-04-07'
+                    }
+                ]
             });
-        </script>
 
+            calendar.render();
 
-        <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                var calendarEl = document.getElementById('calendar');
-
-                var calendar = new FullCalendar.Calendar(calendarEl, {
-                    initialView: 'dayGridMonth',
-
-                    headerToolbar: {
-                        left: 'prev',
-                        center: 'title',
-                        right: 'next'
-                    },
-
-                    buttonText: {
-                        prev: '‹',
-                        next: '›'
-                    },
-
-                    height: 'auto',
-
-                    events: [
-                        {
-                            title: 'Pesanan',
-                            start: '2026-04-07'
-                        }
-                    ]
-                });
-
-                calendar.render();
-
-                // tombol custom
-                document.getElementById('prevBtn').addEventListener('click', function () {
-                    calendar.prev();
-                });
-
-                document.getElementById('nextBtn').addEventListener('click', function () {
-                    calendar.next();
-                });
+            // tombol custom
+            document.getElementById('prevBtn').addEventListener('click', function () {
+                calendar.prev();
             });
-        </script>
 
-        <!-- MODAL LOGOUT -->
-        <div class="modal fade" id="logoutModal" tabindex="-1">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
+            document.getElementById('nextBtn').addEventListener('click', function () {
+                calendar.next();
+            });
+        });
+    </script>
+
+    <!-- MODAL LOGOUT -->
+    <div class="modal fade" id="logoutModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
 
                 <div class="modal-header">
                     <h5 class="modal-title">Konfirmasi Logout</h5>
@@ -842,46 +796,47 @@
                     </form>
                 </div>
 
-                </div>
             </div>
-            </div>
-            
-            <!-- GRAFIK -->
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <script>
-            const ctx = document.getElementById('orderChart').getContext('2d');
+        </div>
+    </div>
 
-            const orderChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: {{ chart_labels|safe }},
-                    datasets: [{
-                        label: 'Jumlah Pesanan',
-                        data: {{ chart_data|safe }},
-                        borderColor: 'blue',
-                        backgroundColor: 'rgba(0, 123, 255, 0.2)',
-                        tension: 0.3,
-                        fill: true
+    <!-- GRAFIK -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx = document.getElementById('orderChart').getContext('2d');
+
+        const orderChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: {{ chart_labels| safe }},
+        datasets: [{
+            label: 'Jumlah Pesanan',
+            data: {{ chart_data| safe }},
+            borderColor: 'blue',
+            backgroundColor: 'rgba(0, 123, 255, 0.2)',
+            tension: 0.3,
+            fill: true
                     }]
                 },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            display: true
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                precision: 0
-                            }
-                        }
+        options: {
+            responsive: true,
+                plugins: {
+                legend: {
+                    display: true
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                        ticks: {
+                        precision: 0
                     }
                 }
+            }
+        }
             });
-            </script>
-        
-    </body>
+    </script>
+
+</body>
+
 </html>
