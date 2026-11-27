@@ -17,6 +17,8 @@ from django.db.models import Count
 from django.db.models.functions import TruncDate
 
 from .models import Bahan, Pesanan, ItemPesanan, User, Kategori, Siklus, MenuSiklus
+from urllib.parse import urlencode
+from django.urls import reverse
 
 # Inisialisasi logger
 logger = logging.getLogger(__name__)
@@ -249,7 +251,7 @@ def create_pesanan(request):
 def detail_pesanan_json(request, id):
     try:
         pesanan = get_object_or_404(Pesanan, id=id)
-        items = ItemPesanan.objects.filter(pesanan=pesanan)
+        items = ItemPesanan.objects.filter(pesanan=pesanan).select_related("bahan")
 
         data_items = []
         for i, item in enumerate(items, start=1):
@@ -258,6 +260,7 @@ def detail_pesanan_json(request, id):
                 "no": i,
                 "bahan": item.bahan.nama,
                 "qty": item.qty,
+                "satuan": item.bahan.satuan,
                 "keterangan": item.keterangan or ''
             })
 
@@ -430,11 +433,12 @@ def detail_pesanan_multiple_json(request):
 
         for id in ids:
             pesanan = get_object_or_404(Pesanan, id=id)
-            items = ItemPesanan.objects.filter(pesanan=pesanan)
+            items = ItemPesanan.objects.filter(pesanan=pesanan).select_related("bahan")
             
             data_items = [{
                 "bahan": item.bahan.nama,
                 "qty": item.qty,
+                "satuan": item.bahan.satuan,
                 "keterangan": item.keterangan or '-'
             } for item in items]
 
@@ -711,7 +715,8 @@ def siklus_delete(request, pk):
 def siklus_detail(request, pk):
     try:
         siklus = get_object_or_404(Siklus, pk=pk)
-        
+        base_url = reverse('siklus_detail', kwargs={'pk': pk})
+
         if request.method == "POST":
             if 'tambah_bahan' in request.POST:
                 bahan_id = request.POST.get('bahan_id')
@@ -727,16 +732,22 @@ def siklus_detail(request, pk):
                     )
                     logger.info(f"Bahan ID {bahan_id} ditambahkan ke siklus ID {pk}.")
                     messages.success(request, f"Bahan berhasil ditambahkan ke siklus {siklus.nama}!")
+                    return redirect(f"{base_url}?{urlencode({'filter_waktu': waktu})}")
                 else:
                     messages.error(request, "Gagal menambahkan bahan. Pastikan semua kolom terisi.")
-                return redirect('siklus_detail', pk=pk)
+                return redirect(base_url)
                 
             elif 'hapus_bahan' in request.POST:
                 menu_id = request.POST.get('menu_id')
-                MenuSiklus.objects.filter(id=menu_id).delete()
+                menu_obj = MenuSiklus.objects.filter(id=menu_id).first()
+                waktu_hapus = request.GET.get('filter_waktu') or (menu_obj.waktu_makan if menu_obj else '')
+                if menu_obj:
+                    menu_obj.delete()
                 logger.info(f"MenuSiklus ID {menu_id} dihapus dari siklus ID {pk}.")
                 messages.info(request, "Bahan berhasil dihapus.")
-                return redirect('siklus_detail', pk=pk)
+                if waktu_hapus:
+                    return redirect(f"{base_url}?{urlencode({'filter_waktu': waktu_hapus})}")
+                return redirect(base_url)
         
         filter_waktu = request.GET.get('filter_waktu')
         detail_qs = MenuSiklus.objects.filter(siklus=siklus)
@@ -762,7 +773,6 @@ def siklus_detail(request, pk):
     except Exception as e:
         logger.error(f"Error di siklus_detail (pk={pk}): {e}", exc_info=True)
         return render_error_page(request, str(e))
-
 
 @login_required
 def get_resep_siklus(request):

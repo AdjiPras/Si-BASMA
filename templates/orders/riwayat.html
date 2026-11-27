@@ -42,7 +42,7 @@
                             <div class="d-flex justify-content-between align-items-center px-3 mt-3">
                                 <div>
                                     <!-- Tombol Baru untuk Cetak Checklist -->
-                                    <button class="btn btn-primary btn-sm text-white" id="printSelectedBtn" disabled>
+                                    <button class="btn btn-warning btn-sm text-dark" id="printSelectedBtn" disabled>
                                         <i class="bi bi-printer-fill"></i>&nbsp;
                                         <b>Cetak Terpilih (<span id="selectedCount">0</span>)</b>
                                     </button>
@@ -72,7 +72,7 @@
                                             <th style="width: 180px">Tanggal</th>
                                             <th style="width: 200px">Siklus</th>
                                             <th style="width: 120px">Waktu</th>
-                                            <th style="width: 150px">Jumlah Pasien</th>
+                                            <th style="width: 100px">Jml. Pasien</th>
                                             <th style="width: 120px">Aksi</th>
                                         </tr>
                                     </thead>
@@ -141,11 +141,11 @@
 
                                             <!-- AKSI -->
                                             <td class="text-center">
-                                                <a href="{% url 'edit_pesanan' pesanan.id %}" class="btn btn-sm btn-warning">
+                                                <a href="{% url 'edit_pesanan' pesanan.id %}" class="btn btn-sm btn-primary">
                                                     <i class="bi bi-pencil"></i>
                                                 </a>
                                                 <!-- CETAK PDF -->
-                                                <button class="btn btn-sm btn-secondary btn-print"
+                                                <button class="btn btn-sm btn-secondary btn-warning"
                                                     data-id="{{ pesanan.id }}" title="Cetak">
                                                     <i class="bi bi-printer"></i>
                                                 </button>
@@ -250,7 +250,7 @@
         <table style="width: 100%;">
             <tr>
                 <td style="width: 35%; vertical-align: middle;">
-                    <img src="{% static 'assets/images/si-basma-logo3.png' %}" class="print-logo" style="width: 200px;">
+                    <img src="{% static 'assets/images/si-basma-logo.png' %}" class="print-logo" style="width: 200px;">
                 </td>
                 <td style="width: 65%; vertical-align: middle; text-align: right;">
                     <div class="instansi-title">INSTALASI GIZI RS BASMA</div>
@@ -285,7 +285,7 @@
             <tr>
                 <th width="50">No</th>
                 <th>Nama Bahan</th>
-                <th width="120">Qty</th>
+                <th width="140">Jumlah</th>
                 <th>Keterangan</th>
             </tr>
         </thead>
@@ -350,7 +350,7 @@
             selectedCountSpan.innerText = checkedCount;
             printSelectedBtn.disabled = (checkedCount === 0);
             printSelectedBtn.classList.toggle('btn-success', checkedCount > 0);
-            printSelectedBtn.classList.toggle('btn-primary', checkedCount === 0);
+            printSelectedBtn.classList.toggle('btn-warning', checkedCount === 0);
         }
 
         if(selectAllCheckbox) {
@@ -419,6 +419,11 @@
             return `${d.getDate()} ${namaBulan[d.getMonth()]} ${d.getFullYear()}`;
         }
 
+        function formatQtyDenganSatuan(item) {
+            const satuan = item.satuan || item.bahan_satuan || '';
+            return satuan ? `${item.qty} ${satuan}` : `${item.qty}`;
+        }
+
         // Cetak Single
         document.addEventListener("click", async function (e) {
             const btnPrint = e.target.closest('.btn-print');
@@ -442,7 +447,7 @@
                 
                 let html = '';
                 data.items.forEach((item, index) => {
-                    html += `<tr><td style="text-align:center">${index + 1}</td><td>${item.bahan}</td><td style="text-align:center">${item.qty}</td><td>${item.keterangan || '-'}</td></tr>`;
+                    html += `<tr><td style="text-align:center">${index + 1}</td><td>${item.bahan}</td><td style="text-align:center">${formatQtyDenganSatuan(item)}</td><td style="text-align:center">${item.keterangan || '-'}</td></tr>`;
                 });
                 document.getElementById('print_items').innerHTML = html;
 
@@ -473,7 +478,6 @@
                 
                 let containerHtml = '';
                 data.pesanan.forEach(p => {
-                    // STRUKTUR DIBAWAH INI SAMA PERSIS DENGAN CETAK TUNGGAL ANDA
                     containerHtml += `
                     <div class="page-break">
                         <div class="print-header">
@@ -515,7 +519,7 @@
                                 <tr>
                                     <th width="50">No</th>
                                     <th>Nama Bahan</th>
-                                    <th width="120">Qty</th>
+                                    <th width="140">Qty</th>
                                     <th>Keterangan</th>
                                 </tr>
                             </thead>
@@ -524,8 +528,8 @@
                                     <tr>
                                         <td style="text-align:center">${i + 1}</td>
                                         <td>${it.bahan}</td>
-                                        <td style="text-align:center">${it.qty}</td>
-                                        <td>${it.keterangan || '-'}</td>
+                                        <td style="text-align:center">${formatQtyDenganSatuan(it)}</td>
+                                        <td style="text-align:center">${it.keterangan || '-'}</td>
                                     </tr>
                                 `).join('')}
                             </tbody>

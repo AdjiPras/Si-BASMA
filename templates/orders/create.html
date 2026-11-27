@@ -3,7 +3,7 @@
 {% block title %}Pemesanan Bahan | Si-BASMA{% endblock %}
 
 {% block header_title %}
-    <h5 class="mb-0">Pemesanan Bahan</h5>
+<h5 class="mb-0">Pemesanan Bahan</h5>
 {% endblock %}
 
 {% block content %}
@@ -30,7 +30,7 @@
             <div class="row justify-content-center">
                 <div class="col-lg-10">
                     <div class="card mt-2">
-                            
+
                         <!-- HEADER -->
                         <div class="card-header" style="background-color: #025697; color: aliceblue;">
                             <div class="card-title" style="font-weight: 600;">Form Pemesanan Bahan Makanan</div>
@@ -53,30 +53,22 @@
                                                         <div class="col-md-3">
                                                             <label class="form-label" style="font-weight: bold;">
                                                                 &nbsp; Tanggal Pesan</label>
-                                                            <!-- <input type="date" name="tanggal_pemesanan"
-                                                                class="form-control" required> -->
-                                                                <input type="date"
-                                                                    class="form-control" name="tanggal_pemesanan"
-                                                                    style="position: relative; z-index: 10;"
-                                                                    onfocus="this.showPicker()"
-                                                                    required>
-                                                                
+                                                            <input type="date" class="form-control"
+                                                                name="tanggal_pemesanan"
+                                                                style="position: relative; z-index: 10;"
+                                                                onfocus="this.showPicker()" required>
                                                         </div>
 
                                                         <div class="col-md-3">
                                                             <label class="form-label" style="font-weight: bold;">
                                                                 &nbsp; Siklus</label>
-                                                            <!-- <select name="siklus_menu" class="form-select">
+                                                            <select name="siklus_menu" id="siklus_menu"
+                                                                class="form-select" required>
+                                                                <option value="" disabled selected>Pilih Siklus...
+                                                                </option>
                                                                 {% for siklus in siklus_list %}
-                                                                    <option value="{{ siklus.id }}">
-                                                                        {{ siklus.nama }}
-                                                                    </option>
-                                                                {% endfor %}
-                                                            </select> -->
-                                                            <select name="siklus_menu" id="siklus_menu" class="form-select" required>
-                                                                <option value="" disabled selected>Pilih Siklus...</option>
-                                                                {% for siklus in siklus_list %}
-                                                                    <option value="{{ siklus.id }}">{{ siklus.nama }}</option>
+                                                                <option value="{{ siklus.id }}">{{ siklus.nama }}
+                                                                </option>
                                                                 {% endfor %}
                                                             </select>
                                                         </div>
@@ -85,7 +77,8 @@
                                                             <label class="form-label" style="font-weight: bold;">
                                                                 &nbsp; Waktu Siklus
                                                             </label>
-                                                            <select name="waktu_makan" id="waktu_makan" class="form-select" required>
+                                                            <select name="waktu_makan" id="waktu_makan"
+                                                                class="form-select" required>
                                                                 <option value="PAGI">Pagi</option>
                                                                 <option value="SIANG">Siang</option>
                                                                 <option value="SORE">Sore</option>
@@ -97,32 +90,22 @@
                                                                 &nbsp; Pasien
                                                             </label>
 
-                                                            <input type="number" id="pasien"
-                                                                name="jumlah_pasien" class="form-control">
+                                                            <input type="number" id="pasien" name="jumlah_pasien"
+                                                                class="form-control">
 
-                                                            <!-- QUICK PRESET (dipindah ke sini) -->
+                                                            <!-- QUICK PRESET -->
                                                             <div class="mt-2 d-flex gap-1 flex-wrap">
-                                                                <small class="text-muted fw-bold">Quick Preset :</small><br>
+                                                                <small class="text-muted fw-bold">Quick Preset
+                                                                    :</small><br>
 
-                                                                <button type="button" class="btn btn-outline-primary btn-sm preset" data-value="10">10</button>
-                                                                <button type="button" class="btn btn-outline-primary btn-sm preset" data-value="20">20</button>
-                                                                <button type="button" class="btn btn-outline-primary btn-sm preset" data-value="30">30</button>
+                                                                <button type="button"
+                                                                    class="btn btn-outline-primary btn-sm preset"
+                                                                    data-value="10">10</button>
+                                                                <button type="button"
+                                                                    class="btn btn-outline-primary btn-sm preset"
+                                                                    data-value="20">20</button>
                                                             </div>
                                                         </div>
-
-                                                        <!-- <div class="col-md-2">
-                                                            <label class="form-label" style="font-weight: bold;">
-                                                                <i class="bi bi-file-earmark-person-fill"></i>&nbsp; Karyawan</label>
-                                                            <input type="number" id="karyawan"
-                                                                name="jumlah_karyawan" class="form-control">
-                                                        </div> -->
-
-                                                        <!-- <div class="col-md-2">
-                                                            <label class="form-label" style="font-weight: bold;">
-                                                                <i class="bi bi-people-fill"></i>&nbsp; Total Pasien</label>
-                                                            <input type="number" id="total_orang"
-                                                                class="form-control bg-light" readonly>
-                                                        </div> -->
                                                     </div>
 
                                                     <hr>
@@ -130,10 +113,13 @@
                                                     <!-- DAFTAR BAHAN -->
                                                     <div class="d-flex justify-content-between align-items-center mb-2">
                                                         <h6 class="mb-0" style="font-weight: bold;">Daftar Bahan</h6>
+                                                        
+                                                        {% if request.user.is_superuser %}
                                                         <button type="button" class="btn btn-sm" id="add-row"
-                                                        style="background-color: #19aa25; color: aliceblue;">
+                                                            style="background-color: #19aa25; color: aliceblue;">
                                                             <i class="bi bi-plus-circle"></i> Tambah Bahan
                                                         </button>
+                                                        {% endif %}
                                                     </div>
 
                                                     <div class="table-responsive">
@@ -141,36 +127,58 @@
                                                             <thead class="table-light">
                                                                 <tr class="text-center">
                                                                     <th>Bahan</th>
-                                                                    <th width="200">Jumlah</th>
+                                                                    <th width="220">Jumlah</th>
                                                                     <th width="200">Keterangan</th>
+                                                                    {% if request.user.is_superuser %}
                                                                     <th width="80">Aksi</th>
+                                                                    {% endif %}
                                                                 </tr>
                                                             </thead>
                                                             <tbody id="bahan-table">
+                                                                {% if request.user.is_superuser %}
                                                                 <tr>
                                                                     <td>
-                                                                        <select class="form-select" name="bahan[]">
+                                                                        <select class="form-select select-bahan" name="bahan[]">
                                                                             {% for bahan in bahan_list %}
-                                                                            <option value="{{ bahan.id }}">{{ bahan.nama }}</option>
+                                                                            <option value="{{ bahan.id }}" data-satuan="{{ bahan.satuan }}">{{ bahan.nama }}</option>
                                                                             {% endfor %}
                                                                         </select>
                                                                     </td>
                                                                     <td>
-                                                                        <input type="number" step="any" min="0" name="qty[]" class="form-control">
+                                                                        <div class="input-group">
+                                                                            <input type="number" step="any" min="0" name="qty[]" class="form-control">
+                                                                            <span class="input-group-text satuan-bahan">{{ bahan_list.0.satuan|default:"-" }}</span>
+                                                                        </div>
                                                                     </td>
                                                                     <td>
-                                                                        <input type="text"
-                                                                            name="keterangan[]" 
-                                                                            class="form-control"
-                                                                            placeholder="Contoh: untuk diet pasien / tambahan">
+                                                                        <input type="text" name="keterangan[]" class="form-control" placeholder="Contoh: untuk diet pasien / tambahan">
                                                                     </td>
                                                                     <td class="text-center">
-                                                                        <button type="button"
-                                                                                class="btn btn-danger btn-sm remove-row">
+                                                                        <button type="button" class="btn btn-danger btn-sm remove-row">
                                                                             <i class="bi bi-trash"></i>
                                                                         </button>
                                                                     </td>
                                                                 </tr>
+                                                                {% else %}
+                                                                <tr>
+                                                                    <td>
+                                                                        <select class="form-select select-bahan" name="bahan[]" style="pointer-events: none; background-color: #e9ecef;" tabindex="-1">
+                                                                            {% for bahan in bahan_list %}
+                                                                            <option value="{{ bahan.id }}" data-satuan="{{ bahan.satuan }}">{{ bahan.nama }}</option>
+                                                                            {% endfor %}
+                                                                        </select>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="input-group">
+                                                                            <input type="number" step="any" min="0" name="qty[]" class="form-control" readonly style="background-color: #e9ecef;">
+                                                                            <span class="input-group-text satuan-bahan" style="background-color: #e9ecef;">{{ bahan_list.0.satuan|default:"-" }}</span>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <input type="text" name="keterangan[]" class="form-control" placeholder="Contoh: untuk diet pasien / tambahan" readonly style="background-color: #e9ecef;">
+                                                                    </td>
+                                                                </tr>
+                                                                {% endif %}
                                                             </tbody>
                                                         </table>
                                                     </div>
@@ -179,7 +187,8 @@
 
                                                 <!-- FOOTER -->
                                                 <div class="card-footer text-end">
-                                                    <button type="submit" class="btn btn-sm" style="background-color: #025697; color: aliceblue;">
+                                                    <button type="submit" class="btn btn-sm"
+                                                        style="background-color: #025697; color: aliceblue;">
                                                         Simpan
                                                     </button>
                                                 </div>
@@ -200,16 +209,38 @@
 
 <!-- SCRIPT -->
 <script>
-    document.getElementById("add-row").onclick = function () {
-        const table = document.getElementById("bahan-table");
-        const row = table.querySelector("tr").cloneNode(true);
+    function sinkronSatuanRow(row, satuanOverride) {
+        const selectEl = row.querySelector("select[name='bahan[]']");
+        const satuanEl = row.querySelector(".satuan-bahan");
+        if (!selectEl || !satuanEl) return;
 
-        // reset input qty
-        row.querySelectorAll("input[name='qty[]']").forEach(i => i.value = "");
-        row.querySelectorAll("input[name='keterangan[]']").forEach(i => i.value = "")
+        const selectedOption = selectEl.options[selectEl.selectedIndex];
+        const satuan = satuanOverride || (selectedOption ? selectedOption.dataset.satuan : "") || "-";
+        satuanEl.textContent = satuan;
+    }
 
-        table.appendChild(row);
-    };
+    const addRowBtn = document.getElementById("add-row");
+    if (addRowBtn) {
+        addRowBtn.onclick = function () {
+            const table = document.getElementById("bahan-table");
+            const row = table.querySelector("tr").cloneNode(true);
+
+            // reset input qty & keterangan
+            row.querySelectorAll("input[name='qty[]']").forEach(i => i.value = "");
+            row.querySelectorAll("input[name='keterangan[]']").forEach(i => i.value = "");
+            row.querySelectorAll("select[name='bahan[]']").forEach(s => s.selectedIndex = 0);
+            sinkronSatuanRow(row);
+
+            table.appendChild(row);
+        };
+    }
+
+    document.addEventListener("change", function (e) {
+        if (e.target.matches("select[name='bahan[]']")) {
+            const tr = e.target.closest("tr");
+            if (tr) sinkronSatuanRow(tr);
+        }
+    });
 
     document.addEventListener("click", function (e) {
         if (e.target.closest(".remove-row")) {
@@ -222,7 +253,8 @@
 
     function hitungTotal() {
         let pasien = parseInt(document.getElementById("pasien").value || 0);
-        document.getElementById("total_orang").value = pasien;
+        const totalOrang = document.getElementById("total_orang");
+        if (totalOrang) totalOrang.value = pasien;
     }
 
     document.addEventListener("input", function (e) {
@@ -237,11 +269,14 @@
             hitungTotal();
         });
     });
+
+    // Sinkronkan satuan baris awal saat halaman dimuat
+    document.querySelectorAll("#bahan-table tr").forEach(tr => sinkronSatuanRow(tr));
 </script>
 
 <!-- VALIDASI BAHAN -->
 <script>
-    document.querySelector("form").addEventListener("submit", function(e) {
+    document.querySelector("form").addEventListener("submit", function (e) {
         let valid = false;
 
         document.querySelectorAll("input[name='qty[]']").forEach(input => {
@@ -267,6 +302,9 @@
     // Variabel penampung resep dari database
     let resepAktif = [];
 
+    // Sinkron dengan kondisi superuser pada markup di atas
+    const isSuperuser = {{ request.user.is_superuser|yesno:"true,false" }};
+
     // Fungsi untuk menarik data dari API Django
     function tarikDataResep() {
         let siklusId = dropdownSiklus.value;
@@ -285,6 +323,51 @@
         }
     }
 
+    // Buat 1 baris bahan; ikut read-only jika bukan superuser
+    function buatBarisBahan(item) {
+        const tr = document.createElement('tr');
+
+        // AMBIL NILAI ASLI (Tanpa dikalikan pasien)
+        const qtyAsli = item ? item.qty_standar : '';
+        const readOnlyAttr = isSuperuser ? '' : ' readonly style="background-color: #e9ecef;"';
+        const selectAttr = isSuperuser ? '' : ' style="pointer-events: none; background-color: #e9ecef;" tabindex="-1"';
+        const satuanBgAttr = isSuperuser ? '' : ' style="background-color: #e9ecef;"';
+
+        // Kita butuh dropdown bawaan Django agar ID bahan sesuai
+        const optionsHTML = `
+            <select class="form-select select-bahan" name="bahan[]"${selectAttr}>
+                {% for bahan in bahan_list %}
+                    <option value="{{ bahan.id }}" data-satuan="{{ bahan.satuan }}">{{ bahan.nama }}</option>
+                {% endfor %}
+            </select>
+        `;
+
+        tr.innerHTML = `
+            <td>${optionsHTML}</td>
+            <td>
+                <div class="input-group">
+                    <input type="number" step="any" min="0" name="qty[]" class="form-control" value="${qtyAsli > 0 ? qtyAsli : ''}"${readOnlyAttr}>
+                    <span class="input-group-text satuan-bahan"${satuanBgAttr}>-</span>
+                </div>
+            </td>
+            <td>
+                <input type="text" name="keterangan[]" class="form-control" placeholder="Keterangan"${readOnlyAttr}>
+            </td>
+            ${isSuperuser ? `
+            <td class="text-center">
+                <button type="button" class="btn btn-danger btn-sm remove-row"><i class="bi bi-trash"></i></button>
+            </td>` : ''}
+        `;
+
+        // Kunci pilihan dropdown pada bahan yang ditarik dari database
+        if (item) {
+            tr.querySelector('select').value = item.bahan_id;
+        }
+        sinkronSatuanRow(tr, item && item.satuan ? item.satuan : null);
+
+        return tr;
+    }
+
     // Fungsi untuk menggambar ulang tabel sesuai resep
     function renderTabelBahan() {
         // 1. Kosongkan tabel saat ini
@@ -292,57 +375,27 @@
 
         // Jika resep kosong, tambahkan 1 baris kosong default
         if (resepAktif.length === 0) {
-            document.getElementById("add-row").click();
+            bodyTabelBahan.appendChild(buatBarisBahan(null));
             return;
         }
 
         // 2. Buat baris baru untuk setiap bahan di dalam resep
         resepAktif.forEach(item => {
-            let tr = document.createElement('tr');
-            
-            // AMBIL NILAI ASLI (Tanpa dikalikan pasien)
-            let qtyAsli = item.qty_standar; 
-
-            // Kita butuh dropdown bawaan Django agar ID bahan sesuai
-            let optionsHTML = `
-                <select class="form-select" name="bahan[]">
-                    {% for bahan in bahan_list %}
-                        <option value="{{ bahan.id }}">{{ bahan.nama }}</option>
-                    {% endfor %}
-                </select>
-            `;
-
-            tr.innerHTML = `
-                <td>${optionsHTML}</td>
-                <td>
-                    <input type="number" step="any" min="0" name="qty[]" class="form-control" value="${qtyAsli > 0 ? qtyAsli : ''}">
-                </td>
-                <td>
-                    <input type="text" name="keterangan[]" class="form-control" placeholder="Keterangan">
-                </td>
-                <td class="text-center">
-                    <button type="button" class="btn btn-danger btn-sm remove-row"><i class="bi bi-trash"></i></button>
-                </td>
-            `;
-
-            // Kunci pilihan dropdown pada bahan yang ditarik dari database
-            tr.querySelector('select').value = item.bahan_id;
-
-            bodyTabelBahan.appendChild(tr);
+            bodyTabelBahan.appendChild(buatBarisBahan(item));
         });
     }
 
     // Pasang pelatuk (trigger) agar fungsi jalan otomatis
     dropdownSiklus.addEventListener('change', tarikDataResep);
     dropdownWaktu.addEventListener('change', tarikDataResep);
-    
+
     // Jika user mengubah jumlah pasien SETELAH auto-fill muncul, tabel akan terhitung ulang otomatis!
     inputPasien.addEventListener('input', renderTabelBahan);
-    
+
     document.querySelectorAll(".preset").forEach(btn => {
         btn.addEventListener("click", () => {
             // Beri sedikit jeda agar nilai input terganti dulu, baru render ulang tabel
-            setTimeout(renderTabelBahan, 50); 
+            setTimeout(renderTabelBahan, 50);
         });
     });
 </script>

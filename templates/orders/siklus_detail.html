@@ -8,6 +8,15 @@
 {% endblock %}
 
 {% block content %}
+<style>
+    select.placeholder-active {
+        color: #6c757d;
+    }
+    select.placeholder-active option {
+        color: #212529;
+    }
+</style>
+
 <main class="app-main">
     
     <div class="app-content-header py-3">
@@ -45,14 +54,16 @@
                             <form method="post" class="row g-2 form-tambah">
                                 {% csrf_token %}
                                 <div class="col-md-3">
-                                    <select name="waktu_makan" class="form-select" required>
+                                    <select name="waktu_makan" id="tambah_waktu_makan" class="form-select placeholder-active" required>
+                                        <option value="" disabled selected hidden>Pilih Waktu...</option>
                                         <option value="PAGI">Pagi</option>
                                         <option value="SIANG">Siang</option>
                                         <option value="SORE">Sore</option>
                                     </select>
                                 </div>
                                 <div class="col-md-4">
-                                    <select name="bahan_id" class="form-select" required>
+                                    <select name="bahan_id" id="tambah_bahan_id" class="form-select placeholder-active" required>
+                                        <option value="" disabled selected hidden>Pilih Bahan...</option>
                                         {% for b in bahan_list|dictsort:"nama" %}
                                             <option value="{{b.id}}">{{b.nama}} ({{b.satuan}})</option>
                                         {% endfor %}
@@ -76,12 +87,12 @@
                         </div>
                         <div class="card-body p-0">
                             <div class="d-flex ps-3 pt-2 justify-content-start align-items-center">
-                                <form method="get" class="row g-2 align-items-center">
+                                <form method="get" id="filter-waktu-form" class="row g-2 align-items-center">
                                     <div class="col-auto">
                                         <label class="col-form-label fw-bold">Filter Waktu:</label>
                                     </div>
                                     <div class="col-auto">
-                                        <select name="filter_waktu" class="form-select form-select-sm" onchange="this.form.submit()">
+                                        <select name="filter_waktu" id="filter_waktu" class="form-select form-select-sm" onchange="this.form.submit()">
                                             <option value="">Semua Waktu</option>
                                             <option value="PAGI" {% if filter_waktu == 'PAGI' %}selected{% endif %}>PAGI</option>
                                             <option value="SIANG" {% if filter_waktu == 'SIANG' %}selected{% endif %}>SIANG</option>
@@ -171,13 +182,55 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+        const tambahWaktuSelect = document.getElementById("tambah_waktu_makan");
+        const tambahBahanSelect = document.getElementById("tambah_bahan_id");
+        const filterWaktuSelect = document.getElementById("filter_waktu");
+        const filterWaktuForm = document.getElementById("filter-waktu-form");
+        const storageKey = "siklus_{{ siklus.id }}_waktu_makan";
+
+        function syncPlaceholder(selectEl) {
+            if (!selectEl) return;
+            selectEl.classList.toggle("placeholder-active", !selectEl.value);
+        }
+
+        // Ambil nilai filter_waktu dari context Django atau parameter URL saat reload
+        const urlParams = new URLSearchParams(window.location.search);
+        const filterAktif = "{{ filter_waktu|default:''|escapejs }}" || urlParams.get("filter_waktu") || "";
+
+        if (filterWaktuSelect && filterAktif) {
+            filterWaktuSelect.value = filterAktif;
+        }
+        if (tambahWaktuSelect && filterAktif) {
+            tambahWaktuSelect.value = filterAktif;
+        }
+
+        [tambahWaktuSelect, tambahBahanSelect].forEach(sel => {
+            if (!sel) return;
+            syncPlaceholder(sel);
+            sel.addEventListener("change", () => syncPlaceholder(sel));
+        });
+
+        // Saat waktu_makan diubah, samakan Filter Waktu & muat ulang data sesuai waktu tersebut
+        if (tambahWaktuSelect && filterWaktuSelect && filterWaktuForm) {
+            tambahWaktuSelect.addEventListener("change", function () {
+                const terpilih = this.value;
+                if (!terpilih) return;
+
+                sessionStorage.setItem(storageKey, terpilih);
+
+                if (filterWaktuSelect.value !== terpilih) {
+                    filterWaktuSelect.value = terpilih;
+                    filterWaktuForm.submit();
+                }
+            });
+        }
+
         // 1. Notifikasi Django Messages
         {% for message in messages %}
             Swal.fire({
                 toast: true,
                 position: 'top-end',
                 icon: '{% if "error" in message.tags %}error{% else %}success{% endif %}',
-                // title: '{{ message|escapejs }}',
                 title: 'Berhasil!',
                 text: '{{ message|escapejs }}',
                 showConfirmButton: false,
@@ -200,6 +253,9 @@
                 confirmButtonText: 'Ya, Tambah'
             }).then((result) => {
                 if (result.isConfirmed) {
+                    if (tambahWaktuSelect && tambahWaktuSelect.value) {
+                        sessionStorage.setItem(storageKey, tambahWaktuSelect.value);
+                    }
                     // Kita buat input hidden untuk memastikan field name="tambah_bahan" ikut terkirim
                     let hiddenInput = document.createElement("input");
                     hiddenInput.setAttribute("type", "hidden");

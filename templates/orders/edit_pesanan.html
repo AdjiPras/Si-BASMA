@@ -10,15 +10,16 @@
 <main class="app-main">
     <div class="app-content-header">
         <div class="container-fluid">
-            <div class="row">
-                <!-- <div class="col-sm-6">
-                    <h3 class="mb-0">Edit Detail Pesanan</h3>
-                </div> -->
-                <div class="col-sm-6">
-                    <ol class="breadcrumb float-sm-end">
-                    <li class="breadcrumb-item"><a href="#">Home</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Edit Detail Pesanan</li>
-                    </ol>
+            <div class="row align-items-center">
+                <div class="col-sm-6"></div>
+
+                <div class="col-sm-6 d-flex justify-content-end">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb mb-0">
+                            <li class="breadcrumb-item"><a href="#">Home</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Edit Pesanan</li>
+                        </ol>
+                    </nav>
                 </div>
             </div>
         </div>
@@ -51,12 +52,20 @@
                                                     <div class="row mb-3">
                                                         <div class="col-md-3">
                                                             <label class="form-label" style="font-weight: bold;">Tanggal Pesan</label>
-                                                            <input type="date" class="form-control" name="tanggal_pemesanan" 
+                                                            {% if request.user.is_superuser %}
+                                                            <input type="date" class="form-control" name="tanggal_pemesanan"
                                                                 value="{{ pesanan.tanggal_pemesanan|date:'Y-m-d' }}" required>
+                                                            {% else %}
+                                                            <input type="date" class="form-control" name="tanggal_pemesanan"
+                                                                value="{{ pesanan.tanggal_pemesanan|date:'Y-m-d' }}"
+                                                                readonly tabindex="-1"
+                                                                style="pointer-events: none; background-color: #e9ecef;" required>
+                                                            {% endif %}
                                                         </div>
 
                                                         <div class="col-md-3">
                                                             <label class="form-label" style="font-weight: bold;">Siklus</label>
+                                                            {% if request.user.is_superuser %}
                                                             <select name="siklus_menu" id="siklus_menu" class="form-select" required>
                                                                 {% for siklus in siklus_list %}
                                                                 <option value="{{ siklus.id }}" {% if pesanan.siklus_menu_id == siklus.id %}selected{% endif %}>
@@ -64,27 +73,54 @@
                                                                 </option>
                                                                 {% endfor %}
                                                             </select>
+                                                            {% else %}
+                                                            <select name="siklus_menu" id="siklus_menu" class="form-select"
+                                                                style="pointer-events: none; background-color: #e9ecef;" tabindex="-1" required>
+                                                                {% for siklus in siklus_list %}
+                                                                <option value="{{ siklus.id }}" {% if pesanan.siklus_menu_id == siklus.id %}selected{% endif %}>
+                                                                    {{ siklus.nama }}
+                                                                </option>
+                                                                {% endfor %}
+                                                            </select>
+                                                            {% endif %}
                                                         </div>
 
                                                         <div class="col-md-3">
                                                             <label class="form-label" style="font-weight: bold;">Waktu Siklus</label>
+                                                            {% if request.user.is_superuser %}
                                                             <select name="waktu_makan" id="waktu_makan" class="form-select" required>
                                                                 <option value="PAGI" {% if pesanan.waktu_makan == "PAGI" %}selected{% endif %}>Pagi</option>
                                                                 <option value="SIANG" {% if pesanan.waktu_makan == "SIANG" %}selected{% endif %}>Siang</option>
                                                                 <option value="SORE" {% if pesanan.waktu_makan == "SORE" %}selected{% endif %}>Sore</option>
                                                             </select>
+                                                            {% else %}
+                                                            <select name="waktu_makan" id="waktu_makan" class="form-select"
+                                                                style="pointer-events: none; background-color: #e9ecef;" tabindex="-1" required>
+                                                                <option value="PAGI" {% if pesanan.waktu_makan == "PAGI" %}selected{% endif %}>Pagi</option>
+                                                                <option value="SIANG" {% if pesanan.waktu_makan == "SIANG" %}selected{% endif %}>Siang</option>
+                                                                <option value="SORE" {% if pesanan.waktu_makan == "SORE" %}selected{% endif %}>Sore</option>
+                                                            </select>
+                                                            {% endif %}
                                                         </div>
 
                                                         <div class="col-md-3">
                                                             <label class="form-label" style="font-weight: bold;">Pasien</label>
-                                                            <input type="number" id="pasien" name="jumlah_pasien" class="form-control" value="{{ pesanan.jumlah_pasien|default:0 }}">
-                                                            
+                                                            {% if request.user.is_superuser %}
+                                                            <input type="number" id="pasien" name="jumlah_pasien" class="form-control"
+                                                                value="{{ pesanan.jumlah_pasien|default:0 }}">
+
                                                             <div class="mt-2 d-flex gap-1 flex-wrap">
                                                                 <small class="text-muted fw-bold">Quick Preset :</small>
                                                                 <button type="button" class="btn btn-outline-primary btn-sm preset" data-value="10">10</button>
                                                                 <button type="button" class="btn btn-outline-primary btn-sm preset" data-value="20">20</button>
-                                                                <button type="button" class="btn btn-outline-primary btn-sm preset" data-value="30">30</button>
+                                                                <!-- <button type="button" class="btn btn-outline-primary btn-sm preset" data-value="30">30</button> -->
                                                             </div>
+                                                            {% else %}
+                                                            <input type="number" id="pasien" name="jumlah_pasien" class="form-control"
+                                                                value="{{ pesanan.jumlah_pasien|default:0 }}"
+                                                                readonly tabindex="-1"
+                                                                style="pointer-events: none; background-color: #e9ecef;">
+                                                            {% endif %}
                                                         </div>
                                                     </div>
 
@@ -93,10 +129,12 @@
                                                     <!-- DAFTAR BAHAN -->
                                                     <div class="d-flex justify-content-between align-items-center mb-2">
                                                         <h6 class="mb-0" style="font-weight: bold;">Daftar Bahan</h6>
+                                                        {% if request.user.is_superuser %}
                                                         <button type="button" class="btn btn-sm" id="add-row"
-                                                        style="background-color: #19aa25; color: aliceblue;">
+                                                            style="background-color: #19aa25; color: aliceblue;">
                                                             <i class="bi bi-plus-circle"></i> Tambah Bahan
                                                         </button>
+                                                        {% endif %}
                                                     </div>
 
                                                     <div class="table-responsive">
@@ -104,9 +142,11 @@
                                                             <thead class="table-light">
                                                                 <tr class="text-center">
                                                                     <th>Bahan</th>
-                                                                    <th width="200">Jumlah</th>
+                                                                    <th width="220">Jumlah</th>
                                                                     <th width="200">Keterangan</th>
+                                                                    {% if request.user.is_superuser %}
                                                                     <th width="80">Aksi</th>
+                                                                    {% endif %}
                                                                 </tr>
                                                             </thead>
                                                             <tbody id="bahan-table">
@@ -114,47 +154,101 @@
                                                                     {% for item in items %}
                                                                     <tr>
                                                                         <td>
-                                                                            <select class="form-select" name="bahan[]">
+                                                                            {% if request.user.is_superuser %}
+                                                                            <select class="form-select select-bahan" name="bahan[]">
                                                                                 {% for bahan in bahan_list %}
-                                                                                <option value="{{ bahan.id }}" {% if bahan.id == item.bahan_id %}selected{% endif %}>
+                                                                                <option value="{{ bahan.id }}" data-satuan="{{ bahan.satuan }}" {% if bahan.id == item.bahan_id %}selected{% endif %}>
                                                                                     {{ bahan.nama }}
                                                                                 </option>
                                                                                 {% endfor %}
                                                                             </select>
+                                                                            {% else %}
+                                                                            <select class="form-select select-bahan" name="bahan[]" style="pointer-events: none; background-color: #e9ecef;" tabindex="-1">
+                                                                                {% for bahan in bahan_list %}
+                                                                                <option value="{{ bahan.id }}" data-satuan="{{ bahan.satuan }}" {% if bahan.id == item.bahan_id %}selected{% endif %}>
+                                                                                    {{ bahan.nama }}
+                                                                                </option>
+                                                                                {% endfor %}
+                                                                            </select>
+                                                                            {% endif %}
                                                                         </td>
                                                                         <td>
-                                                                            <input type="number" step="any" min="0" name="qty[]" class="form-control" value="{{ item.qty }}">
+                                                                            {% if request.user.is_superuser %}
+                                                                            <div class="input-group">
+                                                                                <input type="number" step="any" min="0" name="qty[]" class="form-control" value="{{ item.qty }}">
+                                                                                <span class="input-group-text satuan-bahan">{{ item.bahan.satuan|default:"-" }}</span>
+                                                                            </div>
+                                                                            {% else %}
+                                                                            <div class="input-group">
+                                                                                <input type="number" step="any" min="0" name="qty[]" class="form-control" value="{{ item.qty }}"
+                                                                                    readonly tabindex="-1" style="pointer-events: none; background-color: #e9ecef;">
+                                                                                <span class="input-group-text satuan-bahan" style="background-color: #e9ecef;">{{ item.bahan.satuan|default:"-" }}</span>
+                                                                            </div>
+                                                                            {% endif %}
                                                                         </td>
                                                                         <td>
+                                                                            {% if request.user.is_superuser %}
                                                                             <input type="text" name="keterangan[]" class="form-control" value="{{ item.keterangan|default:'' }}" placeholder="Contoh: untuk diet pasien / tambahan">
+                                                                            {% else %}
+                                                                            <input type="text" name="keterangan[]" class="form-control" value="{{ item.keterangan|default:'' }}" placeholder="Contoh: untuk diet pasien / tambahan"
+                                                                                readonly tabindex="-1" style="pointer-events: none; background-color: #e9ecef;">
+                                                                            {% endif %}
                                                                         </td>
+                                                                        {% if request.user.is_superuser %}
                                                                         <td class="text-center">
                                                                             <button type="button" class="btn btn-danger btn-sm remove-row">
                                                                                 <i class="bi bi-trash"></i>
                                                                             </button>
                                                                         </td>
+                                                                        {% endif %}
                                                                     </tr>
                                                                     {% endfor %}
                                                                 {% else %}
                                                                     <tr>
                                                                         <td>
-                                                                            <select class="form-select" name="bahan[]">
+                                                                            {% if request.user.is_superuser %}
+                                                                            <select class="form-select select-bahan" name="bahan[]">
                                                                                 {% for bahan in bahan_list %}
-                                                                                <option value="{{ bahan.id }}">{{ bahan.nama }}</option>
+                                                                                <option value="{{ bahan.id }}" data-satuan="{{ bahan.satuan }}">{{ bahan.nama }}</option>
                                                                                 {% endfor %}
                                                                             </select>
+                                                                            {% else %}
+                                                                            <select class="form-select select-bahan" name="bahan[]" style="pointer-events: none; background-color: #e9ecef;" tabindex="-1">
+                                                                                {% for bahan in bahan_list %}
+                                                                                <option value="{{ bahan.id }}" data-satuan="{{ bahan.satuan }}">{{ bahan.nama }}</option>
+                                                                                {% endfor %}
+                                                                            </select>
+                                                                            {% endif %}
                                                                         </td>
                                                                         <td>
-                                                                            <input type="number" step="any" min="0" name="qty[]" class="form-control">
+                                                                            {% if request.user.is_superuser %}
+                                                                            <div class="input-group">
+                                                                                <input type="number" step="any" min="0" name="qty[]" class="form-control">
+                                                                                <span class="input-group-text satuan-bahan">{{ bahan_list.0.satuan|default:"-" }}</span>
+                                                                            </div>
+                                                                            {% else %}
+                                                                            <div class="input-group">
+                                                                                <input type="number" step="any" min="0" name="qty[]" class="form-control"
+                                                                                    readonly tabindex="-1" style="pointer-events: none; background-color: #e9ecef;">
+                                                                                <span class="input-group-text satuan-bahan" style="background-color: #e9ecef;">{{ bahan_list.0.satuan|default:"-" }}</span>
+                                                                            </div>
+                                                                            {% endif %}
                                                                         </td>
                                                                         <td>
+                                                                            {% if request.user.is_superuser %}
                                                                             <input type="text" name="keterangan[]" class="form-control" placeholder="Contoh: untuk diet pasien / tambahan">
+                                                                            {% else %}
+                                                                            <input type="text" name="keterangan[]" class="form-control" placeholder="Contoh: untuk diet pasien / tambahan"
+                                                                                readonly tabindex="-1" style="pointer-events: none; background-color: #e9ecef;">
+                                                                            {% endif %}
                                                                         </td>
+                                                                        {% if request.user.is_superuser %}
                                                                         <td class="text-center">
                                                                             <button type="button" class="btn btn-danger btn-sm remove-row">
                                                                                 <i class="bi bi-trash"></i>
                                                                             </button>
                                                                         </td>
+                                                                        {% endif %}
                                                                     </tr>
                                                                 {% endif %}
                                                             </tbody>
@@ -191,20 +285,41 @@
 
 
 <script>
+    function sinkronSatuanRow(row, satuanOverride) {
+        const selectEl = row.querySelector("select[name='bahan[]']");
+        const satuanEl = row.querySelector(".satuan-bahan");
+        if (!selectEl || !satuanEl) return;
+
+        const selectedOption = selectEl.options[selectEl.selectedIndex];
+        const satuan = satuanOverride || (selectedOption ? selectedOption.dataset.satuan : "") || "-";
+        satuanEl.textContent = satuan;
+    }
+
     const tableBody = document.getElementById("bahan-table");
+    const addRowBtn = document.getElementById("add-row");
 
     // 1. TAMBAH BARIS
-    document.getElementById("add-row").onclick = function () {
-        // Clone baris pertama sebagai template
-        const firstRow = tableBody.querySelector("tr");
-        const row = firstRow.cloneNode(true);
+    if (addRowBtn) {
+        addRowBtn.onclick = function () {
+            // Clone baris pertama sebagai template
+            const firstRow = tableBody.querySelector("tr");
+            const row = firstRow.cloneNode(true);
 
-        // Reset semua input di baris baru
-        row.querySelectorAll("input").forEach(i => i.value = "");
-        row.querySelectorAll("select").forEach(s => s.selectedIndex = 0);
+            // Reset semua input di baris baru
+            row.querySelectorAll("input").forEach(i => i.value = "");
+            row.querySelectorAll("select").forEach(s => s.selectedIndex = 0);
+            sinkronSatuanRow(row);
 
-        tableBody.appendChild(row);
-    };
+            tableBody.appendChild(row);
+        };
+    }
+
+    document.addEventListener("change", function (e) {
+        if (e.target.matches("select[name='bahan[]']")) {
+            const tr = e.target.closest("tr");
+            if (tr) sinkronSatuanRow(tr);
+        }
+    });
 
     // 2. HAPUS BARIS (EVENT DELEGATION)
     // Listener ditaruh di tabel, bukan di tombol. 
@@ -239,6 +354,9 @@
             hitungTotal();
         });
     });
+
+    // Sinkronkan satuan baris awal saat halaman dimuat
+    document.querySelectorAll("#bahan-table tr").forEach(tr => sinkronSatuanRow(tr));
 </script>
 
 <!-- VALIDASI BAHAN -->
@@ -269,6 +387,9 @@
     // Variabel penampung resep dari database
     let resepAktif = [];
 
+    // Sinkron dengan kondisi superuser pada markup di atas
+    const isSuperuser = {{ request.user.is_superuser|yesno:"true,false" }};
+
     // Fungsi untuk menarik data dari API Django
     function tarikDataResep() {
         let siklusId = dropdownSiklus.value;
@@ -287,6 +408,51 @@
         }
     }
 
+    // Buat 1 baris bahan; ikut read-only dan tidak bisa diklik jika bukan superuser
+    function buatBarisBahanEdit(item) {
+        const tr = document.createElement('tr');
+
+        // AMBIL NILAI ASLI (Tanpa dikalikan pasien)
+        const qtyAsli = item ? item.qty_standar : '';
+        const readOnlyAttr = isSuperuser ? '' : ' readonly tabindex="-1" style="pointer-events: none; background-color: #e9ecef;"';
+        const selectAttr = isSuperuser ? '' : ' style="pointer-events: none; background-color: #e9ecef;" tabindex="-1"';
+        const satuanBgAttr = isSuperuser ? '' : ' style="background-color: #e9ecef;"';
+
+        // Kita butuh dropdown bawaan Django agar ID bahan sesuai
+        const optionsHTML = `
+            <select class="form-select select-bahan" name="bahan[]"${selectAttr}>
+                {% for bahan in bahan_list %}
+                    <option value="{{ bahan.id }}" data-satuan="{{ bahan.satuan }}">{{ bahan.nama }}</option>
+                {% endfor %}
+            </select>
+        `;
+
+        tr.innerHTML = `
+            <td>${optionsHTML}</td>
+            <td>
+                <div class="input-group">
+                    <input type="number" step="any" min="0" name="qty[]" class="form-control" value="${qtyAsli > 0 ? qtyAsli : ''}"${readOnlyAttr}>
+                    <span class="input-group-text satuan-bahan"${satuanBgAttr}>-</span>
+                </div>
+            </td>
+            <td>
+                <input type="text" name="keterangan[]" class="form-control" placeholder="Keterangan"${readOnlyAttr}>
+            </td>
+            ${isSuperuser ? `
+            <td class="text-center">
+                <button type="button" class="btn btn-danger btn-sm remove-row"><i class="bi bi-trash"></i></button>
+            </td>` : ''}
+        `;
+
+        // Kunci pilihan dropdown pada bahan yang ditarik dari database
+        if (item) {
+            tr.querySelector('select').value = item.bahan_id;
+        }
+        sinkronSatuanRow(tr, item && item.satuan ? item.satuan : null);
+
+        return tr;
+    }
+
     // Fungsi untuk menggambar ulang tabel sesuai resep
     function renderTabelBahan() {
         // 1. Kosongkan tabel saat ini
@@ -294,43 +460,13 @@
 
         // Jika resep kosong, tambahkan 1 baris kosong default
         if (resepAktif.length === 0) {
-            document.getElementById("add-row").click();
+            bodyTabelBahan.appendChild(buatBarisBahanEdit(null));
             return;
         }
 
         // 2. Buat baris baru untuk setiap bahan di dalam resep
         resepAktif.forEach(item => {
-            let tr = document.createElement('tr');
-            
-            // AMBIL NILAI ASLI (Tanpa dikalikan pasien)
-            let qtyAsli = item.qty_standar; 
-
-            // Kita butuh dropdown bawaan Django agar ID bahan sesuai
-            let optionsHTML = `
-                <select class="form-select" name="bahan[]">
-                    {% for bahan in bahan_list %}
-                        <option value="{{ bahan.id }}">{{ bahan.nama }}</option>
-                    {% endfor %}
-                </select>
-            `;
-
-            tr.innerHTML = `
-                <td>${optionsHTML}</td>
-                <td>
-                    <input type="number" step="any" min="0" name="qty[]" class="form-control" value="${qtyAsli > 0 ? qtyAsli : ''}">
-                </td>
-                <td>
-                    <input type="text" name="keterangan[]" class="form-control" placeholder="Keterangan">
-                </td>
-                <td class="text-center">
-                    <button type="button" class="btn btn-danger btn-sm remove-row"><i class="bi bi-trash"></i></button>
-                </td>
-            `;
-
-            // Kunci pilihan dropdown pada bahan yang ditarik dari database
-            tr.querySelector('select').value = item.bahan_id;
-
-            bodyTabelBahan.appendChild(tr);
+            bodyTabelBahan.appendChild(buatBarisBahanEdit(item));
         });
     }
 
