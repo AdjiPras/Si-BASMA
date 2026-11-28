@@ -750,10 +750,14 @@ def siklus_detail(request, pk):
                 return redirect(base_url)
         
         filter_waktu = request.GET.get('filter_waktu')
+        q = request.GET.get('q', '').strip()
         detail_qs = MenuSiklus.objects.filter(siklus=siklus)
         
         if filter_waktu:
             detail_qs = detail_qs.filter(waktu_makan=filter_waktu)
+        
+        if q:
+            detail_qs = detail_qs.filter(bahan__nama__icontains=q)
         
         detail_qs = detail_qs.order_by('waktu_makan', 'bahan__nama')
         
@@ -767,6 +771,7 @@ def siklus_detail(request, pk):
             'detail_list': page_obj, 
             'page_obj': page_obj,
             'filter_waktu': filter_waktu,
+            'q': q,
         }
         logger.info(f"Siklus detail ID {pk} berhasil dimuat.")
         return render(request, 'orders/siklus_detail.html', context)
